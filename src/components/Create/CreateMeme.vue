@@ -6,11 +6,15 @@
         <label>Top Text:</label>
       </b-col>
       <b-col cols="4">
-        <input
-          class="w-100"
-          type="text"
-          placeholder="Type in the top Text..."
-        />
+        <p>
+          <input
+            v-model="topText"
+            class="w-100"
+            type="text"
+            placeholder="Top Text..."
+          />
+          {{ topText }}
+        </p>
       </b-col>
     </b-row>
     <b-row align-h="center">
@@ -19,12 +23,20 @@
       </b-col>
       <b-col cols="4">
         <input
+          v-model="bottomText"
           class="w-100"
           type="text"
-          placeholder="Type in the bottom Text..."
+          placeholder="Bottom Text..."
         />
+        {{ bottomText }}
       </b-col>
     </b-row>
+    <b-row>
+      <b-col>
+        <button v-on:click="buttonClick()">Do something</button>
+      </b-col>
+    </b-row>
+
     <b-row>
       <b-col>
         <img :src="img" />
@@ -34,7 +46,7 @@
 </template>
 
 <script>
-import vueLogo from "../../assets/logo.png";
+import cassiusMeme from "../../assets/meme_small.jpg";
 
 export default {
   name: "CreateMeme",
@@ -43,11 +55,24 @@ export default {
   },
   data() {
     return {
-      img: vueLogo,
+      topText: "",
+      bottomText: "",
+
+      img: cassiusMeme,
     };
+  },
+  methods: {
+    buttonClick: function (event) {
+      console.log("Button clicked");
+      if (event) {
+        alert(event.target.tagName);
+      }
+    },
   },
 };
 </script>
+
+
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
@@ -64,5 +89,9 @@ li {
 }
 a {
   color: #42b983;
+}
+button {
+  margin: 25px 5px 20px 20px;
+  color: #626c74;
 }
 </style>
