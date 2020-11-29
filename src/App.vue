@@ -1,20 +1,27 @@
 <template>
   <div id="app">
     <!--img alt="Vue logo" src="./assets/logo.png"-->
-    <CreateMeme/>
+    <CreateMeme />
+    <!--HelloWorld :msg="test" /-->
   </div>
 </template>
 
 <script>
-import CreateMeme from './components/Create/CreateMeme.vue'
+import CreateMeme from "./components/Create/CreateMeme.vue";
+//import HelloWorld from "./components/HelloWorld.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    //HelloWorld
-    CreateMeme
-  }
-}
+    //HelloWorld,
+    CreateMeme,
+  },
+  data() {
+    return {
+      test: "Das ist ein Test",
+    };
+  },
+};
 </script>
 
 <style>
