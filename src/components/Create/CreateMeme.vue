@@ -7,7 +7,7 @@
       </b-col>
       <b-col cols="4">
         <p>
-          <input
+          <b-form-input
             v-on:input="changeImageText"
             v-model="topText"
             class="w-100"
@@ -22,7 +22,7 @@
         <label>Bottom Text:</label>
       </b-col>
       <b-col cols="4">
-        <input
+        <b-form-input
           v-on:input="changeImageText"
           v-model="bottomText"
           class="w-100"
@@ -39,11 +39,28 @@
         <canvas style="width: 70%" ref="memeCanvas" />
       </b-col>
     </b-row>
+
+    <b-row class="mb-3" align-h="center">
+      <b-col cols="3" />
+      <b-col>
+        <b-button variant="outline-primary" v-on:click="upload">
+          Upload
+        </b-button>
+      </b-col>
+      <b-col>
+        <b-button variant="outline-primary" v-on:click="download">
+          Download
+        </b-button>
+      </b-col>
+      <b-col cols="3" />
+    </b-row>
   </b-container>
 </template>
 
 <script>
 import cassiusMeme from "@/assets/meme.jpg";
+import FormData from "form-data";
+import { saveAs } from "file-saver";
 
 export default {
   name: "CreateMeme",
@@ -141,6 +158,26 @@ export default {
       this.drawCanvasImage(canvas, context).then(() =>
         this.setCanvasTextStyle(context)
       );
+    },
+    download() {
+      var canvas = this.$refs.memeCanvas;
+      canvas.toBlob(function (blob) {
+        saveAs(blob, "meme.png");
+      });
+    },
+    async upload() {
+      var canvas = this.$refs.memeCanvas;
+      canvas.toBlob(async (blob) => {
+        var data = new FormData();
+        data.append("file", blob, "file.png");
+        let result = await fetch("http://localhost:3000/upload", {
+          method: "POST",
+          body: data,
+        });
+        if (result.status === 200) {
+          console.log("image uploaded successfully to server!");
+        }
+      });
     },
   },
   mounted() {
