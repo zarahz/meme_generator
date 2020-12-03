@@ -1,6 +1,7 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
     <h1>Create a Meme!</h1>
+     
     <b-row align-h="center">
       <b-col cols="2">
         <label>Top Text:</label>
@@ -54,19 +55,52 @@
       </b-col>
       <b-col cols="3" />
     </b-row>
+    <b-row class="mb-3" align-h="center">
+<b-col cols="3" />
+<b-col>
+<facebook-button 
+      class="share-button--circle share-button--outline"
+      btnText
+    />
+    </b-col>
+    <b-col>
+<twitter-button 
+      class="share-button--circle share-button--outline"
+      btnText
+    />
+    </b-col>
+    <b-col>
+<linkedIn-button 
+      class="share-button--circle share-button--outline"
+      btnText
+    />
+    </b-col>
+<b-col cols="3" />
+      </b-row>
+   
   </b-container>
+  
 </template>
 
 <script>
 import cassiusMeme from "@/assets/meme.jpg";
 import FormData from "form-data";
 import { saveAs } from "file-saver";
+import FacebookButton from "vue-share-buttons/src/components/FacebookButton";
+import TwitterButton from "vue-share-buttons/src/components/TwitterButton";
+import LinkedInButton from "vue-share-buttons/src/components/LinkedInButton";
 
 export default {
   name: "CreateMeme",
   props: {
     msg: String,
   },
+   components: {
+      facebookButton: FacebookButton,
+      twitterButton: TwitterButton,
+      linkedInButton: LinkedInButton,
+  },
+   
   data() {
     return {
       topText: "",
