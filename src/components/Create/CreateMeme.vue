@@ -5,7 +5,7 @@
       <b-col cols="2">
         <label>Top Text:</label>
       </b-col>
-      <b-col cols="4">
+      <b-col cols="auto">
         <p>
           <b-form-input
             v-on:input="changeImageText"
@@ -21,7 +21,7 @@
       <b-col cols="2">
         <label>Bottom Text:</label>
       </b-col>
-      <b-col cols="4">
+      <b-col cols="auto">
         <b-form-input
           v-on:input="changeImageText"
           v-model="bottomText"
@@ -64,9 +64,6 @@ import { saveAs } from "file-saver";
 
 export default {
   name: "CreateMeme",
-  props: {
-    msg: String,
-  },
   data() {
     return {
       topText: "",
@@ -190,22 +187,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-button {
-  margin: 25px 5px 20px 20px;
-  color: #626c74;
-}
 </style>
