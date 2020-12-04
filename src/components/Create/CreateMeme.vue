@@ -17,6 +17,30 @@
           />
         </p>
       </b-col>
+      <b-col cols="1">
+        <label>Horizontal offset:</label>
+      </b-col>
+      <b-col cols="1">
+        <b-form-input
+          v-on:input="changeImageText"
+          v-model="topXOffset"
+          class="w-50"
+          type="text"
+          placeholder="horizontal offset"
+        />
+      </b-col>
+      <b-col cols="1">
+        <label>Vertical offset:</label>
+      </b-col>
+      <b-col cols="1">
+        <b-form-input
+          v-on:input="changeImageText"
+          v-model="topYOffset"
+          class="w-50"
+          type="text"
+          placeholder="vertical offset"
+        />
+      </b-col>
     </b-row>
     <b-row align-h="center">
       <b-col cols="2">
@@ -29,6 +53,30 @@
           class="w-100"
           type="text"
           placeholder="Bottom Text..."
+        />
+      </b-col>
+      <b-col cols="1">
+        <label>Horizontal offset:</label>
+      </b-col>
+      <b-col cols="1">
+        <b-form-input
+          v-on:input="changeImageText"
+          v-model="bottomXOffset"
+          class="w-50"
+          type="text"
+          placeholder="horizontal offset"
+        />
+      </b-col>
+      <b-col cols="1">
+        <label>Vertical offset:</label>
+      </b-col>
+      <b-col cols="1">
+        <b-form-input
+          v-on:input="changeImageText"
+          v-model="bottomYOffset"
+          class="w-50"
+          type="text"
+          placeholder="vertical offset"
         />
       </b-col>
     </b-row>
@@ -101,7 +149,11 @@ export default {
   data() {
     return {
       topText: "",
+      topXOffset: 0,
+      topYOffset: 30,
       bottomText: "",
+      bottomXOffset: 0,
+      bottomYOffset: -30,
       img: cassiusMeme,
     };
   },
@@ -113,21 +165,38 @@ export default {
       this.drawCanvasImage(canvas, context).then(() => {
         this.setCanvasTextStyle(context);
         // wait until picture finished loading and add text afterwards!
-        let canvasHorizontalMid = canvas.width / 2;
-        let canvasBottom = canvas.height - 30;
+        let topCanvasHorizontalMid =
+          canvas.width / 2 + parseInt(this.topXOffset);
+        let bottomCanvasHorizontalMid =
+          canvas.width / 2 + parseInt(this.bottomXOffset);
+        console.log(
+          topCanvasHorizontalMid + " and " + bottomCanvasHorizontalMid
+        );
+        let canvasBottom = canvas.height - Math.abs(this.bottomYOffset);
         //show top text
-        context.fillText(this.topText, canvasHorizontalMid, 30, canvas.width);
-        context.strokeText(this.topText, canvasHorizontalMid, 30, canvas.width);
+
+        context.fillText(
+          this.topText,
+          topCanvasHorizontalMid,
+          this.topYOffset,
+          canvas.width
+        );
+        context.strokeText(
+          this.topText,
+          topCanvasHorizontalMid,
+          this.topYOffset,
+          canvas.width
+        );
         //show bottom text
         context.fillText(
           this.bottomText,
-          canvasHorizontalMid,
+          bottomCanvasHorizontalMid,
           canvasBottom,
           canvas.width
         );
         context.strokeText(
           this.bottomText,
-          canvasHorizontalMid,
+          bottomCanvasHorizontalMid,
           canvasBottom,
           canvas.width
         );
@@ -159,6 +228,7 @@ export default {
           context.mozImageSmoothingEnabled = false;
           context.imageSmoothingEnabled = false;
           context.webkitImageSmoothingEnabled = false;
+
           context.drawImage(
             img,
             0,
