@@ -135,6 +135,7 @@ import { saveAs } from "file-saver";
 import FacebookButton from "vue-share-buttons/src/components/FacebookButton";
 import TwitterButton from "vue-share-buttons/src/components/TwitterButton";
 import LinkedInButton from "vue-share-buttons/src/components/LinkedInButton";
+import axios from "axios";
 
 export default {
   name: "CreateMeme",
@@ -280,9 +281,20 @@ export default {
         }
       });
     },
+      fetchImages(){
+      let result = []
+      let url = "https://api.imgflip.com/get_memes"
+      axios
+      .get(url).then((response) => {
+        result = response.data;
+        console.log("the result is: " ,result);
+      })
+    },
+
   },
   mounted() {
     this.loadCanvas();
+    this.fetchImages();
   },
 };
 </script>
