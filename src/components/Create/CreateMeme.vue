@@ -1,7 +1,6 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
     <h1>Create a Meme!</h1>
-
     <b-row align-h="center">
       <b-col cols="2">
         <label>Top Text:</label>
