@@ -84,7 +84,7 @@
 
     <b-row>
       <b-col>
-        <canvas style="width: 70%" ref="memeCanvas" />
+        <canvas style="width: 35%" ref="memeCanvas" />
       </b-col>
     </b-row>
 
@@ -124,6 +124,9 @@
       </b-col>
       <b-col cols="3" />
     </b-row>
+    <b-row class="mb-3" align-h="center">
+      <templates v-on:newTemplateSelected="changeTemplate" />
+    </b-row>
   </b-container>
 </template>
 
@@ -134,6 +137,7 @@ import { saveAs } from "file-saver";
 import FacebookButton from "vue-share-buttons/src/components/FacebookButton";
 import TwitterButton from "vue-share-buttons/src/components/TwitterButton";
 import LinkedInButton from "vue-share-buttons/src/components/LinkedInButton";
+import Templates from "./Templates.vue";
 import axios from "axios";
 
 export default {
@@ -145,6 +149,7 @@ export default {
     facebookButton: FacebookButton,
     twitterButton: TwitterButton,
     linkedInButton: LinkedInButton,
+    templates: Templates,
   },
   data() {
     return {
@@ -158,6 +163,11 @@ export default {
     };
   },
   methods: {
+    changeTemplate(newImageUrl) {
+      console.log("changing image to " + newImageUrl);
+      this.img = newImageUrl;
+    },
+
     changeImageText() {
       var canvas = this.$refs.memeCanvas;
       var context = canvas.getContext("2d");
@@ -280,16 +290,14 @@ export default {
         }
       });
     },
-      fetchImages(){
-      let result = []
-      let url = "https://api.imgflip.com/get_memes"
-      axios
-      .get(url).then((response) => {
+    fetchImages() {
+      let result = [];
+      let url = "https://api.imgflip.com/get_memes";
+      axios.get(url).then((response) => {
         result = response.data;
-        console.log("the result is: " ,result);
-      })
+        console.log("the result is: ", result);
+      });
     },
-
   },
   mounted() {
     this.loadCanvas();

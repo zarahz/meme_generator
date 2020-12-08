@@ -12,11 +12,7 @@
           :key="i"
           @click="selectMemeTemplate(i)"
         />
-        <vue-gallery-slideshow
-          :images="images"
-          :index="null"
-          @close="index = null"
-        >
+        <vue-gallery-slideshow :images="[]" :index="null" @close="index = null">
         </vue-gallery-slideshow>
       </b-col>
     </b-row>
@@ -38,14 +34,6 @@ export default {
   },
   data() {
     return {
-      images: [
-        "https://placekitten.com/801/800",
-        "https://placekitten.com/802/800",
-        "https://placekitten.com/803/800",
-        "https://placekitten.com/804/800",
-        "https://placekitten.com/805/800",
-        "https://placekitten.com/806/800",
-      ],
       templateSelectionIndex: null,
       imgFlipMemes: [],
       response: [],
@@ -55,7 +43,10 @@ export default {
     selectMemeTemplate(selectedIndex) {
       this.templateSelectionIndex = selectedIndex;
       console.log("selectedNewMeme:" + this.templateSelectionIndex);
-      this.$emit("messageFromChild", this.images[this.templateSelectionIndex]);
+      this.$emit(
+        "newTemplateSelected",
+        this.imgFlipMemes[this.templateSelectionIndex].url
+      );
     },
 
     fetchMemeTemplates() {
