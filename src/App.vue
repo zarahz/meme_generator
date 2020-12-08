@@ -4,7 +4,6 @@
       <Navigation />
     </div>
     <CreateMeme />
-    <Templates />
   </div>
 
   <!--img alt="Vue logo" src="./assets/logo.png"-->
@@ -16,7 +15,6 @@
 import CreateMeme from "./components/Create/CreateMeme.vue";
 //import HelloWorld from "./components/HelloWorld.vue";
 import Navigation from "./components/Navigation/Navigation.vue";
-import Templates from "./components/Create/Templates.vue";
 
 export default {
   name: "App",
@@ -24,7 +22,6 @@ export default {
     //HelloWorld,
     CreateMeme,
     Navigation,
-    Templates,
     //Content
   },
   data() {
