@@ -8608,6 +8608,13 @@ vue-functional-data-merge@^3.1.0:
   resolved "https://registry.yarnpkg.com/vue-functional-data-merge/-/vue-functional-data-merge-3.1.0.tgz#08a7797583b7f35680587f8a1d51d729aa1dc657"
   integrity sha512-leT4kdJVQyeZNY1kmnS1xiUlQ9z1B/kdBFCILIjYYQDqZgLqCLa0UhjSSeRX6c3mUe6U5qYeM8LrEqkHJ1B4LA==
 
+vue-gallery-slideshow@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/vue-gallery-slideshow/-/vue-gallery-slideshow-1.5.2.tgz#41fc93d454cc5b068adfb574351d2310ca9c42cb"
+  integrity sha512-P5u+H7ZL4MMx0uwmT9A76zQdeSX/m4/HoLWmUZxf7c/N0q5hnrG20/330xw049d5GnsBq91G3JUJadZOEqAUzw==
+  dependencies:
+    vue-runtime-helpers "^1.1.2"
+
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.npm.taobao.org/vue-hot-reload-api/download/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
@@ -8637,6 +8644,11 @@ vue-loader@^15.9.2:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-runtime-helpers@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vue-runtime-helpers/-/vue-runtime-helpers-1.1.2.tgz#446b7b820888ab0c5264d2c3a32468e72e4100f3"
+  integrity sha512-pZfGp+PW/IXEOyETE09xQHR1CKkR9HfHZdnMD/FVLUNI+HxYTa82evx5WrF6Kz4s82qtqHvMZ8MZpbk2zT2E1Q==
 
 vue-share-buttons@^1.1.0:
   version "1.1.0"

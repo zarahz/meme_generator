@@ -1,19 +1,22 @@
 <template>
   <div id="app">
-      <div class="top-bar">
-        <Navigation />
-      </div>
-      <CreateMeme />
+    <div class="top-bar">
+      <Navigation />
     </div>
-    <!--img alt="Vue logo" src="./assets/logo.png"-->
-    <!-- <CreateMeme /> -->
-    <!--HelloWorld :msg="test" /-->
+    <CreateMeme />
+    <Templates />
+  </div>
+
+  <!--img alt="Vue logo" src="./assets/logo.png"-->
+  <!-- <CreateMeme /> -->
+  <!--HelloWorld :msg="test" /-->
 </template>
 
 <script>
 import CreateMeme from "./components/Create/CreateMeme.vue";
 //import HelloWorld from "./components/HelloWorld.vue";
 import Navigation from "./components/Navigation/Navigation.vue";
+import Templates from "./components/Create/Templates.vue";
 
 export default {
   name: "App",
@@ -21,11 +24,12 @@ export default {
     //HelloWorld,
     CreateMeme,
     Navigation,
+    Templates,
     //Content
   },
   data() {
     return {
-      mobileView: false, 
+      mobileView: false,
       showNav: false,
       test: "Das ist ein Test",
     };
@@ -46,7 +50,6 @@ export default {
 .top-bar {
   width: 100%;
   background-color: #5cb85c;
-  position: center; 
+  position: center;
 }
-
 </style>
