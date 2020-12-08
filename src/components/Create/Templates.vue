@@ -7,8 +7,8 @@
         <img
           style="width: 50%"
           class="image"
-          v-for="(image, i) in images"
-          :src="image"
+          v-for="(image, i) in imgFlipMemes"
+          :src="imgFlipMemes[i].url"
           :key="i"
           @click="selectMemeTemplate(i)"
         />
