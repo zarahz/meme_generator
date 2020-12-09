@@ -89,7 +89,7 @@
     </b-row>
 
     <b-row class="mb-3" align-h="center">
-      <b-col cols="3" />
+      <b-col cols="4" />
       <b-col>
         <b-button variant="outline-primary" v-on:click="upload">
           Upload
@@ -100,29 +100,7 @@
           Download
         </b-button>
       </b-col>
-      <b-col cols="3" />
-    </b-row>
-    <b-row class="mb-3" align-h="center">
-      <b-col cols="3" />
-      <b-col>
-        <facebook-button
-          class="share-button--circle share-button--outline"
-          btnText
-        />
-      </b-col>
-      <b-col>
-        <twitter-button
-          class="share-button--circle share-button--outline"
-          btnText
-        />
-      </b-col>
-      <b-col>
-        <linkedIn-button
-          class="share-button--circle share-button--outline"
-          btnText
-        />
-      </b-col>
-      <b-col cols="3" />
+      <b-col cols="4" />
     </b-row>
     <b-row class="mb-3" align-h="center">
       <templates v-on:newTemplateSelected="changeTemplate" />
@@ -134,11 +112,8 @@
 import cassiusMeme from "@/assets/meme.jpg";
 import FormData from "form-data";
 import { saveAs } from "file-saver";
-import FacebookButton from "vue-share-buttons/src/components/FacebookButton";
-import TwitterButton from "vue-share-buttons/src/components/TwitterButton";
-import LinkedInButton from "vue-share-buttons/src/components/LinkedInButton";
+
 import Templates from "./Templates.vue";
-import axios from "axios";
 
 export default {
   name: "CreateMeme",
@@ -146,9 +121,6 @@ export default {
     msg: String,
   },
   components: {
-    facebookButton: FacebookButton,
-    twitterButton: TwitterButton,
-    linkedInButton: LinkedInButton,
     templates: Templates,
   },
   data() {
@@ -290,18 +262,9 @@ export default {
         }
       });
     },
-    fetchImages() {
-      let result = [];
-      let url = "https://api.imgflip.com/get_memes";
-      axios.get(url).then((response) => {
-        result = response.data;
-        console.log("the result is: ", result);
-      });
-    },
   },
   mounted() {
     this.loadCanvas();
-    this.fetchImages();
   },
 };
 </script>

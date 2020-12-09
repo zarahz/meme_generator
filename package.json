@@ -20,6 +20,7 @@
     "vue-gallery-slideshow": "^1.5.2",
     "vue-infinite-loading": "^2.4.5",
     "vue-share-buttons": "^1.1.0",
+    "vue-social-sharing": "^3.0.4",
     "vue-socialmedia-share": "^1.0.1"
   },
   "devDependencies": {
