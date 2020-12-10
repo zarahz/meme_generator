@@ -4,12 +4,16 @@
       <Navigation />
     </div>
     <CreateMeme />
+    <div class="vertical-center">
+        <div class="inner-block">
+            <router-view />
+        </div>
+    </div>
   </div>
+</template> 
 
-  <!--img alt="Vue logo" src="./assets/logo.png"-->
-  <!-- <CreateMeme /> -->
-  <!--HelloWorld :msg="test" /-->
-</template>
+
+// https://www.positronx.io/create-login-signup-ui-screens-in-vue-js-with-bootstrap/
 
 <script>
 import CreateMeme from "./components/Create/CreateMeme.vue";
