@@ -6,15 +6,13 @@
         <label>Top Text:</label>
       </b-col>
       <b-col cols="auto">
-        <p>
-          <b-form-input
-            v-on:input="changeImageText"
-            v-model="topText"
-            class="w-100"
-            type="text"
-            placeholder="Top Text..."
-          />
-        </p>
+        <b-form-input
+          v-on:input="changeImageText"
+          v-model="topText"
+          class="w-100"
+          type="text"
+          placeholder="Top Text..."
+        />
       </b-col>
       <b-col cols="1">
         <label>Horizontal offset:</label>
