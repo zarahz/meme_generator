@@ -14,7 +14,10 @@
             <img
               class="imageContainer"
               :src="'http://localhost:3000/static/' + image.nameAndFileType"
-            />
+             >
+              
+                 
+              />
           </b-row>
           <b-row class="justify-content-md-center">
             <b-button variant="outline-success" class="m-3">Upvote</b-button>
@@ -67,8 +70,6 @@ import {
   
 } from "vue-socialmedia-share";
 
-
-
 export default {
   name: "OverviewPage",
   components: {
@@ -78,8 +79,7 @@ export default {
     Linkedin,
     Pinterest,
     WhatsApp,
-    Email
-  
+    Email,
   },
   data() {
     return {
@@ -91,7 +91,7 @@ export default {
     };
   },
   methods: {
-    
+
     async getImages() {
       let result = await fetch("http://localhost:3000/images", {
         method: "GET",
