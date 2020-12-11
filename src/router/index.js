@@ -5,6 +5,8 @@ Vue.use(VueRouter);
 import CreateMeme from "../components/Create/CreateMeme.vue";
 import Meme from "../components/Overview/Meme.vue";
 import OverviewPage from "../components/Overview/OverviewPage.vue";
+import Login from "../components/Authenticate/Login.vue";
+import Registration from "../components/Authenticate/Registration.vue";
 
 
    const routes = [
@@ -22,6 +24,18 @@ import OverviewPage from "../components/Overview/OverviewPage.vue";
         path: "/overviewpage",
         name: "OverviewPage",
         component: OverviewPage,
+        
+      },
+      {
+        path: "/login",
+        name: "Login",
+        component: Login,
+        
+      },
+      {
+        path: "/registration",
+        name: "Registration",
+        component:Registration,
         
       },
     ];

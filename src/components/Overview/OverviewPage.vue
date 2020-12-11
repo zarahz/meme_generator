@@ -11,13 +11,13 @@
       <b-col sm="6" align-self="center">
         <div>
           <b-row>
+            <router-link to = "/Meme">
             <img
               class="imageContainer"
               :src="'http://localhost:3000/static/' + image.nameAndFileType"
-             >
-              
-                 
+              @click="openMemeView()"
               />
+            </router-link>
           </b-row>
           <b-row class="justify-content-md-center">
             <b-button variant="outline-success" class="m-3">Upvote</b-button>
@@ -70,6 +70,8 @@ import {
   
 } from "vue-socialmedia-share";
 
+//import router from "../../router/index.js"
+
 export default {
   name: "OverviewPage",
   components: {
@@ -87,11 +89,16 @@ export default {
       displayedImages: [],
       sliceEnd: 2,
       bottom: false,
-     
     };
   },
   methods: {
-
+    openMemeView(){
+      console.log("image is clicked")
+      //let routerData = router.push({name: "Meme"}).catch(err => {err});
+      
+      //window.open(routerData, '_blank');
+      
+    },
     async getImages() {
       let result = await fetch("http://localhost:3000/images", {
         method: "GET",

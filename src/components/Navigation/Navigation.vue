@@ -1,22 +1,17 @@
 <template>
     <div>
-        <b-navbar toggleable="lg" type="dark" variant="success">
-            <b-navbar-brand href="#">Bar</b-navbar-brand>
-            <b-navbar-brand href="#">Bar</b-navbar-brand>
-            <b-navbar-brand href="#">Bar</b-navbar-brand>
-            <b-navbar-brand href="#">Bar</b-navbar-brand>
-            <b-navbar-brand href="#">Bar</b-navbar-brand>
-            <b-navbar-brand href="#">Bar</b-navbar-brand>
-            <b-navbar-brand href="#">Bar</b-navbar-brand>
-
-
-
+        <b-navbar toggleable="lg" type="dark" variant="success" fixed="top">
+            <b-navbar-brand href="#">Meme Generator</b-navbar-brand>
+           
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <!--<b-collapse id="nav-collapse" is-nav>-->
             <b-navbar-nav>
-                <b-nav-item href="#">Link</b-nav-item>
-                <b-nav-item href="#" disabled>Disabled</b-nav-item>
+                <b-nav-item href="#" router to = "/overviewpage">Home</b-nav-item>
+                <b-nav-item href="#" router to = "/">Create am Meme</b-nav-item>
+        
+               
+                <!--b-nav-item href="#" disabled>Disabled</b-nav-item-->
             </b-navbar-nav>
 
             <!-- Right aligned nav items -->
@@ -38,8 +33,12 @@
                 <b-dropdown-item href="#">LinkedIn</b-dropdown-item>
                 <b-dropdown-item href="#">Yahoo</b-dropdown-item>
                 <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+                 
                 </b-nav-item-dropdown>
-
+                <b-navbar-nav right>
+                <b-nav-item href="#" router to = "/login">Login</b-nav-item>
+                 <b-nav-item href="#" router to = "/registration">Sign up</b-nav-item>
+                </b-navbar-nav>
 
                 <b-nav-form>
                     <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
@@ -50,3 +49,4 @@
         </b-navbar>
     </div>
 </template>
+

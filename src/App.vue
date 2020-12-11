@@ -1,10 +1,12 @@
 <template>
   <div id="app">
-    <div class="top-bar">
-      <Navigation />
+    <div >
+    <router-view/>
+    <Navigation />
     </div>
-    <CreateMeme />
-    <OverviewPage />
+    
+    <!--CreateMeme /-->
+    <!--OverviewPage /-->
   </div>
 
   <!--img alt="Vue logo" src="./assets/logo.png"-->
@@ -13,18 +15,18 @@
 </template>
 
 <script>
-import CreateMeme from "./components/Create/CreateMeme.vue";
+//import CreateMeme from "./components/Create/CreateMeme.vue";
 //import HelloWorld from "./components/HelloWorld.vue";
 import Navigation from "./components/Navigation/Navigation.vue";
-import OverviewPage from "./components/Overview/OverviewPage.vue";
+//import OverviewPage from "./components/Overview/OverviewPage.vue";
 
 export default {
   name: "App",
   components: {
     //HelloWorld,
-    CreateMeme,
+   // CreateMeme,
     Navigation,
-    OverviewPage,
+    //OverviewPage,
     //Content
   },
   data() {
@@ -43,10 +45,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #5cb85c;
   margin-top: 0px;
 }
-
+</style>
+<style scoped>
 .top-bar {
   width: 100%;
   background-color: #5cb85c;
