@@ -70,7 +70,6 @@ export default {
       } else {
         // WITH search term
         this.allImgFlipMemes.forEach(function (item) {
-          console.log("Checking:" + item.name);
           if (item.name.toLowerCase().includes(searchTerm.toLowerCase())) {
             displayedImgFlipMemes.push(item);
           }
@@ -80,7 +79,6 @@ export default {
     },
     selectMemeTemplate(selectedIndex) {
       this.templateSelectionIndex = selectedIndex;
-      console.log("selectedNewMeme:" + this.templateSelectionIndex);
       this.$emit(
         "newTemplateSelected",
         this.displayedImgFlipMemes[this.templateSelectionIndex].url

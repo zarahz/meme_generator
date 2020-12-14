@@ -136,6 +136,7 @@ export default {
     changeTemplate(newImageUrl) {
       console.log("changing image to " + newImageUrl);
       this.img = newImageUrl;
+      this.changeImageText();
     },
 
     changeImageText() {
@@ -185,7 +186,7 @@ export default {
     drawCanvasImage(canvas, context) {
       return new Promise((resolve) => {
         var img = new Image();
-        img.src = cassiusMeme;
+        img.src = this.img;
         img.onload = function () {
           var width = window.innerWidth;
           var height = window.innerHeight;
