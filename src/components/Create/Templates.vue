@@ -3,7 +3,7 @@
     <h2>Pick a template!</h2>
 
     <b-row align-h="center">
-      <b-col cols="2">
+      <b-col cols="3">
         <b-nav-form>
           <b-form-input
             v-on:input="refresh_templates_search"
@@ -56,6 +56,7 @@ export default {
       var displayedImgFlipMemes = this.displayedImgFlipMemes;
       var searchTerm = this.templatesSearchTerm;
       if (searchTerm.length < 1) {
+        // NO search term
         this.allImgFlipMemes.forEach(function (item) {
           displayedImgFlipMemes.push(item);
         });
@@ -67,12 +68,14 @@ export default {
 
         this.displayedImgFlipMemes = shuffled.slice(1, 11);
       } else {
+        // WITH search term
         this.allImgFlipMemes.forEach(function (item) {
           console.log("Checking:" + item.name);
           if (item.name.toLowerCase().includes(searchTerm.toLowerCase())) {
             displayedImgFlipMemes.push(item);
           }
         });
+        this.displayedImgFlipMemes = displayedImgFlipMemes.slice(1, 11);
       }
     },
     selectMemeTemplate(selectedIndex) {
