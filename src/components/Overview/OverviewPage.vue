@@ -108,11 +108,11 @@ export default {
   },
   methods: {
     increaseUpvotescount(){
-      return this.upvotesCount++; // increment counter only for the 
+      return this.upvotesCount++; // TODO: take image id and increment upvotes 
     },
 
     increaseDownvotescount(){
-      return this.downvotesCount++; 
+      return this.downvotesCount++;  //TODO: take image id and increment downvotes
     },
 
     openMemeView(){
