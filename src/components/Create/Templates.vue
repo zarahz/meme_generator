@@ -3,12 +3,21 @@
     <h2>Pick a template!</h2>
 
     <b-row align-h="center">
-      <b-col cols="1">
+      <b-col cols="2">
+        <b-nav-form>
+          <b-form-input
+            v-on:input="refresh_templates_search"
+            v-model="templatesSearchTerm"
+            size="sm"
+            class="mr-sm-2"
+            placeholder="search templates"
+          ></b-form-input>
+        </b-nav-form>
         <img
           style="width: 50%"
           class="image"
-          v-for="(image, i) in imgFlipMemes"
-          :src="imgFlipMemes[i].url"
+          v-for="(image, i) in displayedImgFlipMemes"
+          :src="displayedImgFlipMemes[i].url"
           :key="i"
           @click="selectMemeTemplate(i)"
         />
@@ -16,7 +25,7 @@
         </vue-gallery-slideshow>
       </b-col>
     </b-row>
-    <b-row align-h="center">asdf </b-row>
+    <b-row align-h="center">Templates </b-row>
   </b-container>
 </template>
 
@@ -34,33 +43,58 @@ export default {
   },
   data() {
     return {
+      templatesSearchTerm: "",
       templateSelectionIndex: null,
-      imgFlipMemes: [],
+      displayedImgFlipMemes: [],
+      allImgFlipMemes: [],
       response: [],
     };
   },
   methods: {
+    refresh_templates_search() {
+      this.displayedImgFlipMemes = [];
+      var displayedImgFlipMemes = this.displayedImgFlipMemes;
+      var searchTerm = this.templatesSearchTerm;
+      if (searchTerm.length < 1) {
+        this.allImgFlipMemes.forEach(function (item) {
+          displayedImgFlipMemes.push(item);
+        });
+        // inefficient and biased array shuffle
+        let shuffled = displayedImgFlipMemes
+          .map((a) => ({ sort: Math.random(), value: a }))
+          .sort((a, b) => a.sort - b.sort)
+          .map((a) => a.value);
+
+        this.displayedImgFlipMemes = shuffled.slice(1, 11);
+      } else {
+        this.allImgFlipMemes.forEach(function (item) {
+          console.log("Checking:" + item.name);
+          if (item.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            displayedImgFlipMemes.push(item);
+          }
+        });
+      }
+    },
     selectMemeTemplate(selectedIndex) {
       this.templateSelectionIndex = selectedIndex;
       console.log("selectedNewMeme:" + this.templateSelectionIndex);
       this.$emit(
         "newTemplateSelected",
-        this.imgFlipMemes[this.templateSelectionIndex].url
+        this.displayedImgFlipMemes[this.templateSelectionIndex].url
       );
     },
 
     fetchMemeTemplates() {
       console.log("Fetching memes...");
-
       axios.get("https://api.imgflip.com/get_memes").then((resp) => {
         console.log(resp.data);
 
         console.log(resp.data.success);
         if (resp.data.success == true) {
-          console.log("Success!");
-          this.imgFlipMemes = resp.data.data.memes;
+          this.allImgFlipMemes = resp.data.data.memes;
+          this.refresh_templates_search();
         } else {
-          console.log("Failed!");
+          console.log("Failed to get meme templates from imgFlip :(");
         }
       });
     },
