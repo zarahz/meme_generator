@@ -19,11 +19,22 @@
               />
             </router-link>
           </b-row>
-          <b-row class="justify-content-md-center">
-            <b-button variant="outline-success" class="m-3">Upvote</b-button>
-            <b-button variant="outline-danger" class="m-3">Downvote</b-button>
-            <b-button variant="outline-primary" class="m-3">Comments</b-button>            
+          <b-row class="justify-content-md-center" cols="4">
+
+            <b-button type="bu" variant="outline-success" class="m-3" @click="increaseUpvotescount">
+               <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon> Upvote</b-button>
+            <b-button variant="outline-danger" class="m-3" @click="increaseDownvotescount"> 
+              <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon> Downvote</b-button>
+            <b-button variant="outline-primary" class="m-3">
+              <b-icon icon="chat-left" aria-hidden="true"></b-icon> Comments</b-button>            
           </b-row>
+
+          <b-row class="justify-content-md-center" cols="4">
+             <b-badge variant="light" class="m-3" >{{upvotesCount}} Upvotes </b-badge>  
+             <b-badge variant="light" class="m-3">{{downvotesCount}} Downvotes </b-badge> 
+              <b-badge variant="light" class="m-3">{{commentsCount}} Comments </b-badge>           
+          </b-row>
+          
       
           <b-row b-row class="mb-3" align-h="center">
             <b-col cols="2" />
@@ -89,9 +100,21 @@ export default {
       displayedImages: [],
       sliceEnd: 2,
       bottom: false,
+      upvotesCount: 0, //TODO: get the upvotescount from server
+      downvotesCount: 0, //TODO: get the downvotescount from server
+      commentsCount: 0, //TODO: get the commentsvotescount from server
+   
     };
   },
   methods: {
+    increaseUpvotescount(){
+      return this.upvotesCount++; // increment counter only for the 
+    },
+
+    increaseDownvotescount(){
+      return this.downvotesCount++; 
+    },
+
     openMemeView(){
       console.log("image is clicked")
       //let routerData = router.push({name: "Meme"}).catch(err => {err});
