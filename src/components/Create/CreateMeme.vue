@@ -89,8 +89,8 @@
     <b-row class="mb-3" align-h="center">
       <b-col cols="4" />
       <b-col>
-        <b-button variant="outline-primary" v-on:click="upload">
-          Upload
+        <b-button variant="outline-primary" v-on:click="submit">
+          Submit Meme
         </b-button>
       </b-col>
       <b-col>
@@ -252,7 +252,7 @@ export default {
         saveAs(blob, "meme.png");
       });
     },
-    async upload() {
+    async submit() {
       var canvas = this.$refs.memeCanvas;
       canvas.toBlob(async (blob) => {
         var data = new FormData();
