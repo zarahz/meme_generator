@@ -15,7 +15,7 @@
         />
       </b-col>
       <b-col cols="1">
-        <label>Horizontal offset:</label>
+        <label>Offset X:</label>
       </b-col>
       <b-col cols="1">
         <b-form-input
@@ -27,7 +27,7 @@
         />
       </b-col>
       <b-col cols="1">
-        <label>Vertical offset:</label>
+        <label>Y:</label>
       </b-col>
       <b-col cols="1">
         <b-form-input
@@ -38,6 +38,10 @@
           placeholder="vertical offset"
         />
       </b-col>
+      <b-button size="sm" class="my-2 my-sm-0" v-on:click="topXOffset -= 5; changeImageText()">🡄</b-button>
+      <b-button size="sm" class="my-2 my-sm-0" v-on:click="topXOffset += 5; changeImageText()">🡆</b-button>
+      <b-button size="sm" class="my-2 my-sm-0" v-on:click="topYOffset -= 5; changeImageText()">🡅</b-button>
+      <b-button size="sm" class="my-2 my-sm-0" v-on:click="topYOffset += 5; changeImageText()">🡇</b-button>
     </b-row>
     <b-row align-h="center">
       <b-col cols="2">
@@ -53,7 +57,7 @@
         />
       </b-col>
       <b-col cols="1">
-        <label>Horizontal offset:</label>
+        <label>Offset X:</label>
       </b-col>
       <b-col cols="1">
         <b-form-input
@@ -65,7 +69,7 @@
         />
       </b-col>
       <b-col cols="1">
-        <label>Vertical offset:</label>
+        <label>Y:</label>
       </b-col>
       <b-col cols="1">
         <b-form-input
@@ -76,6 +80,10 @@
           placeholder="vertical offset"
         />
       </b-col>
+      <b-button size="sm" class="my-2 my-sm-0" v-on:click="bottomXOffset -= 5; changeImageText()">🡄</b-button>
+      <b-button size="sm" class="my-2 my-sm-0" v-on:click="bottomXOffset += 5; changeImageText()">🡆</b-button>
+      <b-button size="sm" class="my-2 my-sm-0" v-on:click="bottomYOffset -= 5; changeImageText()">🡅</b-button>
+      <b-button size="sm" class="my-2 my-sm-0" v-on:click="bottomYOffset += 5; changeImageText()">🡇</b-button>
     </b-row>
 
     <b-row class="mb-3" />
@@ -137,7 +145,7 @@ export default {
       img: cassiusMeme,
     };
   },
-  methods: {
+  methods: {    
     changeTemplate(newImageUrl) {
       console.log("changing image to " + newImageUrl);
       this.img = newImageUrl;
