@@ -101,6 +101,9 @@
       <b-col cols="4" />
     </b-row>
     <b-row class="mb-3" align-h="center">
+      <customTemplate v-on:newTemplateSelected="changeTemplate" />
+    </b-row>
+    <b-row class="mb-3" align-h="center">
       <templates v-on:newTemplateSelected="changeTemplate" />
     </b-row>
   </b-container>
@@ -112,6 +115,7 @@ import FormData from "form-data";
 import { saveAs } from "file-saver";
 
 import Templates from "./Templates.vue";
+import CustomTemplate from "./CustomTemplate.vue";
 
 export default {
   name: "CreateMeme",
@@ -120,6 +124,7 @@ export default {
   },
   components: {
     templates: Templates,
+    customTemplate: CustomTemplate,
   },
   data() {
     return {
