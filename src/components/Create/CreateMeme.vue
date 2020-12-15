@@ -82,7 +82,7 @@
 
     <b-row>
       <b-col>
-        <canvas style="width: 35%" ref="memeCanvas" />
+        <canvas class="customCanvas" ref="memeCanvas" />
       </b-col>
     </b-row>
 
@@ -277,4 +277,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.customCanvas {
+  width: 30%;
+  max-height: 600px;
+}
 </style>
