@@ -3,7 +3,8 @@
     <h2>Pick a template!</h2>
 
     <b-row align-h="center">
-      <b-col cols="3">
+      <b-col cols="6">
+        <b-row align-h="center">
         <b-nav-form>
           <b-form-input
             v-on:input="refresh_templates_search"
@@ -13,8 +14,9 @@
             placeholder="search templates"
           ></b-form-input>
         </b-nav-form>
+        </b-row>
         <img
-          style="width: 50%"
+          style="width: 20%"
           class="image"
           v-for="(image, i) in displayedImgFlipMemes"
           :src="displayedImgFlipMemes[i].url"
