@@ -16,8 +16,9 @@ import Registration from "../components/Authenticate/Registration.vue";
         component: CreateMeme
       },
       {
-        path: "/meme",
+        path: "/meme/:id",
         name: "Meme",
+        props: true,
         component: Meme
       },
       {

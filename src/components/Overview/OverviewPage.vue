@@ -11,17 +11,15 @@
       <b-col sm="6" align-self="center">
         <div>
           <b-row>
-            <router-link to = "/Meme">
             <img
               class="imageContainer"
               :src="'http://localhost:3000/static/' + image.nameAndFileType"
-              @click="openMemeView()"
+              @click="openMemeView(image._id)"
               />
-            </router-link>
           </b-row>
           <b-row class="justify-content-md-center" cols="4">
 
-            <b-button type="bu" variant="outline-success" class="m-3" @click="increaseUpvotescount">
+            <b-button  variant="outline-success" class="m-3" @click="increaseUpvotescount">
                <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon> Upvote</b-button>
             <b-button variant="outline-danger" class="m-3" @click="increaseDownvotescount"> 
               <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon> Downvote</b-button>
@@ -81,7 +79,7 @@ import {
   
 } from "vue-socialmedia-share";
 
-//import router from "../../router/index.js"
+import router from "../../router/index.js"
 
 export default {
   name: "OverviewPage",
@@ -115,11 +113,9 @@ export default {
       return this.downvotesCount++;  //TODO: take image id and increment downvotes
     },
 
-    openMemeView(){
-      console.log("image is clicked")
-      //let routerData = router.push({name: "Meme"}).catch(err => {err});
-      
-      //window.open(routerData, '_blank');
+    openMemeView(imageId){
+      console.log("id of the clicked image is :" + imageId)
+      router.push({name: "Meme",params:{id:imageId}}).catch(err => {err});
       
     },
     async getImages() {
