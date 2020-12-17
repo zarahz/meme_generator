@@ -7,8 +7,32 @@
     :key="image._id">
     <b-col sm="7" align-self="center">
        <b-row v-if="imageId == image._id" class="justify-content-md-center">
+          <b-row  class="justify-content-md-center" >
+            <b-col/>
+            
+            <b-col>
+              <twitter :url="'http://localhost:3000/static/' + image.nameAndFileType" title="" scale="3" ></twitter>           
+            </b-col>
+            <b-col>
+                <linkedin :url="'http://localhost:3000/static/' + image.nameAndFileType" scale="3" ></linkedin>
+            </b-col>
+            <b-col>
+                <whats-app :url="'http://localhost:3000/static/' + image.nameAndFileType" title="Hello" scale="3" ></whats-app>
+            </b-col>
+
+            <b-col>
+                <pinterest :url="'http://localhost:3000/static/' + image.nameAndFileType" scale="3" class="m-3"></pinterest>
+            </b-col>
+             <b-col>
+                <email :url="'http://localhost:3000/static/' + image.nameAndFileType" subject="Hello" scale="3" ></email>
+
+            </b-col>
+           <b-col  />
+          </b-row>
       <b-img :src="'http://localhost:3000/static/' + image.nameAndFileType" alt="Center image"/>
+      
       </b-row>
+      
  </b-col>
     </b-row>
     <b-row class="justify-content-md-center" cols="4">
@@ -25,12 +49,31 @@
              <b-badge variant="light" class="m-3">{{downvotesCount}} Downvotes </b-badge> 
               <b-badge variant="light" class="m-3">{{commentsCount}} Comments </b-badge>           
     </b-row>
+     
+
+    
     
  </b-container>
 </template>
 <script>
+import {
+  Twitter,
+  Linkedin,
+  Pinterest,
+  WhatsApp,
+  Email
+} from "vue-socialmedia-share";
+
  export default{
   name:'MemePage',
+  components: {
+    Twitter,
+    Linkedin,
+    Pinterest,
+    WhatsApp,
+    Email,
+  },
+
   data(){
    return{
     imageId:this.$route.params.id,
@@ -42,6 +85,13 @@
    };
   },
   methods:{
+    increaseUpvotescount(){
+      return this.upvotesCount++; // TODO: take image id and increment upvotes 
+    },
+
+    increaseDownvotescount(){
+      return this.downvotesCount++;  //TODO: take image id and increment downvotes
+    },
     async getImages() {
       let result = await fetch("http://localhost:3000/images", {
         method: "GET",
