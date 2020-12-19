@@ -287,7 +287,7 @@ export default {
 <style scoped>
 
 .customCanvas {
-  width: 30%;
+  max-width: 30%;
   max-height: 600px;
 }
 </style>
