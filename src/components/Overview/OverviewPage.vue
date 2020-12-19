@@ -34,10 +34,15 @@
               <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
               Downvote</b-button
             >
-            <b-button variant="outline-primary" class="m-3">
+            <b-button
+              variant="outline-primary"
+              class="m-3"
+              @click="openMemeView(image._id)"
+            >
               <b-icon icon="chat-left" aria-hidden="true"></b-icon>
               Comments</b-button
             >
+            <!-- @click="openMemeView(image._id)" -->
           </b-row>
 
           <b-row class="justify-content-md-center" cols="4">
