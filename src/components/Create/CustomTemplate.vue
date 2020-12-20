@@ -12,7 +12,12 @@
               class="mr-sm-2"
               placeholder="url"
             ></b-form-input>
-            <b-button size="sm" class="my-2 my-sm-0" v-on:click=useCustomTemplate>✔</b-button>
+            <b-button
+              size="sm"
+              class="my-2 my-sm-0"
+              v-on:click="useCustomTemplate"
+              >✔</b-button
+            >
           </b-nav-form>
         </b-row>
       </b-col>
@@ -21,16 +26,12 @@
 </template>
 
 <script>
-
-
 export default {
   name: "Templates",
   props: {
     searchString: String,
   },
-  components: {
-    
-  },
+  components: {},
   data() {
     return {
       customUrl: "",
@@ -38,12 +39,10 @@ export default {
   },
   methods: {
     useCustomTemplate() {
-        this.$emit("newTemplateSelected", this.customUrl);
-    }
+      this.$emit("newTemplateSelected", this.customUrl);
+    },
   },
-  mounted() {
-    
-  },
+  mounted() {},
 };
 </script>
 

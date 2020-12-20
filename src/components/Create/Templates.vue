@@ -5,15 +5,15 @@
     <b-row align-h="center">
       <b-col cols="6">
         <b-row align-h="center">
-        <b-nav-form>
-          <b-form-input
-            v-on:input="refresh_templates_search"
-            v-model="templatesSearchTerm"
-            size="sm"
-            class="mr-sm-2"
-            placeholder="search templates"
-          ></b-form-input>
-        </b-nav-form>
+          <b-nav-form>
+            <b-form-input
+              v-on:input="refresh_templates_search"
+              v-model="templatesSearchTerm"
+              size="sm"
+              class="mr-sm-2"
+              placeholder="search templates"
+            ></b-form-input>
+          </b-nav-form>
         </b-row>
         <img
           style="width: 20%"
