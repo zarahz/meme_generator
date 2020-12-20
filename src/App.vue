@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <div class="top-bar">
-      <Navigation />
+    <div >
+    <router-view/>
+    <Navigation />
     </div>
     <CreateMeme />
     <div class="vertical-center">
@@ -9,6 +10,9 @@
             <router-view />
         </div>
     </div>
+    
+    <!--CreateMeme /-->
+    <!--OverviewPage /-->
   </div>
 </template> 
 
@@ -16,16 +20,18 @@
 // https://www.positronx.io/create-login-signup-ui-screens-in-vue-js-with-bootstrap/
 
 <script>
-import CreateMeme from "./components/Create/CreateMeme.vue";
+//import CreateMeme from "./components/Create/CreateMeme.vue";
 //import HelloWorld from "./components/HelloWorld.vue";
 import Navigation from "./components/Navigation/Navigation.vue";
+//import OverviewPage from "./components/Overview/OverviewPage.vue";
 
 export default {
   name: "App",
   components: {
     //HelloWorld,
-    CreateMeme,
+   // CreateMeme,
     Navigation,
+    //OverviewPage,
     //Content
   },
   data() {
@@ -44,10 +50,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #5cb85c;
-  margin-top: 0px;
+  margin-top: 70px;
 }
-
+</style>
+<style scoped>
 .top-bar {
   width: 100%;
   background-color: #5cb85c;
