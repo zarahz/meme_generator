@@ -86,6 +86,26 @@
         >{{ commentsCount }} Comments
       </b-badge>
     </b-row>
+    <b-col align-self="center">
+      <b-row class="justify-content-md-center">
+        <b-form-input
+          v-on:keyup.enter="submitComment"
+          v-model="commentInput"
+          class="w-50"
+          type="text"
+          placeholder="Type your comment here..."
+        />
+      </b-row>
+      <b-row
+        class="justify-content-md-center"
+        v-for="comment in comments"
+        v-bind:key="comment._id"
+      >
+        {{ comment.authorId }}
+        {{ comment.content }}
+        {{ comment.creationDate }}
+      </b-row>
+    </b-col>
   </b-container>
 </template>
 <script>
@@ -114,16 +134,59 @@ export default {
       allImages: [],
       upvotesCount: 0, //TODO: get the upvotescount from server
       downvotesCount: 0, //TODO: get the downvotescount from server
-      commentsCount: 0, //TODO: get the commentsvotescount from server
+      commentsCount: 0,
+      comments: [],
+      commentInput: "",
     };
   },
   methods: {
+    async submitComment() {
+      console.log("Submitting comment...");
+      var commentUrl = "http://localhost:3000/post-comment";
+      var comment = {
+        imageId: this.imageId,
+        authorId: "TODO authorId",
+        content: this.commentInput,
+      };
+      console.log("Comment: " + comment);
+      let result = await fetch(commentUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        json: JSON.stringify(comment),
+      });
+      if (result.status !== 200) {
+        const { error } = await result.json();
+        console.log(error);
+        //this.$set(this.errors, "post-comment", error);
+      } else {
+        // success
+        this.commentInput = "";
+        this.fetchComments();
+      }
+    },
     increaseUpvotescount() {
       return this.upvotesCount++; // TODO: take image id and increment upvotes
     },
 
     increaseDownvotescount() {
       return this.downvotesCount++; //TODO: take image id and increment downvotes
+    },
+    async fetchComments() {
+      var commentUrl = "http://localhost:3000/comments";
+      // TODO This doesn't do the parameter properly -> All comments are returned.
+      let result = await fetch(commentUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        json: JSON.stringify(this.imageId),
+      });
+
+      const { dbComments } = await result.json();
+      this.comments = dbComments;
+      this.commentsCount = this.comments.length;
     },
     async getImages() {
       let result = await fetch("http://localhost:3000/images", {
@@ -135,6 +198,7 @@ export default {
   },
   mounted() {
     this.getImages();
+    this.fetchComments();
   },
 };
 </script>
