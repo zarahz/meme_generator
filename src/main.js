@@ -4,8 +4,8 @@ import router from './router'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import SocialSharing from "vue-social-sharing";
-import router from "./router/index"
+import SocialSharing from "vue-social-sharing"
+//import router from "./router/index"
 
 
 // Install BootstrapVue
