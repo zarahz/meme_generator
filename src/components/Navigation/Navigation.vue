@@ -18,10 +18,17 @@
             <!-- Right aligned nav items -->
             <b-navbar-nav class="ml-auto">
                 <b-button size="sm" class="glyphicon glyphicon-lock" to="/login" variant="success">Login</b-button>
-                <b-button size="sm" class="glyphicon glyphicon-lock" to="/registration" variant="success">Sign Up</b-button>
+                <b-button size="sm" class="glyphicon glyphicon-lock" to="/registration" variant="success">Sign</b-button>
             </b-navbar-nav>
             <!--</b-collapse> -->
         </b-navbar>
+         <div class="App">
+            <div class="vertical-center">
+                <div class="inner-block">
+                    <router-view />
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
