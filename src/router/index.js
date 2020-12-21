@@ -7,6 +7,7 @@ import Meme from "../components/Overview/Meme.vue";
 import OverviewPage from "../components/Overview/OverviewPage.vue";
 import Login from "../components/Authenticate/Login.vue";
 import Registration from "../components/Authenticate/Registration.vue";
+import ForgotPassword from "../components/Authenticate/ForgotPassword.vue"; 
 
 
 const routes = [
@@ -31,13 +32,16 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
-
   },
   {
     path: "/registration",
     name: "Registration",
     component: Registration,
-
+  },
+  {
+    path: "/forgot-password",
+    name: "ForgotPassword",
+    component: ForgotPassword,
   },
 ];
 export default new VueRouter({ mode: "history", routes: routes });
