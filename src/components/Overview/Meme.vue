@@ -96,15 +96,26 @@
           placeholder="Type your comment here..."
         />
       </b-row>
-      <b-row
+      <b-col
         class="justify-content-md-center"
         v-for="comment in comments"
         v-bind:key="comment._id"
       >
-        {{ comment.authorId }}
-        {{ comment.content }}
-        {{ comment.creationDate }}
-      </b-row>
+        <b-row style="background-color: #e6e6e6">
+          <b-col>
+            <strong>{{ comment.authorId }}</strong>
+          </b-col>
+          <b-col>
+            {{ comment.creationDate }}
+          </b-col>
+        </b-row>
+        <b-row style="background-color: #e6e6e6" class="mb-2">
+          <b-col>
+            {{ comment.content }}
+          </b-col>
+        </b-row>
+        <div></div>
+      </b-col>
     </b-col>
   </b-container>
 </template>
@@ -154,7 +165,7 @@ export default {
         headers: {
           "Content-Type": "application/json",
         },
-        json: JSON.stringify(comment),
+        body: JSON.stringify(comment),
       });
       if (result.status !== 200) {
         const { error } = await result.json();
@@ -174,15 +185,13 @@ export default {
       return this.downvotesCount++; //TODO: take image id and increment downvotes
     },
     async fetchComments() {
-      var commentUrl = "http://localhost:3000/comments";
-      // TODO This doesn't do the parameter properly -> All comments are returned.
-      let result = await fetch(commentUrl, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        json: JSON.stringify(this.imageId),
-      });
+      var currentImageId = this.imageId;
+      var commentUrl = new URL("http://localhost:3000/comments"),
+        params = { imageId: currentImageId };
+      Object.keys(params).forEach((key) =>
+        commentUrl.searchParams.append(key, params[key])
+      );
+      let result = await fetch(commentUrl);
 
       const { dbComments } = await result.json();
       this.comments = dbComments;
@@ -202,3 +211,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+commentBox {
+  color: orange;
+  background-color: green;
+}
+</style>
