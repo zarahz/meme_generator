@@ -1,6 +1,6 @@
 <template>
     <div class="vue-template">
-        <form>
+        <form action="#" @submit.prevent="login">
             <h3>Sign In</h3>
 
             <div class="form-group">
@@ -32,9 +32,61 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {}
+export default {
+  name: "login",
+  data() {
+    return {
+      user: {
+        email: "",
+        username: "",
+        password: "",
+      },
+      errors: {},
+    };
+  },
+  methods: {
+    async checkUniqueness(fieldname, event) {
+      let result = await fetch("http://localhost:3000/is-unique", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ field: fieldname, value: event }),
+      });
+      if (result.status !== 200) {
+        const { error } = await result.json();
+        this.$set(this.errors, fieldname, error);
+      } else {
+        this.$delete(this.errors, fieldname);
+      }
+    },
+    async login(evt) {
+      evt.preventDefault();
+      if (Object.keys(this.errors).length === 0) {
+        //No problems, create new user!
+        console.log(this.user);
+        let result = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.user),
+        });
+        if (result.status !== 200) {
+          const { error } = await result.json();
+          this.$set(this.errors, "login", error);
+        } else {
+          const { token } = await result.json();
+          console.log(token);
+          //TODO save token in local storage and get user by that!
+          localStorage.getItem
+          this.$delete(this.errors, "login");
         }
-    }
+      }
+    },
+  },
+};
 </script>
+
+<style scoped>
+</style>

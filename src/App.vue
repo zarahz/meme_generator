@@ -3,6 +3,7 @@
     <div >
     <Navigation />
         <router-view/>
+    <OverviewPage/>
     </div>
   </div>
 </template> 
@@ -23,7 +24,7 @@ export default {
     //HelloWorld,
    // CreateMeme,
     Navigation,
-    //OverviewPage,
+    // OverviewPage,
     //Content
   },
   data() {
