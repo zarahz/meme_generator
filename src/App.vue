@@ -1,16 +1,11 @@
 <template>
   <div id="app">
     <div >
-    <router-view/>
     <Navigation />
+        <router-view/>
     </div>
     <CreateMeme />
     <OverviewPage/>
-    <div class="vertical-center">
-        <div class="inner-block">
-            <router-view />
-        </div>
-    </div>
     
     <!--CreateMeme /-->
     <!--OverviewPage /-->

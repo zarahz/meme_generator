@@ -5,8 +5,7 @@ Vue.use(VueRouter);
 import CreateMeme from "../components/Create/CreateMeme.vue";
 import Meme from "../components/Overview/Meme.vue";
 import OverviewPage from "../components/Overview/OverviewPage.vue";
-// import Login from "../components/Authenticate/Login.vue";
-import Login from "../components/Overview/Login.vue"
+import Login from "../components/Authenticate/Login.vue";
 import Registration from "../components/Authenticate/Registration.vue";
 
 
