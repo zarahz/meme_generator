@@ -1,7 +1,7 @@
 <template>
-  <b-container class="justify-content-md-center mt-3" fluid>
+  <b-container class="vue-template">
     <b-form @submit="register">
-      <b-row align-h="center" class="mb-3">
+      <b-row align-h="center" class="form-group">
         <b-col cols="2">
           <label>Username*:</label>
         </b-col>
@@ -9,7 +9,7 @@
           <b-form-input
             v-model="user.username"
             required
-            class="w-100"
+            class="form-control form-control-lg"
             type="text"
             v-on:input="checkUniqueness('username', $event)"
           />
@@ -19,7 +19,7 @@
         <span>{{ errors.username }}</span>
       </b-row>
 
-      <b-row align-h="center" class="mb-3">
+      <b-row align-h="center" class="form-group">
         <b-col cols="2">
           <label>Email*:</label>
         </b-col>
@@ -27,7 +27,7 @@
           <b-form-input
             v-model="user.email"
             required
-            class="w-100"
+            class="form-control form-control-lg"
             type="email"
             v-on:input="checkUniqueness('email', $event)"
           />
@@ -37,7 +37,7 @@
         <span>{{ errors.email }}</span>
       </b-row>
 
-      <b-row align-h="center" class="mb-3">
+      <b-row align-h="center" class="form-group">
         <b-col cols="2">
           <label>Password*:</label>
         </b-col>
@@ -45,7 +45,7 @@
           <b-form-input
             required
             v-model="user.password"
-            class="w-100"
+            class="form-control form-control-lg"
             type="password"
           />
         </b-col>
@@ -112,6 +112,7 @@ export default {
           const { token } = await result.json();
           console.log(token);
           //TODO save token in local storage and get user by that!
+          localStorage.setItem('user-token',token)
           this.$delete(this.errors, "registration");
         }
       }
