@@ -113,6 +113,7 @@ export default {
           console.log(token);
           //TODO save token in local storage and get user by that!
           localStorage.setItem('user-token',token)
+          this.$router.push('/')
           this.$delete(this.errors, "registration");
         }
       }

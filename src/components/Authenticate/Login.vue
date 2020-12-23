@@ -1,19 +1,47 @@
 <template>
     <div class="vue-template">
-        <form action="#" @submit.prevent="login">
+        <form action="#" @submit.prevent="loginUser">
             <h3>Sign In</h3>
 
-            <div class="form-group">
-                <label>Email address</label>
-                <input type="email" class="form-control form-control-lg" />
-            </div>
+            <b-col cols="2">
+                <label>Username*:</label>
+              </b-col>
+              <b-col cols="auto">
+                <b-form-input
+                  v-model="user.username"
+                  required
+                  class="form-control form-control-lg"
+                  type="text"
+                  v-on:input="checkUniqueness('username', $event)"
+                />
+            </b-col>
+            <b-row v-if="errors.username" align-h="center" class="mb-3">
+              <span>{{ errors.username }}</span>
+            </b-row>
 
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control form-control-lg" />
-            </div>
+            <b-row align-h="center" class="form-group">
+              <b-col cols="2">
+                <label>Password*:</label>
+              </b-col>
+              <b-col cols="auto">
+                <b-form-input
+                  required
+                  v-model="user.password"
+                  class="form-control form-control-lg"
+                  type="password"
+                />
+              </b-col>
+            </b-row>
 
-            <button type="submit" class="btn btn-dark btn-lg btn-block">Sign In</button>
+            <b-row align-h="center">
+                <b-button
+                  type="submit"
+                  variant="outline-primary"
+                  :disabled="Object.keys(this.errors).length > 0"
+                >
+                  Login
+                </b-button>
+              </b-row>
 
             <p class="forgot-password text-right mt-2 mb-4">
                 <router-link to="/forgot-password">Forgot password ?</router-link>
@@ -37,7 +65,6 @@ export default {
   data() {
     return {
       user: {
-        email: "",
         username: "",
         password: "",
       },
@@ -45,46 +72,30 @@ export default {
     };
   },
   methods: {
-    async checkUniqueness(fieldname, event) {
-      let result = await fetch("http://localhost:3000/is-unique", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ field: fieldname, value: event }),
-      });
-      if (result.status !== 200) {
-        const { error } = await result.json();
-        this.$set(this.errors, fieldname, error);
-      } else {
-        this.$delete(this.errors, fieldname);
-      }
-    },
-    async login(evt) {
-      evt.preventDefault();
-      if (Object.keys(this.errors).length === 0) {
-        //No problems, create new user!
-        console.log(this.user);
-        let result = await fetch("http://localhost:3000/login", {
+    async loginUser() {
+        try {
+          let result = await fetch("http://localhost:3000/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(this.user),
-        });
-        if (result.status !== 200) {
-          const { error } = await result.json();
-          this.$set(this.errors, "login", error);
+          });
+          if (result.status !== 200) {
+            const { error } = await result.json();
+            this.$set(this.errors, "login", error);
         } else {
           const { token } = await result.json();
           console.log(token);
-          //TODO save token in local storage and get user by that!
-          localStorage.getItem
+          localStorage.setItem('user-token',token)
           this.$delete(this.errors, "login");
+          this.$router.push('/')
+        }
+        } catch (err) {
++          console.log(err.response);
         }
       }
-    },
-  },
+  }
 };
 </script>
 
