@@ -1,6 +1,8 @@
 <template>
   <b-container class="vue-template">
     <b-form @submit="register">
+      <h3>Sign Up</h3>
+
       <b-row align-h="center" class="form-group">
         <b-col cols="2">
           <label>Username*:</label>

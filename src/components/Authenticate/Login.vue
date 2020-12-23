@@ -1,20 +1,23 @@
 <template>
     <div class="vue-template">
-        <form action="#" @submit.prevent="loginUser">
+        <form action="#" @submit.prevent="login">
             <h3>Sign In</h3>
 
-            <b-col cols="2">
-                <label>Username*:</label>
+            <b-row align-h="center" class="form-group">
+              <b-col cols="2">
+                  <label>Username*:</label>
+                </b-col>
+                <b-col cols="auto">
+                  <b-form-input
+                    v-model="user.username"
+                    required
+                    class="form-control form-control-lg"
+                    type="text"
+                    v-on:input="checkUniqueness('username', $event)"
+                  />
               </b-col>
-              <b-col cols="auto">
-                <b-form-input
-                  v-model="user.username"
-                  required
-                  class="form-control form-control-lg"
-                  type="text"
-                  v-on:input="checkUniqueness('username', $event)"
-                />
-            </b-col>
+            </b-row>
+
             <b-row v-if="errors.username" align-h="center" class="mb-3">
               <span>{{ errors.username }}</span>
             </b-row>
@@ -72,7 +75,7 @@ export default {
     };
   },
   methods: {
-    async loginUser() {
+    async login() {
         try {
           let result = await fetch("http://localhost:3000/login", {
           method: "POST",
