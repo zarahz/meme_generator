@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div >
-    <Navigation />
-        <router-view/>
-    <OverviewPage/>
+    <div>
+      <Navigation />
+      <router-view />
+      <OverviewPage />
     </div>
   </div>
 </template> 
@@ -17,12 +17,11 @@
 import Navigation from "./components/Navigation/Navigation.vue";
 //import OverviewPage from "./components/Overview/OverviewPage.vue";
 
-
 export default {
   name: "App",
   components: {
     //HelloWorld,
-   // CreateMeme,
+    // CreateMeme,
     Navigation,
     // OverviewPage,
     //Content
@@ -33,6 +32,9 @@ export default {
       showNav: false,
       test: "Das ist ein Test",
     };
+  },
+  created() {
+    this.$store.dispatch("tryLoadUser");
   },
 };
 </script>

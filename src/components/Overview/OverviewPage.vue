@@ -7,7 +7,7 @@
       v-for="image in displayedImages"
       v-bind:key="image._id"
     >
-      <b-col style="border: 3px solid green" />
+      <b-col />
       <b-col sm="6" align-self="center">
         <div>
           <b-row>
@@ -104,7 +104,7 @@
           </b-row>
         </div>
       </b-col>
-      <b-col style="border: 3px solid green">Hallo</b-col>
+      <b-col />
     </b-row>
     <infinite-loading @infinite="loadMoreImages"></infinite-loading>
   </b-container>

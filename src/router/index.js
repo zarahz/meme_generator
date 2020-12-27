@@ -7,14 +7,14 @@ import Meme from "../components/Overview/Meme.vue";
 import OverviewPage from "../components/Overview/OverviewPage.vue";
 import Login from "../components/Authenticate/Login.vue";
 import Registration from "../components/Authenticate/Registration.vue";
-import ForgotPassword from "../components/Authenticate/ForgotPassword.vue"; 
+import ForgotPassword from "../components/Authenticate/ForgotPassword.vue";
 
 
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: CreateMeme
+    component: OverviewPage
   },
   {
     path: "/meme/:id",
@@ -23,9 +23,9 @@ const routes = [
     component: Meme
   },
   {
-    path: "/overviewpage",
-    name: "OverviewPage",
-    component: OverviewPage,
+    path: "/create-meme",
+    name: "CreateMeme",
+    component: CreateMeme,
 
   },
   {

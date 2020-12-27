@@ -1,5 +1,5 @@
 <template>
-  <b-container class="vue-template">
+  <b-container class="justify-content-md-center" fluid>
     <b-form @submit="register">
       <h3>Sign Up</h3>
 
@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import { isUnique, registerUser } from "../../api";
+
 export default {
   name: "Registration",
   data() {
@@ -81,43 +83,23 @@ export default {
   },
   methods: {
     async checkUniqueness(fieldname, event) {
-      let result = await fetch("http://localhost:3000/is-unique", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ field: fieldname, value: event }),
-      });
-      if (result.status !== 200) {
-        const { error } = await result.json();
-        this.$set(this.errors, fieldname, error);
+      let uniqueResult = await isUnique(fieldname, event);
+      console.log(uniqueResult);
+      if (uniqueResult.status !== 200) {
+        this.$set(this.errors, fieldname, uniqueResult.error);
       } else {
         this.$delete(this.errors, fieldname);
       }
     },
     async register(evt) {
       evt.preventDefault();
-      if (Object.keys(this.errors).length === 0) {
-        //No problems, create new user!
-        console.log(this.user);
-        let result = await fetch("http://localhost:3000/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.user),
-        });
-        if (result.status !== 200) {
-          const { error } = await result.json();
-          this.$set(this.errors, "registration", error);
-        } else {
-          const { token } = await result.json();
-          console.log(token);
-          //TODO save token in local storage and get user by that!
-          localStorage.setItem('user-token',token)
-          this.$router.push('/')
-          this.$delete(this.errors, "registration");
-        }
+      let userResult = await registerUser(this.user);
+      if (userResult.status !== 200) {
+        this.$set(this.errors, "registration", userResult.body.error);
+      } else {
+        this.$delete(this.errors, "registration");
+        this.$store.dispatch("tryLoadUser");
+        this.$router.push("/");
       }
     },
   },
