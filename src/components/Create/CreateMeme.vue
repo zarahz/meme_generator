@@ -1,7 +1,7 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
     <h1>Create a Meme!</h1>
-    <b-row align-h="center">
+    <b-row align-h="center" class="mb-3">
       <b-col cols="2">
         <label>Top Text:</label>
       </b-col>
@@ -21,6 +21,7 @@
         <b-form-input
           v-on:input="changeImageText"
           v-model="topXOffset"
+          style="min-width: 60px"
           class="w-50"
           type="text"
           placeholder="horizontal offset"
@@ -33,6 +34,7 @@
         <b-form-input
           v-on:input="changeImageText"
           v-model="topYOffset"
+          style="min-width: 60px"
           class="w-50"
           type="text"
           placeholder="vertical offset"
@@ -40,7 +42,7 @@
       </b-col>
       <b-button
         size="sm"
-        class="my-2 my-sm-0"
+        class="my-2 my-sm-0 mr-2"
         v-on:click="
           topXOffset -= 5;
           changeImageText();
@@ -49,7 +51,7 @@
       >
       <b-button
         size="sm"
-        class="my-2 my-sm-0"
+        class="my-2 my-sm-0 mr-2"
         v-on:click="
           topXOffset += 5;
           changeImageText();
@@ -58,7 +60,7 @@
       >
       <b-button
         size="sm"
-        class="my-2 my-sm-0"
+        class="my-2 my-sm-0 mr-2"
         v-on:click="
           topYOffset -= 5;
           changeImageText();
@@ -67,7 +69,7 @@
       >
       <b-button
         size="sm"
-        class="my-2 my-sm-0"
+        class="my-2 my-sm-0 mr-2"
         v-on:click="
           topYOffset += 5;
           changeImageText();
@@ -75,7 +77,7 @@
         >🡇</b-button
       >
     </b-row>
-    <b-row align-h="center">
+    <b-row align-h="center" class="mb-3">
       <b-col cols="2">
         <label>Bottom Text:</label>
       </b-col>
@@ -95,6 +97,7 @@
         <b-form-input
           v-on:input="changeImageText"
           v-model="bottomXOffset"
+          style="min-width: 60px"
           class="w-50"
           type="text"
           placeholder="horizontal offset"
@@ -107,6 +110,7 @@
         <b-form-input
           v-on:input="changeImageText"
           v-model="bottomYOffset"
+          style="min-width: 60px"
           class="w-50"
           type="text"
           placeholder="vertical offset"
@@ -114,7 +118,7 @@
       </b-col>
       <b-button
         size="sm"
-        class="my-2 my-sm-0"
+        class="my-2 my-sm-0 mr-2"
         v-on:click="
           bottomXOffset -= 5;
           changeImageText();
@@ -123,7 +127,7 @@
       >
       <b-button
         size="sm"
-        class="my-2 my-sm-0"
+        class="my-2 my-sm-0 mr-2"
         v-on:click="
           bottomXOffset += 5;
           changeImageText();
@@ -132,7 +136,7 @@
       >
       <b-button
         size="sm"
-        class="my-2 my-sm-0"
+        class="my-2 my-sm-0 mr-2"
         v-on:click="
           bottomYOffset -= 5;
           changeImageText();
@@ -141,7 +145,7 @@
       >
       <b-button
         size="sm"
-        class="my-2 my-sm-0"
+        class="my-2 my-sm-0 mr-2"
         v-on:click="
           bottomYOffset += 5;
           changeImageText();
@@ -150,11 +154,13 @@
       >
     </b-row>
 
-    <b-row class="mb-3" />
+    <b-row align-h="center" class="mb-3">
+      <drawingSettings @toggleCanvasDrawingMode="toggleCanvasDrawingMode" />
+    </b-row>
 
     <b-row>
       <b-col>
-        <canvas class="customCanvas" ref="memeCanvas" />
+        <canvas class="customCanvas" ref="memeCanvas" id="memeCanvas" />
       </b-col>
     </b-row>
 
@@ -188,6 +194,7 @@ import { saveAs } from "file-saver";
 
 import Templates from "./Templates.vue";
 import CustomTemplate from "./CustomTemplate.vue";
+import DrawingSettings from "./DrawingSettings";
 
 export default {
   name: "CreateMeme",
@@ -197,6 +204,7 @@ export default {
   components: {
     templates: Templates,
     customTemplate: CustomTemplate,
+    drawingSettings: DrawingSettings,
   },
   data() {
     return {
@@ -207,6 +215,7 @@ export default {
       bottomXOffset: 0,
       bottomYOffset: -30,
       img: cassiusMeme,
+      pos: { x: 0, y: 0 },
     };
   },
   methods: {
@@ -216,8 +225,8 @@ export default {
       this.changeImageText();
     },
     changeImageText() {
-      var canvas = this.$refs.memeCanvas;
-      var context = canvas.getContext("2d");
+      let canvas = this.$refs.memeCanvas;
+      let context = canvas.getContext("2d");
 
       this.drawCanvasImage(canvas, context).then(() => {
         this.setCanvasTextStyle(context);
@@ -261,19 +270,19 @@ export default {
     },
     drawCanvasImage(canvas, context) {
       return new Promise((resolve) => {
-        var img = new Image();
+        let img = new Image();
         img.src = this.img;
         img.crossOrigin = "anonymous";
         img.onload = function () {
-          var width = window.innerWidth;
-          var height = window.innerHeight;
+          let width = window.innerWidth;
+          let height = window.innerHeight;
           // in order to show the picture in high resolution, set the canvas to the max height & width
           canvas.width = width;
           canvas.height = height;
           // calculate the scaled (down) image height & width to fit the canvas
-          var imgWidth = img.width;
-          var imgHeight = img.height;
-          var scale = Math.min(
+          let imgWidth = img.width;
+          let imgHeight = img.height;
+          let scale = Math.min(
             canvas.width / imgWidth,
             canvas.height / imgHeight
           );
@@ -311,23 +320,61 @@ export default {
       context.textBaseline = "middle";
       context.textAlign = "center";
     },
+    toggleCanvasDrawingMode(drawMode) {
+      console.log(drawMode);
+      if (drawMode) {
+        let canvas = this.$refs.memeCanvas;
+        canvas.addEventListener("resize", this.resize);
+        canvas.addEventListener("mousemove", this.draw);
+        canvas.addEventListener("mousedown", this.setPosition);
+        canvas.addEventListener("mouseenter", this.setPosition);
+      }
+    },
+    resize() {
+      let canvas = this.$refs.memeCanvas;
+      let ctx = canvas.getContext("2d");
+      ctx.canvas.width = this.$refs.memeCanvas.width; //window.innerWidth;
+      ctx.canvas.height = this.$refs.memeCanvas.height; //window.innerHeight;
+    },
+    setPosition(e) {
+      this.pos.x = e.clientX;
+      this.pos.y = e.clientY - 250;
+    },
+    draw(e) {
+      let canvas = this.$refs.memeCanvas;
+      let ctx = canvas.getContext("2d");
+      // mouse left button must be pressed
+      if (e.buttons !== 1) return;
+
+      ctx.beginPath(); // begin
+
+      ctx.lineWidth = 5;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#c0392b";
+
+      ctx.moveTo(this.pos.x, this.pos.y); // from
+      this.setPosition(e);
+      ctx.lineTo(this.pos.x, this.pos.y); // to
+
+      ctx.stroke(); // draw it!
+    },
     loadCanvas() {
-      var canvas = this.$refs.memeCanvas;
-      var context = canvas.getContext("2d");
+      let canvas = this.$refs.memeCanvas;
+      let context = canvas.getContext("2d");
       this.drawCanvasImage(canvas, context).then(() =>
         this.setCanvasTextStyle(context)
       );
     },
     download() {
-      var canvas = this.$refs.memeCanvas;
+      let canvas = this.$refs.memeCanvas;
       canvas.toBlob(function (blob) {
         saveAs(blob, "meme.png");
       });
     },
     async submit() {
-      var canvas = this.$refs.memeCanvas;
+      let canvas = this.$refs.memeCanvas;
       canvas.toBlob(async (blob) => {
-        var data = new FormData();
+        let data = new FormData();
         data.append("file", blob, "file.png");
         let result = await fetch("http://localhost:3000/upload", {
           method: "POST",
@@ -350,7 +397,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .customCanvas {
-  max-width: 30%;
-  max-height: 600px;
+  max-width: 80%;
 }
 </style>
