@@ -320,27 +320,24 @@ export default {
       context.textBaseline = "middle";
       context.textAlign = "center";
     },
-    toggleCanvasDrawingMode(drawMode) {
+    toggleCanvasDrawingMode(drawMode, brushSize, color) {
       console.log(drawMode);
+      let canvas = this.$refs.memeCanvas;
       if (drawMode) {
-        let canvas = this.$refs.memeCanvas;
-        canvas.addEventListener("resize", this.resize);
-        canvas.addEventListener("mousemove", this.draw);
+        canvas.addEventListener("mousemove", (e) => {
+          this.draw(e, brushSize, color);
+        });
         canvas.addEventListener("mousedown", this.setPosition);
-        canvas.addEventListener("mouseenter", this.setPosition);
+      } else {
+        //TODO remove event listeners properly here!
+        console.log("remove event listeners properly here!");
       }
     },
-    resize() {
-      let canvas = this.$refs.memeCanvas;
-      let ctx = canvas.getContext("2d");
-      ctx.canvas.width = this.$refs.memeCanvas.width; //window.innerWidth;
-      ctx.canvas.height = this.$refs.memeCanvas.height; //window.innerHeight;
-    },
     setPosition(e) {
-      this.pos.x = e.clientX;
-      this.pos.y = e.clientY - 250;
+      this.pos.x = e.offsetX;
+      this.pos.y = e.offsetY;
     },
-    draw(e) {
+    draw(e, brushSize, color) {
       let canvas = this.$refs.memeCanvas;
       let ctx = canvas.getContext("2d");
       // mouse left button must be pressed
@@ -348,9 +345,9 @@ export default {
 
       ctx.beginPath(); // begin
 
-      ctx.lineWidth = 5;
+      ctx.lineWidth = brushSize;
       ctx.lineCap = "round";
-      ctx.strokeStyle = "#c0392b";
+      ctx.strokeStyle = color;
 
       ctx.moveTo(this.pos.x, this.pos.y); // from
       this.setPosition(e);

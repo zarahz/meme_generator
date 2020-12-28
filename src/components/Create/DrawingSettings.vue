@@ -21,7 +21,11 @@
       </b-col>
       <b-col :style="{ visibility: draw ? 'visible' : 'hidden' }" cols="5">
         <b-row>
-          <b-input-group class="w-50 mr-2" :append="brushSize">
+          <b-input-group
+            @change="notifyCanvas"
+            class="w-50 mr-2"
+            :append="brushSize"
+          >
             <b-form-input
               v-model="brushSize"
               type="range"
@@ -29,7 +33,12 @@
               max="32"
             ></b-form-input>
           </b-input-group>
-          <b-form-input class="w-25" type="color"></b-form-input>
+          <b-form-input
+            v-model="color"
+            @change="notifyCanvas"
+            class="w-25"
+            type="color"
+          ></b-form-input>
         </b-row>
       </b-col>
     </b-row>
@@ -44,6 +53,7 @@ export default {
       draw: false,
       eraser: false,
       brushSize: "1",
+      color: "",
     };
   },
   methods: {
@@ -51,7 +61,12 @@ export default {
       this.eraser = !this.eraser;
     },
     notifyCanvas() {
-      this.$emit("toggleCanvasDrawingMode", this.draw);
+      this.$emit(
+        "toggleCanvasDrawingMode",
+        this.draw,
+        this.brushSize,
+        this.color
+      );
     },
   },
 };
