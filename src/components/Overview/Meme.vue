@@ -69,7 +69,8 @@
       <b-button
         variant="outline-danger"
         class="m-3"
-        @click="increaseDownvotescount"
+        @click="submitDownvote"
+        :disabled="!$store.getters.isLoggedIn"
       >
         <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
         Downvote</b-button
@@ -147,6 +148,7 @@ export default {
       upvotesCount: 0, 
       upvotes:[],
       downvotesCount: 0, 
+      downvotes:[],
       commentsCount: 0,
       comments: [],
       commentInput: "",
@@ -181,7 +183,6 @@ export default {
     },
     async submitUpvote() {
      console.log("image liked");
-     console.log(this.$store.getters.user);
      var upvoteUrl = "http://localhost:3000/post-upvote";
      var upvote = {
         imageId: this.imageId,
@@ -204,12 +205,32 @@ export default {
         
       }
     },
-
-    increaseDownvotescount() {
-      return this.downvotesCount++; //TODO: take image id and increment downvotes
+      async submitDownvote() {
+     console.log("image disliked");
+     var downvoteUrl = "http://localhost:3000/post-downvote";
+     var downvote = {
+        imageId: this.imageId,
+        authorId: this.$store.getters.user._id, 
+      };
+      let result = await fetch(downvoteUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(downvote),
+      });
+      if (result.status !== 200) {
+        const { error } = await result.json();
+        console.log(error);
+        
+      } else {
+        // success
+        this.fetchdownvotes(); 
+      }
     },
+
     async fetchupvotes(){
-       var currentImageId = this.imageId;
+      var currentImageId = this.imageId;
       var upvoteUrl = new URL("http://localhost:3000/upvotes"),
       params = { imageId: currentImageId };
        Object.keys(params).forEach((key) =>
@@ -219,6 +240,19 @@ export default {
       const { dbUpvotes } = await result.json();
       this.upvotes = dbUpvotes;
       this.upvotesCount = this.upvotes.length;
+    },
+
+    async fetchdownvotes(){
+      var currentImageId = this.imageId;
+      var downvoteUrl = new URL("http://localhost:3000/downvotes"),
+      params = { imageId: currentImageId };
+       Object.keys(params).forEach((key) =>
+        downvoteUrl.searchParams.append(key, params[key])
+      );
+      let result = await fetch(downvoteUrl);
+      const { dbDownvotes } = await result.json();
+      this.downvotes = dbDownvotes;
+      this.downvotesCount = this.downvotes.length;
     },
     async fetchComments() {
       var currentImageId = this.imageId;
@@ -245,6 +279,7 @@ export default {
     this.getImages();
     this.fetchComments();
     this.fetchupvotes();
+    this.fetchdownvotes();
   },
 };
 </script>
