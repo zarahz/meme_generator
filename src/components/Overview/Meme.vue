@@ -16,7 +16,7 @@
                 :url="'http://localhost:3000/static/' + image.nameAndFileType"
                 title=""
                 scale="3"
-              ></twitter>
+                ></twitter>
             </b-col>
             <b-col>
               <linkedin
@@ -60,7 +60,8 @@
         type="bu"
         variant="outline-success"
         class="m-3"
-        @click="increaseUpvotescount"
+        @click="submitUpvote"
+        :disabled="!$store.getters.isLoggedIn"
       >
         <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
         Upvote</b-button
@@ -143,8 +144,9 @@ export default {
       imageId: this.$route.params.id,
       title: "Meme view",
       allImages: [],
-      upvotesCount: 0, //TODO: get the upvotescount from server
-      downvotesCount: 0, //TODO: get the downvotescount from server
+      upvotesCount: 0, 
+      upvotes:[],
+      downvotesCount: 0, 
       commentsCount: 0,
       comments: [],
       commentInput: "",
@@ -177,12 +179,46 @@ export default {
         this.fetchComments();
       }
     },
-    increaseUpvotescount() {
-      return this.upvotesCount++; // TODO: take image id and increment upvotes
+    async submitUpvote() {
+     console.log("image liked");
+     console.log(this.$store.getters.user);
+     var upvoteUrl = "http://localhost:3000/post-upvote";
+     var upvote = {
+        imageId: this.imageId,
+        authorId: this.$store.getters.user._id, 
+      };
+      let result = await fetch(upvoteUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(upvote),
+      });
+      if (result.status !== 200) {
+        const { error } = await result.json();
+        console.log(error);
+        
+      } else {
+        // success
+        this.fetchupvotes();
+        
+      }
     },
 
     increaseDownvotescount() {
       return this.downvotesCount++; //TODO: take image id and increment downvotes
+    },
+    async fetchupvotes(){
+       var currentImageId = this.imageId;
+      var upvoteUrl = new URL("http://localhost:3000/upvotes"),
+      params = { imageId: currentImageId };
+       Object.keys(params).forEach((key) =>
+        upvoteUrl.searchParams.append(key, params[key])
+      );
+      let result = await fetch(upvoteUrl);
+      const { dbUpvotes } = await result.json();
+      this.upvotes = dbUpvotes;
+      this.upvotesCount = this.upvotes.length;
     },
     async fetchComments() {
       var currentImageId = this.imageId;
@@ -208,6 +244,7 @@ export default {
   mounted() {
     this.getImages();
     this.fetchComments();
+    this.fetchupvotes();
   },
 };
 </script>

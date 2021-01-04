@@ -16,6 +16,7 @@
           </b-nav-form>
         </b-row>
         <img
+          crossorigin="anonymous"
           style="width: 20%"
           class="image"
           v-for="(image, i) in displayedImgFlipMemes"

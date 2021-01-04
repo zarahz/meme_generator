@@ -271,8 +271,8 @@ export default {
     drawCanvasImage(canvas, context) {
       return new Promise((resolve) => {
         let img = new Image();
-        img.src = this.img;
         img.crossOrigin = "anonymous";
+        img.src = this.img;
         img.onload = function () {
           let width = window.innerWidth;
           let height = window.innerHeight;
@@ -394,6 +394,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .customCanvas {
-  max-width: 80%;
+  max-width: 60%;
 }
 </style>
