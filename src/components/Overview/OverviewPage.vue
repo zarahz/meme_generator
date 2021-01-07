@@ -195,6 +195,18 @@ export default {
         $state.loaded();
       }, 2000);
     },
+    async fetchCommentCount(currentImageId) {
+      var commentUrl = new URL("http://localhost:3000/comments"),
+        params = { imageId: currentImageId };
+      Object.keys(params).forEach((key) =>
+        commentUrl.searchParams.append(key, params[key])
+      );
+      let result = await fetch(commentUrl);
+
+      const { dbComments } = await result.json();
+      this.comments = dbComments;
+      this.commentsCount = this.comments.length;
+    },
   },
 };
 </script>

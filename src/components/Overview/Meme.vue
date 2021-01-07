@@ -16,7 +16,7 @@
                 :url="'http://localhost:3000/static/' + image.nameAndFileType"
                 title=""
                 scale="3"
-                ></twitter>
+              ></twitter>
             </b-col>
             <b-col>
               <linkedin
@@ -97,6 +97,7 @@
           type="text"
           placeholder="Type your comment here..."
         />
+        {{ commentErrorText }}
       </b-row>
       <b-col
         class="justify-content-md-center"
@@ -145,22 +146,29 @@ export default {
       imageId: this.$route.params.id,
       title: "Meme view",
       allImages: [],
-      upvotesCount: 0, 
-      upvotes:[],
-      downvotesCount: 0, 
-      downvotes:[],
+      upvotesCount: 0,
+      upvotes: [],
+      downvotesCount: 0,
+      downvotes: [],
       commentsCount: 0,
       comments: [],
       commentInput: "",
+      commentErrorText: "",
     };
   },
   methods: {
     async submitComment() {
+      if (this.$store.getters.user == null) {
+        console.log("Not logged in");
+        this.commentErrorText = "You need to login to comment.";
+        return;
+      }
+      this.commentErrorText = "Submitting comment...";
       console.log("Submitting comment...");
       var commentUrl = "http://localhost:3000/post-comment";
       var comment = {
         imageId: this.imageId,
-        authorId: "TODO authorId",
+        authorId: this.$store.getters.user._id,
         content: this.commentInput,
       };
       console.log("Comment: " + comment);
@@ -174,19 +182,21 @@ export default {
       if (result.status !== 200) {
         const { error } = await result.json();
         console.log(error);
+        this.commentErrorText = "Error submitting comment: " + error;
         //this.$set(this.errors, "post-comment", error);
       } else {
         // success
         this.commentInput = "";
+        this.commentErrorText = "Comment submitted!";
         this.fetchComments();
       }
     },
     async submitUpvote() {
-     console.log("image liked");
-     var upvoteUrl = "http://localhost:3000/post-upvote";
-     var upvote = {
+      console.log("image liked");
+      var upvoteUrl = "http://localhost:3000/post-upvote";
+      var upvote = {
         imageId: this.imageId,
-        authorId: this.$store.getters.user._id, 
+        authorId: this.$store.getters.user._id,
       };
       let result = await fetch(upvoteUrl, {
         method: "POST",
@@ -198,19 +208,17 @@ export default {
       if (result.status !== 200) {
         const { error } = await result.json();
         console.log(error);
-        
       } else {
         // success
         this.fetchupvotes();
-        
       }
     },
-      async submitDownvote() {
-     console.log("image disliked");
-     var downvoteUrl = "http://localhost:3000/post-downvote";
-     var downvote = {
+    async submitDownvote() {
+      console.log("image disliked");
+      var downvoteUrl = "http://localhost:3000/post-downvote";
+      var downvote = {
         imageId: this.imageId,
-        authorId: this.$store.getters.user._id, 
+        authorId: this.$store.getters.user._id,
       };
       let result = await fetch(downvoteUrl, {
         method: "POST",
@@ -222,18 +230,17 @@ export default {
       if (result.status !== 200) {
         const { error } = await result.json();
         console.log(error);
-        
       } else {
         // success
-        this.fetchdownvotes(); 
+        this.fetchdownvotes();
       }
     },
 
-    async fetchupvotes(){
+    async fetchupvotes() {
       var currentImageId = this.imageId;
       var upvoteUrl = new URL("http://localhost:3000/upvotes"),
-      params = { imageId: currentImageId };
-       Object.keys(params).forEach((key) =>
+        params = { imageId: currentImageId };
+      Object.keys(params).forEach((key) =>
         upvoteUrl.searchParams.append(key, params[key])
       );
       let result = await fetch(upvoteUrl);
@@ -242,11 +249,11 @@ export default {
       this.upvotesCount = this.upvotes.length;
     },
 
-    async fetchdownvotes(){
+    async fetchdownvotes() {
       var currentImageId = this.imageId;
       var downvoteUrl = new URL("http://localhost:3000/downvotes"),
-      params = { imageId: currentImageId };
-       Object.keys(params).forEach((key) =>
+        params = { imageId: currentImageId };
+      Object.keys(params).forEach((key) =>
         downvoteUrl.searchParams.append(key, params[key])
       );
       let result = await fetch(downvoteUrl);
