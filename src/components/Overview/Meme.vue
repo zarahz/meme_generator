@@ -106,7 +106,7 @@
       >
         <b-row style="background-color: #e6e6e6">
           <b-col>
-            <strong>{{ comment.authorId }}</strong>
+            <strong>{{ comment.username }}</strong>
           </b-col>
           <b-col>
             {{ comment.creationDate }}
@@ -262,7 +262,7 @@ export default {
       this.downvotesCount = this.downvotes.length;
     },
     async fetchComments() {
-      var currentImageId = this.imageId;
+      var currentImageId = this.imageId; // only used once, simplify
       var commentUrl = new URL("http://localhost:3000/comments"),
         params = { imageId: currentImageId };
       Object.keys(params).forEach((key) =>
@@ -270,7 +270,7 @@ export default {
       );
       let result = await fetch(commentUrl);
 
-      const { dbComments } = await result.json();
+      const dbComments = await result.json();
       this.comments = dbComments;
       this.commentsCount = this.comments.length;
     },
