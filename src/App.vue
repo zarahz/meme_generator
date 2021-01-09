@@ -3,7 +3,6 @@
     <div>
       <Navigation />
       <router-view />
-      <OverviewPage />
     </div>
   </div>
 </template> 
