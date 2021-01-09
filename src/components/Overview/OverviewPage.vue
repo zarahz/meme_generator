@@ -47,13 +47,13 @@
 
           <b-row class="justify-content-md-center" cols="4">
             <b-badge variant="light" class="m-3"
-              >{{ upvotesCount }} Upvotes
+              >{{ image.upvoteCount }} Upvotes
             </b-badge>
             <b-badge variant="light" class="m-3"
-              >{{ downvotesCount }} Downvotes
+              >{{ image.downvoteCount }} Downvotes
             </b-badge>
             <b-badge variant="light" class="m-3"
-              >{{ commentsCount }} Comments
+              >{{ image.commentCount }} Comments
             </b-badge>
           </b-row>
 
@@ -140,9 +140,6 @@ export default {
       displayedImages: [],
       sliceEnd: 2,
       bottom: false,
-      upvotesCount: 0, //TODO: get the upvotescount from server
-      downvotesCount: 0, //TODO: get the downvotescount from server
-      commentsCount: 0, //TODO: get the commentsvotescount from server
     };
   },
   methods: {
@@ -164,7 +161,7 @@ export default {
       let result = await fetch("http://localhost:3000/images", {
         method: "GET",
       });
-      const { dbImages } = await result.json();
+      const dbImages = await result.json();
       this.allImages = dbImages;
       //sort images by creation date
       this.allImages.sort(function (a, b) {
