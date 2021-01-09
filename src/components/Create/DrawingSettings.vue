@@ -59,13 +59,15 @@ export default {
   methods: {
     toggleEraser() {
       this.eraser = !this.eraser;
+      this.notifyCanvas();
     },
     notifyCanvas() {
       this.$emit(
         "toggleCanvasDrawingMode",
         this.draw,
         this.brushSize,
-        this.color
+        this.color,
+        this.eraser
       );
     },
   },
