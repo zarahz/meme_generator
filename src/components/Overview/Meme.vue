@@ -145,6 +145,7 @@ export default {
     return {
       imageId: this.$route.params.id,
       title: "Meme view",
+      meme: {},
       allImages: [],
       upvotesCount: 0,
       upvotes: [],
@@ -274,16 +275,27 @@ export default {
       this.comments = dbComments;
       this.commentsCount = this.comments.length;
     },
-    async getImages() {
-      let result = await fetch("http://localhost:3000/images", {
+    async getImage() {
+      let imagesResult = await fetch("http://localhost:3000/images", {
         method: "GET",
       });
-      const { dbImages } = await result.json();
+      const { dbImages } = await imagesResult.json();
       this.allImages = dbImages;
+      // ----------
+      console.log(this.imageId);
+      var memeUrl = new URL("http://localhost:3000/image"),
+        params = { _id: this.imageId };
+      Object.keys(params).forEach((key) =>
+        memeUrl.searchParams.append(key, params[key])
+      );
+      let memeResult = await fetch(memeUrl);
+      const { image } = await memeResult.json();
+      this.meme = image;
+      this.allImages = [this.meme];
     },
   },
   mounted() {
-    this.getImages();
+    this.getImage();
     this.fetchComments();
     this.fetchupvotes();
     this.fetchdownvotes();
