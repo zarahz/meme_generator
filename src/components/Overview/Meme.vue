@@ -64,7 +64,7 @@
         :disabled="!$store.getters.isLoggedIn"
       >
         <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
-        Upvote</b-button
+        {{ upvotesCount }}</b-button
       >
       <b-button
         variant="outline-danger"
@@ -73,20 +73,12 @@
         :disabled="!$store.getters.isLoggedIn"
       >
         <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
-        Downvote</b-button
+        {{ downvotesCount }}</b-button
       >
       <b-button variant="outline-primary" class="m-3">
-        <b-icon icon="chat-left" aria-hidden="true"></b-icon> Comments</b-button
+        <b-icon icon="chat-left" aria-hidden="true"></b-icon>
+        {{ commentsCount }}</b-button
       >
-    </b-row>
-    <b-row class="justify-content-md-center" cols="4">
-      <b-badge variant="light" class="m-3">{{ upvotesCount }} Upvotes </b-badge>
-      <b-badge variant="light" class="m-3"
-        >{{ downvotesCount }} Downvotes
-      </b-badge>
-      <b-badge variant="light" class="m-3"
-        >{{ commentsCount }} Comments
-      </b-badge>
     </b-row>
     <b-col align-self="center">
       <b-row class="justify-content-md-center">
