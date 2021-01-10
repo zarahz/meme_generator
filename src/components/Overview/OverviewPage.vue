@@ -158,7 +158,7 @@ export default {
       });
     },
     async getImages() {
-      let result = await fetch("http://localhost:3000/images", {
+      let result = await fetch("http://localhost:3000/memes", {
         method: "GET",
       });
       const dbImages = await result.json();
