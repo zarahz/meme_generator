@@ -24,7 +24,7 @@
               @click="increaseUpvotescount"
             >
               <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
-              Upvote</b-button
+              {{ image.upvoteCount }}</b-button
             >
             <b-button
               variant="outline-danger"
@@ -32,7 +32,7 @@
               @click="increaseDownvotescount"
             >
               <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
-              Downvote</b-button
+              {{ image.downvoteCount }}</b-button
             >
             <b-button
               variant="outline-primary"
@@ -40,21 +40,9 @@
               @click="openMemeView(image._id)"
             >
               <b-icon icon="chat-left" aria-hidden="true"></b-icon>
-              Comments</b-button
+              {{ image.commentCount }}</b-button
             >
             <!-- @click="openMemeView(image._id)" -->
-          </b-row>
-
-          <b-row class="justify-content-md-center" cols="4">
-            <b-badge variant="light" class="m-3"
-              >{{ image.upvoteCount }} Upvotes
-            </b-badge>
-            <b-badge variant="light" class="m-3"
-              >{{ image.downvoteCount }} Downvotes
-            </b-badge>
-            <b-badge variant="light" class="m-3"
-              >{{ image.commentCount }} Comments
-            </b-badge>
           </b-row>
 
           <b-row b-row class="mb-3" align-h="center">
