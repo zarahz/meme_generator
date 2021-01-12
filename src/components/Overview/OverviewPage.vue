@@ -4,7 +4,7 @@
     <b-row
       cols-sm="4"
       class="mb-4"
-      v-for="image in displayedImages"
+      v-for="(image, index) in displayedImages"
       v-bind:key="image._id"
     >
       <b-col />
@@ -21,18 +21,18 @@
             <b-button
               variant="outline-success"
               class="m-3"
-              @click="submitUpvote(image._id)"
+              @click="submitUpvote(image._id, index)"
             >
               <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
-              {{ upvotesCount }}</b-button
+              {{ image.upvoteCount }}</b-button
             >
             <b-button
               variant="outline-danger"
               class="m-3"
-              @click="submitDownvote(image._id)"
+              @click="submitDownvote(image._id, index)"
             >
               <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
-              {{ downvotesCount }}</b-button
+              {{ image.downvoteCount }}</b-button
             >
             <b-button
               variant="outline-primary"
@@ -126,10 +126,6 @@ export default {
     return {
       allImages: [],
       displayedImages: [],
-      upvotesCount: 0,
-      upvotes: [],
-      downvotesCount: 0,
-      downvotes: [],
       sliceEnd: 2,
       bottom: false,
     };
@@ -188,7 +184,7 @@ export default {
       this.comments = dbComments;
       this.commentsCount = this.comments.length;
     },
-    async submitUpvote(currentImageId) {
+    async submitUpvote(currentImageId, index) {
       var imageId = currentImageId;
       console.log(imageId);
       console.log("image liked");
@@ -211,8 +207,9 @@ export default {
         // success
         this.fetchupvotes(imageId);
       }
+      console.log(index);
     },
-    async submitDownvote(currentImageId) {
+    async submitDownvote(currentImageId, index) {
       var imageId = currentImageId;
       console.log(imageId);
       console.log("image disliked");
@@ -235,6 +232,7 @@ export default {
         // success
         this.fetchdownvotes(imageId);
       }
+      this.displayedImages[index].downvoteCount = 111;
     },
     async fetchupvotes(currentImageId) {
       var ImageId = currentImageId;
