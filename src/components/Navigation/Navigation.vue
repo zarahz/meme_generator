@@ -10,7 +10,7 @@
           router
           to="/create-meme"
           :active="$route.name == 'CreateMeme'"
-          >Create am Meme</b-nav-item
+          >Create a Meme</b-nav-item
         >
       </b-navbar-nav>
 

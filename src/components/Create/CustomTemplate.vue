@@ -22,6 +22,28 @@
         </b-row>
       </b-col>
     </b-row>
+
+    <h3>Upload a template</h3>
+    <b-row align-h="center">
+      <b-col cols="2">
+        <b-row class="justify-content-md-center">
+          <input id="imageUpload" type="file" @change="onFileSelected" hidden />
+          <b-button @click="chooseImage">
+            <b-icon icon="camera-fill" aria-hidden="true"></b-icon
+          ></b-button>
+          <label id="idFileName"> {{ selectedFileName }}</label>
+
+          <button
+            button
+            type="button"
+            class="btn btn-light"
+            v-on:click="onUpload"
+          >
+            upload
+          </button>
+        </b-row>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
@@ -35,11 +57,25 @@ export default {
   data() {
     return {
       customUrl: "",
+      selectedFile: null,
+      selectedFileName: "",
+      selectedImageUrl: null,
     };
   },
   methods: {
     useCustomTemplate() {
       this.$emit("newTemplateSelected", this.customUrl);
+    },
+    chooseImage() {
+      document.getElementById("imageUpload").click();
+    },
+    onFileSelected(event) {
+      this.selectedFile = event.target.files[0];
+      this.selectedFileName = event.target.files[0].name;
+      this.selectedImageUrl = URL.createObjectURL(this.selectedFile);
+    },
+    onUpload() {
+      this.$emit("newTemplateSelected", this.selectedImageUrl);
     },
   },
   mounted() {},

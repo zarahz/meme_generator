@@ -126,7 +126,7 @@ export default {
     return {
       allImages: [],
       displayedImages: [],
-       upvotesCount: 0,
+      upvotesCount: 0,
       upvotes: [],
       downvotesCount: 0,
       downvotes: [],
@@ -135,7 +135,6 @@ export default {
     };
   },
   methods: {
-    
     openMemeView(imageId) {
       console.log("id of the clicked image is :" + imageId);
       router.push({ name: "Meme", params: { id: imageId } }).catch((err) => {
@@ -189,9 +188,9 @@ export default {
       this.comments = dbComments;
       this.commentsCount = this.comments.length;
     },
-     async submitUpvote(currentImageId) {
-       var imageId = currentImageId
-       console.log(imageId)
+    async submitUpvote(currentImageId) {
+      var imageId = currentImageId;
+      console.log(imageId);
       console.log("image liked");
       var upvoteUrl = "http://localhost:3000/post-upvote";
       var upvote = {
@@ -214,8 +213,8 @@ export default {
       }
     },
     async submitDownvote(currentImageId) {
-      var imageId = currentImageId
-       console.log(imageId)
+      var imageId = currentImageId;
+      console.log(imageId);
       console.log("image disliked");
       var downvoteUrl = "http://localhost:3000/post-downvote";
       var downvote = {
@@ -238,7 +237,7 @@ export default {
       }
     },
     async fetchupvotes(currentImageId) {
-      var ImageId = currentImageId
+      var ImageId = currentImageId;
       var upvoteUrl = new URL("http://localhost:3000/upvotes"),
         params = { imageId: ImageId };
       Object.keys(params).forEach((key) =>
@@ -251,7 +250,7 @@ export default {
     },
 
     async fetchdownvotes(currentImageId) {
-      var ImageId = currentImageId
+      var ImageId = currentImageId;
       var downvoteUrl = new URL("http://localhost:3000/downvotes"),
         params = { imageId: ImageId };
       Object.keys(params).forEach((key) =>
@@ -262,8 +261,6 @@ export default {
       this.downvotes = dbDownvotes;
       this.downvotesCount = this.downvotes.length;
     },
-
-    
   },
 };
 </script>
