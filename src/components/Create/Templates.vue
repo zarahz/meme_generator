@@ -22,8 +22,9 @@
           v-for="(image, i) in displayedImgFlipMemes"
           :src="displayedImgFlipMemes[i].url"
           :key="i"
-          @click="selectMemeTemplate(i)"
+          @click="onClick(i)"
         />
+    
         <vue-gallery-slideshow :images="[]" :index="null" @close="index = null">
         </vue-gallery-slideshow>
       </b-col>
@@ -80,11 +81,14 @@ export default {
         this.displayedImgFlipMemes = displayedImgFlipMemes.slice(1, 11);
       }
     },
+    onClick(i) {
+      this.index = i; 
+    },
     selectMemeTemplate(selectedIndex) {
       this.templateSelectionIndex = selectedIndex;
       this.$emit(
         "newTemplateSelected",
-        this.displayedImgFlipMemes[this.templateSelectionIndex].url
+        this.displayedImgFlipMemes[this.templateSelectionIndex].url,
       );
     },
 
