@@ -57,7 +57,6 @@
     </b-row>
     <b-row class="justify-content-md-center" cols="4">
       <b-button
-        type="bu"
         variant="outline-success"
         class="m-3"
         @click="submitUpvote"

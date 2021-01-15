@@ -143,6 +143,7 @@ export default {
       });
       const dbImages = await result.json();
       this.allImages = dbImages;
+
       //sort images by creation date
       this.allImages.sort(function (a, b) {
         return new Date(b.creationDate) - new Date(a.creationDate);
@@ -172,22 +173,9 @@ export default {
         $state.loaded();
       }, 2000);
     },
-    async fetchCommentCount(currentImageId) {
-      var commentUrl = new URL("http://localhost:3000/comments"),
-        params = { imageId: currentImageId };
-      Object.keys(params).forEach((key) =>
-        commentUrl.searchParams.append(key, params[key])
-      );
-      let result = await fetch(commentUrl);
 
-      const { dbComments } = await result.json();
-      this.comments = dbComments;
-      this.commentsCount = this.comments.length;
-    },
     async submitUpvote(currentImageId, index) {
       var imageId = currentImageId;
-      console.log(imageId);
-      console.log("image liked");
       var upvoteUrl = "http://localhost:3000/post-upvote";
       var upvote = {
         imageId: currentImageId,
@@ -205,14 +193,11 @@ export default {
         console.log(error);
       } else {
         // success
-        this.fetchupvotes(imageId);
+        this.fetchupvotes(imageId, index);
       }
-      console.log(index);
     },
     async submitDownvote(currentImageId, index) {
       var imageId = currentImageId;
-      console.log(imageId);
-      console.log("image disliked");
       var downvoteUrl = "http://localhost:3000/post-downvote";
       var downvote = {
         imageId: currentImageId,
@@ -230,11 +215,10 @@ export default {
         console.log(error);
       } else {
         // success
-        this.fetchdownvotes(imageId);
+        this.fetchdownvotes(imageId, index);
       }
-      this.displayedImages[index].downvoteCount = 111;
     },
-    async fetchupvotes(currentImageId) {
+    async fetchupvotes(currentImageId, index) {
       var ImageId = currentImageId;
       var upvoteUrl = new URL("http://localhost:3000/upvotes"),
         params = { imageId: ImageId };
@@ -243,11 +227,12 @@ export default {
       );
       let result = await fetch(upvoteUrl);
       const { dbUpvotes } = await result.json();
-      this.upvotes = dbUpvotes;
-      this.upvotesCount = this.upvotes.length;
+      var upvotes = dbUpvotes;
+      var upvotesCount = upvotes.length;
+      this.displayedImages[index].upvoteCount = upvotesCount;
     },
 
-    async fetchdownvotes(currentImageId) {
+    async fetchdownvotes(currentImageId, index) {
       var ImageId = currentImageId;
       var downvoteUrl = new URL("http://localhost:3000/downvotes"),
         params = { imageId: ImageId };
@@ -256,8 +241,9 @@ export default {
       );
       let result = await fetch(downvoteUrl);
       const { dbDownvotes } = await result.json();
-      this.downvotes = dbDownvotes;
-      this.downvotesCount = this.downvotes.length;
+      var downvotes = dbDownvotes;
+      var downvotesCount = downvotes.length;
+      this.displayedImages[index].downvoteCount = downvotesCount;
     },
   },
 };
