@@ -29,7 +29,9 @@
           :text="$store.getters.user.username"
           right
         >
-          <b-dropdown-item href="#">Settings</b-dropdown-item>
+          <b-dropdown-item href="#" router to="/my-page"
+            >My Page</b-dropdown-item
+          >
           <b-dropdown-item href="#" v-on:click="$store.dispatch('logout')"
             >Logout</b-dropdown-item
           >
