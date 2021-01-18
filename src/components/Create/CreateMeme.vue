@@ -138,8 +138,11 @@
       >
     </b-row>
 
-    <b-row align-h="center">
-      <drawingSettings @toggleCanvasDrawingMode="toggleCanvasDrawingMode" />
+    <b-row align-h="center" class="mb-3">
+      <drawingSettings
+        @toggleCanvasDrawingMode="toggleCanvasDrawingMode"
+        @clearCanvas="clearDrawingCanvas"
+      />
     </b-row>
 
     <b-row class="mb-3">
@@ -157,15 +160,12 @@
     <b-row class="mb-3" align-h="center">
       <b-col cols="4" />
       <b-col>
-        <b-button
-          variant="outline-primary"
-          v-on:click="$refs.meme.saveOnServer()"
-        >
+        <b-button variant="outline-primary" v-on:click="saveOnServer">
           Submit Meme
         </b-button>
       </b-col>
       <b-col>
-        <b-button variant="outline-primary" v-on:click="$refs.meme.download()">
+        <b-button variant="outline-primary" v-on:click="download">
           Download
         </b-button>
       </b-col>
@@ -183,6 +183,10 @@
 </template>
 
 <script>
+import { saveAs } from "file-saver";
+import FormData from "form-data";
+import router from "../../router/index.js";
+
 import cassiusMeme from "@/assets/meme.jpg";
 
 import Templates from "./Templates.vue";
@@ -202,14 +206,17 @@ export default {
     return {
       topText: { text: "", offsetX: 0, offsetY: 30 },
       bottomText: { text: "", offsetX: 0, offsetY: -30 },
-      img: cassiusMeme,
+      img: "",
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
+      memeSaved: false,
     };
   },
   methods: {
+    clearDrawingCanvas() {
+      this.$refs.meme.clearDrawingCanvas();
+    },
     changeTemplate(newImageUrl) {
-      console.log("changing image to " + newImageUrl);
       this.img = newImageUrl;
     },
     toggleCanvasDrawingMode(drawMode, brushSize, color, isErasing) {
@@ -220,6 +227,96 @@ export default {
         this.drawingSettings = null;
       }
     },
+    download() {
+      let canvas = this.$refs.meme.createResultingCanvas();
+      canvas.toBlob(function (blob) {
+        saveAs(blob, "meme.png");
+      });
+    },
+    async saveOnServer() {
+      let canvas = this.$refs.meme.createResultingCanvas();
+      canvas.toBlob(async (blob) => {
+        let data = new FormData();
+        data.append("file", blob, "file.png");
+        let result = await fetch("http://localhost:3000/upload", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            //"Content-Type": "multipart/form-data; boundary=70",
+          },
+          credentials: "include",
+          body: data,
+        });
+        if (result.status === 200) {
+          this.memeSaved = true;
+          this.deleteDraft();
+          router.push({ name: "Home" }).catch((err) => {
+            err;
+          });
+        }
+      });
+    },
+    async saveDraft() {
+      let draftModel = {
+        //TODO title
+        topText: this.topText.text,
+        topTextOffset: [this.topText.offsetX, this.topText.offsetY],
+        bottomText: this.bottomText.text,
+        bottomTextOffset: [this.bottomText.offsetX, this.bottomText.offsetY],
+        memeSource: this.img,
+      };
+      await fetch("http://localhost:3000/image-draft", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(draftModel),
+      });
+    },
+    async loadDraft() {
+      let result = await fetch("http://localhost:3000/image-draft", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      if (result.status !== 200) {
+        this.img = cassiusMeme; //Default img
+      } else {
+        const draft = await result.json();
+        this.topText = {
+          text: draft.topText,
+          offsetX: draft.topTextOffset[0],
+          offsetY: draft.topTextOffset[1],
+        };
+        this.bottomText = {
+          text: draft.bottomText,
+          offsetX: draft.bottomTextOffset[0],
+          offsetY: draft.bottomTextOffset[1],
+        };
+        this.img = draft.memeSource;
+      }
+    },
+    async deleteDraft() {
+      await fetch("http://localhost:3000/delete-image-draft", {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+        },
+        credentials: "include",
+      });
+    },
+  },
+  beforeDestroy() {
+    if (!this.memeSaved) {
+      this.saveDraft();
+    }
+  },
+  created() {
+    this.loadDraft();
   },
 };
 </script>

@@ -10,11 +10,6 @@
 </template>
 
 <script>
-import { saveAs } from "file-saver";
-import FormData from "form-data";
-
-import router from "../../router/index.js";
-
 export default {
   name: "CustomCanvas",
   props: {
@@ -41,9 +36,6 @@ export default {
           canvas.width / 2 + parseInt(this.topText.offsetX);
         let bottomCanvasHorizontalMid =
           canvas.width / 2 + parseInt(this.bottomText.offsetX);
-        console.log(
-          topCanvasHorizontalMid + " and " + bottomCanvasHorizontalMid
-        );
         let canvasBottom = canvas.height - Math.abs(this.bottomText.offsetY);
         //show top text
 
@@ -75,7 +67,7 @@ export default {
       });
     },
     drawCanvasImage(canvas, context) {
-      console.log("drawCanvasImage");
+      let self = this;
       return new Promise((resolve) => {
         let img = new Image();
         img.src = this.img;
@@ -100,6 +92,8 @@ export default {
           canvas.width = newImageWidth;
           canvas.height = newImageHeight;
 
+          self.adaptCanvasSizes();
+
           context.mozImageSmoothingEnabled = false;
           context.imageSmoothingEnabled = false;
           context.webkitImageSmoothingEnabled = false;
@@ -115,7 +109,6 @@ export default {
             newImageWidth,
             newImageHeight
           );
-
           // register that image loading is complete
           return resolve();
         };
@@ -126,15 +119,26 @@ export default {
       let context = canvas.getContext("2d");
       this.drawCanvasImage(canvas, context).then(() => {
         this.setCanvasTextStyle(context);
-        // layer the drawing canvas above
-        let drawingCanvas = this.$refs.drawCanvas;
-        drawingCanvas.height = canvas.height;
-        drawingCanvas.width = canvas.width;
-
-        let resultCanvas = this.$refs.resultCanvas;
-        resultCanvas.height = canvas.height;
-        resultCanvas.width = canvas.width;
+        this.adaptCanvasSizes();
       });
+    },
+    clearDrawingCanvas() {
+      console.log("deleting");
+      const drawingCanvas = this.$refs.drawCanvas;
+      const context = drawingCanvas.getContext("2d");
+
+      context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+    },
+    adaptCanvasSizes() {
+      let canvas = this.$refs.memeCanvas;
+      // layer the drawing canvas above
+      let drawingCanvas = this.$refs.drawCanvas;
+      drawingCanvas.height = canvas.height;
+      drawingCanvas.width = canvas.width;
+
+      let resultCanvas = this.$refs.resultCanvas;
+      resultCanvas.height = canvas.height;
+      resultCanvas.width = canvas.width;
     },
     setCanvasTextStyle(context) {
       context.font = "50px Impact";
@@ -150,29 +154,6 @@ export default {
       context.drawImage(this.$refs.memeCanvas, 0, 0);
       context.drawImage(this.$refs.drawCanvas, 0, 0);
       return canvas;
-    },
-    download() {
-      let canvas = this.createResultingCanvas();
-      canvas.toBlob(function (blob) {
-        saveAs(blob, "meme.png");
-      });
-    },
-    async saveOnServer() {
-      let canvas = this.createResultingCanvas();
-      canvas.toBlob(async (blob) => {
-        let data = new FormData();
-        data.append("file", blob, "file.png");
-        let result = await fetch("http://localhost:3000/upload", {
-          method: "POST",
-          body: data,
-        });
-        if (result.status === 200) {
-          console.log("image uploaded successfully to server!");
-          router.push({ name: "Home" }).catch((err) => {
-            err;
-          });
-        }
-      });
     },
     activateDrawingMode() {
       const canvas = this.$refs.drawCanvas;
@@ -206,10 +187,6 @@ export default {
 
         ctx.stroke(); // draw it!
       } else {
-        //TODO eraser!
-        // ctx.globalCompositeOperation = "destination-out";
-        // ctx.arc(this.pos.x, this.pos.y, brushSize, 0, Math.PI * 2, false);
-        // ctx.fill();
         ctx.globalCompositeOperation = "destination-out";
 
         ctx.beginPath();

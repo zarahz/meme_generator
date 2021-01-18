@@ -36,9 +36,12 @@
           <b-form-input
             v-model="color"
             @change="notifyCanvas"
-            class="w-25"
+            class="w-25 mr-2"
             type="color"
           ></b-form-input>
+          <b-button variant="outline-danger" v-on:click="clearCanvas()">
+            <b-icon icon="trash"></b-icon>
+          </b-button>
         </b-row>
       </b-col>
     </b-row>
@@ -69,6 +72,9 @@ export default {
         this.color,
         this.eraser
       );
+    },
+    clearCanvas() {
+      this.$emit("clearCanvas");
     },
   },
 };
