@@ -218,6 +218,7 @@ export default {
     },
     changeTemplate(newImageUrl) {
       this.img = newImageUrl;
+      this.clearDrawingCanvas();
     },
     toggleCanvasDrawingMode(drawMode, brushSize, color, isErasing) {
       if (drawMode) {
