@@ -39,7 +39,7 @@
             class="btn btn-light"
             v-on:click="onUpload"
           >
-            upload
+            ok
           </button>
         </b-row>
       </b-col>

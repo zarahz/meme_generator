@@ -137,12 +137,30 @@
         >🡇</b-button
       >
     </b-row>
+    <b-row align-h="center" class="mb-3">
+      <b-col cols="1">
+        <label>Title:</label>
+      </b-col>
+      <b-col cols="auto">
+        <b-form-input
+          v-model="title"
+          class="w-100"
+          type="text"
+          placeholder="Title..."
+        />
+      </b-col>
+    </b-row>
 
     <b-row align-h="center" class="mb-3">
       <drawingSettings
         @toggleCanvasDrawingMode="toggleCanvasDrawingMode"
         @clearCanvas="clearDrawingCanvas"
       />
+    </b-row>
+    <b-row class="mb-3">
+      <b-col>
+        <label>{{ title }}</label>
+      </b-col>
     </b-row>
 
     <b-row class="mb-3">
@@ -210,6 +228,7 @@ export default {
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
       memeSaved: false,
+      title: "",
     };
   },
   methods: {
