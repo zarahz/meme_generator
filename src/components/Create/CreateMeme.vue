@@ -178,9 +178,9 @@
     <b-row class="mb-3" align-h="center">
       <b-col cols="4" />
       <b-col>
-        <button type="button" class="btn btn-default btn-sm" v-on:click="selectMemeTemplate(0)">
-          <span class="glyphicon glyphicon-chevron-right"></span> previous
-        </button>
+        <b-button type="button" class="btn btn-default btn-sm" variant="outline-primary" v-on:click="selectMemeTemplate(0)">
+           previous
+        </b-button>
       </b-col>
       <b-col>
         <b-button variant="outline-primary" v-on:click="saveOnServer">
@@ -192,10 +192,10 @@
           Download
         </b-button>
       </b-col>
-      <b-col>
-        <button type="button" class="btn btn-default btn-sm" v-on:click="selectMemeTemplate(0)">
-          <span class="glyphicon glyphicon-chevron-right"></span> next
-        </button>
+      <b-col> 
+        <b-button type="button" class="btn btn-default btn-sm" variant="outline-primary" v-on:click="selectMemeTemplate(0)">
+           next
+        </b-button>
       </b-col>
       <b-col cols="4" />
     </b-row>
