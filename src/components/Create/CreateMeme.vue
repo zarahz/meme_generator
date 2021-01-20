@@ -179,7 +179,7 @@
       <b-col cols="4" />
       <b-col>
         <button type="button" class="btn btn-default btn-sm" v-on:click="selectMemeTemplate(0)">
-          <span class="glyphicon glyphicon-chevron-right"></span> Previous
+          <span class="glyphicon glyphicon-chevron-right"></span> previous
         </button>
       </b-col>
       <b-col>
@@ -194,7 +194,7 @@
       </b-col>
       <b-col>
         <button type="button" class="btn btn-default btn-sm" v-on:click="selectMemeTemplate(0)">
-          <span class="glyphicon glyphicon-chevron-right"></span> Next
+          <span class="glyphicon glyphicon-chevron-right"></span> next
         </button>
       </b-col>
       <b-col cols="4" />
