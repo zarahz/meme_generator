@@ -84,7 +84,6 @@ export default {
   methods: {
     async checkUniqueness(fieldname, event) {
       let uniqueResult = await isUnique(fieldname, event);
-      console.log(uniqueResult);
       if (uniqueResult.status !== 200) {
         this.$set(this.errors, fieldname, uniqueResult.error);
       } else {

@@ -10,7 +10,7 @@
           router
           to="/create-meme"
           :active="$route.name == 'CreateMeme'"
-          >Create am Meme</b-nav-item
+          >Create a Meme</b-nav-item
         >
       </b-navbar-nav>
 
@@ -29,7 +29,9 @@
           :text="$store.getters.user.username"
           right
         >
-          <b-dropdown-item href="#">Settings</b-dropdown-item>
+          <b-dropdown-item href="#" router to="/my-page"
+            >My Page</b-dropdown-item
+          >
           <b-dropdown-item href="#" v-on:click="$store.dispatch('logout')"
             >Logout</b-dropdown-item
           >

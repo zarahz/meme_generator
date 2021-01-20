@@ -8,7 +8,7 @@ import OverviewPage from "../components/Overview/OverviewPage.vue";
 import Login from "../components/Authenticate/Login.vue";
 import Registration from "../components/Authenticate/Registration.vue";
 import ForgotPassword from "../components/Authenticate/ForgotPassword.vue";
-
+import MyPage from "../components/UserPages/MyPage";
 
 const routes = [
   {
@@ -26,6 +26,12 @@ const routes = [
     path: "/create-meme",
     name: "CreateMeme",
     component: CreateMeme,
+
+  },
+  {
+    path: "/my-page",
+    name: "MyPage",
+    component: MyPage,
 
   },
   {

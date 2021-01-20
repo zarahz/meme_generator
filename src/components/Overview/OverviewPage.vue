@@ -4,7 +4,7 @@
     <b-row
       cols-sm="4"
       class="mb-4"
-      v-for="image in displayedImages"
+      v-for="(image, index) in displayedImages"
       v-bind:key="image._id"
     >
       <b-col />
@@ -21,18 +21,18 @@
             <b-button
               variant="outline-success"
               class="m-3"
-              @click="submitUpvote(image._id)"
+              @click="submitUpvote(image._id, index)"
             >
               <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
-              {{ upvotesCount }}</b-button
+              {{ image.upvoteCount }}</b-button
             >
             <b-button
               variant="outline-danger"
               class="m-3"
-              @click="submitDownvote(image._id)"
+              @click="submitDownvote(image._id, index)"
             >
               <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
-              {{ downvotesCount }}</b-button
+              {{ image.downvoteCount }}</b-button
             >
             <b-button
               variant="outline-primary"
@@ -126,16 +126,11 @@ export default {
     return {
       allImages: [],
       displayedImages: [],
-       upvotesCount: 0,
-      upvotes: [],
-      downvotesCount: 0,
-      downvotes: [],
       sliceEnd: 2,
       bottom: false,
     };
   },
   methods: {
-    
     openMemeView(imageId) {
       console.log("id of the clicked image is :" + imageId);
       router.push({ name: "Meme", params: { id: imageId } }).catch((err) => {
@@ -148,6 +143,7 @@ export default {
       });
       const dbImages = await result.json();
       this.allImages = dbImages;
+
       //sort images by creation date
       this.allImages.sort(function (a, b) {
         return new Date(b.creationDate) - new Date(a.creationDate);
@@ -177,22 +173,9 @@ export default {
         $state.loaded();
       }, 2000);
     },
-    async fetchCommentCount(currentImageId) {
-      var commentUrl = new URL("http://localhost:3000/comments"),
-        params = { imageId: currentImageId };
-      Object.keys(params).forEach((key) =>
-        commentUrl.searchParams.append(key, params[key])
-      );
-      let result = await fetch(commentUrl);
 
-      const { dbComments } = await result.json();
-      this.comments = dbComments;
-      this.commentsCount = this.comments.length;
-    },
-     async submitUpvote(currentImageId) {
-       var imageId = currentImageId
-       console.log(imageId)
-      console.log("image liked");
+    async submitUpvote(currentImageId, index) {
+      var imageId = currentImageId;
       var upvoteUrl = "http://localhost:3000/post-upvote";
       var upvote = {
         imageId: currentImageId,
@@ -210,13 +193,11 @@ export default {
         console.log(error);
       } else {
         // success
-        this.fetchupvotes(imageId);
+        this.fetchupvotes(imageId, index);
       }
     },
-    async submitDownvote(currentImageId) {
-      var imageId = currentImageId
-       console.log(imageId)
-      console.log("image disliked");
+    async submitDownvote(currentImageId, index) {
+      var imageId = currentImageId;
       var downvoteUrl = "http://localhost:3000/post-downvote";
       var downvote = {
         imageId: currentImageId,
@@ -234,11 +215,11 @@ export default {
         console.log(error);
       } else {
         // success
-        this.fetchdownvotes(imageId);
+        this.fetchdownvotes(imageId, index);
       }
     },
-    async fetchupvotes(currentImageId) {
-      var ImageId = currentImageId
+    async fetchupvotes(currentImageId, index) {
+      var ImageId = currentImageId;
       var upvoteUrl = new URL("http://localhost:3000/upvotes"),
         params = { imageId: ImageId };
       Object.keys(params).forEach((key) =>
@@ -246,12 +227,13 @@ export default {
       );
       let result = await fetch(upvoteUrl);
       const { dbUpvotes } = await result.json();
-      this.upvotes = dbUpvotes;
-      this.upvotesCount = this.upvotes.length;
+      var upvotes = dbUpvotes;
+      var upvotesCount = upvotes.length;
+      this.displayedImages[index].upvoteCount = upvotesCount;
     },
 
-    async fetchdownvotes(currentImageId) {
-      var ImageId = currentImageId
+    async fetchdownvotes(currentImageId, index) {
+      var ImageId = currentImageId;
       var downvoteUrl = new URL("http://localhost:3000/downvotes"),
         params = { imageId: ImageId };
       Object.keys(params).forEach((key) =>
@@ -259,11 +241,10 @@ export default {
       );
       let result = await fetch(downvoteUrl);
       const { dbDownvotes } = await result.json();
-      this.downvotes = dbDownvotes;
-      this.downvotesCount = this.downvotes.length;
+      var downvotes = dbDownvotes;
+      var downvotesCount = downvotes.length;
+      this.displayedImages[index].downvoteCount = downvotesCount;
     },
-
-    
   },
 };
 </script>
