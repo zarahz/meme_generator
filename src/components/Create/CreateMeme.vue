@@ -178,6 +178,11 @@
     <b-row class="mb-3" align-h="center">
       <b-col cols="4" />
       <b-col>
+        <b-button variant="outline-primary" v-on:click="selectMemeTemplate(0)">
+          Previous
+        </b-button>
+      </b-col>
+      <b-col>
         <b-button variant="outline-primary" v-on:click="saveOnServer">
           Submit Meme
         </b-button>
@@ -185,6 +190,11 @@
       <b-col>
         <b-button variant="outline-primary" v-on:click="download">
           Download
+        </b-button>
+      </b-col>
+      <b-col>
+        <b-button variant="outline-primary" v-on:click="selectMemeTemplate(0)">
+          Next
         </b-button>
       </b-col>
       <b-col cols="4" />
@@ -232,6 +242,14 @@ export default {
     };
   },
   methods: {
+    selectMemeTemplate(selectedIndex) {
+      this.templateSelectionIndex = selectedIndex;
+      this.$emit(
+        "newTemplateSelected",
+        //this.displayedImgFlipMemes[this.templateSelectionIndex].url,
+        this.displayedMemes[this.templateSelectionIndex].url
+      );
+    },
     clearDrawingCanvas() {
       this.$refs.meme.clearDrawingCanvas();
     },
