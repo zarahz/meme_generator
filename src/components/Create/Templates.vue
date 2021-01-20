@@ -1,13 +1,23 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
     <h2>Pick a template!</h2>
+    <b-row align-h="center">
+      <b-form-checkbox
+        v-model="showImgflipTemplates"
+        name="templateSwitch"
+        switch
+        @change="switchTemplates"
+      >
+        {{ templateSourceText }}
+      </b-form-checkbox>
+    </b-row>
 
     <b-row align-h="center">
       <b-col cols="6">
         <b-row align-h="center">
           <b-nav-form>
             <b-form-input
-              v-on:input="refresh_templates_search"
+              v-on:input="applySearch"
               v-model="templatesSearchTerm"
               size="sm"
               class="mr-sm-2"
@@ -19,8 +29,8 @@
           crossorigin="anonymous"
           style="width: 20%"
           class="image"
-          v-for="(image, i) in displayedImgFlipMemes"
-          :src="displayedImgFlipMemes[i].url"
+          v-for="(image, i) in displayedMemes"
+          :src="displayedMemes[i].url"
           :key="i"
           @click="selectMemeTemplate(i)"
         />
@@ -49,63 +59,121 @@ export default {
     return {
       templatesSearchTerm: "",
       templateSelectionIndex: null,
-      displayedImgFlipMemes: [],
-      allImgFlipMemes: [],
+      displayedMemes: [],
+      allImgflipMemes: [],
+      allServerMemes: [],
       response: [],
+      showImgflipTemplates: false, // server if false, imgflip if true
+      templateSourceText: "Server",
     };
   },
   methods: {
-    refresh_templates_search() {
-      this.displayedImgFlipMemes = [];
-      var displayedImgFlipMemes = this.displayedImgFlipMemes;
+    // TODO decide on one naming convention!
+
+    applySearch() {
+      if (this.showImgflipTemplates) {
+        this.applySearchToImgflipTemplates();
+      } else {
+        this.applySearchToServerTemplates();
+      }
+    },
+    applySearchToServerTemplates() {
+      this.displayedMemes = [];
+      var displayedMemes = this.displayedMemes;
       var searchTerm = this.templatesSearchTerm;
       if (searchTerm.length < 1) {
+        console.log("No search term for server templates");
         // NO search term
-        this.allImgFlipMemes.forEach(function (item) {
-          displayedImgFlipMemes.push(item);
+        this.allServerMemes.forEach(function (item) {
+          console.log("pushing... " + item);
+          displayedMemes.push(item);
         });
+        console.log("...... " + displayedMemes.length);
         // inefficient and biased array shuffle
-        let shuffled = displayedImgFlipMemes
+        let shuffled = displayedMemes
           .map((a) => ({ sort: Math.random(), value: a }))
           .sort((a, b) => a.sort - b.sort)
           .map((a) => a.value);
 
-        this.displayedImgFlipMemes = shuffled.slice(1, 11);
+        this.displayedMemes = shuffled.slice(0, 11);
       } else {
+        console.log("Searching server templates with: " + searchTerm);
         // WITH search term
-        this.allImgFlipMemes.forEach(function (item) {
-          if (item.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-            displayedImgFlipMemes.push(item);
+        this.allServerMemes.forEach(function (item) {
+          if (item.tags.toLowerCase().includes(searchTerm.toLowerCase())) {
+            displayedMemes.push(item);
           }
         });
-        this.displayedImgFlipMemes = displayedImgFlipMemes.slice(1, 11);
+        this.displayedMemes = displayedMemes.slice(0, 11);
+      }
+      console.log(
+        "Searched server templates. got: " + this.displayedMemes.length
+      );
+    },
+    applySearchToImgflipTemplates() {
+      this.displayedMemes = [];
+      var displayedMemes = this.displayedMemes;
+      var searchTerm = this.templatesSearchTerm;
+      if (searchTerm.length < 1) {
+        // NO search term
+        this.allImgflipMemes.forEach(function (item) {
+          displayedMemes.push(item);
+        });
+        // inefficient and biased array shuffle
+        let shuffled = displayedMemes
+          .map((a) => ({ sort: Math.random(), value: a }))
+          .sort((a, b) => a.sort - b.sort)
+          .map((a) => a.value);
+
+        this.displayedMemes = shuffled.slice(0, 11);
+      } else {
+        // WITH search term
+        this.allImgflipMemes.forEach(function (item) {
+          if (item.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            displayedMemes.push(item);
+          }
+        });
+        this.displayedMemes = displayedMemes.slice(0, 11);
       }
     },
     selectMemeTemplate(selectedIndex) {
       this.templateSelectionIndex = selectedIndex;
       this.$emit(
         "newTemplateSelected",
-        this.displayedImgFlipMemes[this.templateSelectionIndex].url,
+        //this.displayedImgFlipMemes[this.templateSelectionIndex].url,
+        this.displayedMemes[this.templateSelectionIndex].url
       );
     },
 
-    fetchMemeTemplates() {
-      console.log("Fetching memes...");
+    fetchImgflipMemeTemplates() {
       axios.get("https://api.imgflip.com/get_memes").then((resp) => {
-        console.log(resp.data);
-
-        console.log(resp.data.success);
         if (resp.data.success == true) {
-          this.allImgFlipMemes = resp.data.data.memes;
-          this.refresh_templates_search();
+          this.allImgflipMemes = resp.data.data.memes;
         } else {
-          console.log("Failed to get meme templates from imgFlip :(");
+          console.log("Failed to get meme templates from imgflip :(");
         }
+        this.applySearch();
       });
+    },
+    fetchServerMemeTemplates() {
+      console.log("Fetching server memes...");
+      axios.get("http://localhost:3000/templates").then((resp) => {
+        this.allServerMemes = resp.data;
+        this.applySearch();
+      });
+    },
+    switchTemplates() {
+      if (this.showImgflipTemplates) {
+        this.templateSourceText = "imgflip";
+      } else {
+        this.templateSourceText = "Server";
+      }
+      this.applySearch();
     },
   },
   mounted() {
-    this.fetchMemeTemplates();
+    this.fetchServerMemeTemplates();
+    this.fetchImgflipMemeTemplates();
   },
 };
 </script>
