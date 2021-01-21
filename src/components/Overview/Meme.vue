@@ -1,116 +1,80 @@
 <template>
   <b-container class="justify-content-md-center">
-    <!--h2>the image id is :{{this.$route.params.id}}</h2-->
-    <b-row
-      class="justify-content-md-center"
-      v-for="image in allImages"
-      :key="image._id"
-    >
-      <b-col sm="7" align-self="center">
-        <b-row v-if="imageId == image._id" class="justify-content-md-center">
-          <b-row class="justify-content-md-center">
-            <b-col />
-
-            <b-col>
-              <twitter
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                title=""
-                scale="3"
-              ></twitter>
-            </b-col>
-            <b-col>
-              <linkedin
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                scale="3"
-              ></linkedin>
-            </b-col>
-            <b-col>
-              <whats-app
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                title="Hello"
-                scale="3"
-              ></whats-app>
-            </b-col>
-
-            <b-col>
-              <pinterest
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                scale="3"
-                class="m-3"
-              ></pinterest>
-            </b-col>
-            <b-col>
-              <email
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                subject="Hello"
-                scale="3"
-              ></email>
-            </b-col>
-            <b-col />
-          </b-row>
-          <b-img
-            :src="'http://localhost:3000/static/' + image.nameAndFileType"
-            alt="Center image"
-          />
-        </b-row>
-      </b-col>
-    </b-row>
-    <b-row class="justify-content-md-center" cols="4">
-      <b-button
-        variant="outline-success"
-        class="m-3"
-        @click="submitUpvote"
-        :disabled="!$store.getters.isLoggedIn"
-      >
-        <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
-        {{ upvotesCount }}</b-button
-      >
-      <b-button
-        variant="outline-danger"
-        class="m-3"
-        @click="submitDownvote"
-        :disabled="!$store.getters.isLoggedIn"
-      >
-        <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
-        {{ downvotesCount }}</b-button
-      >
-      <b-button variant="outline-primary" class="m-3">
-        <b-icon icon="chat-left" aria-hidden="true"></b-icon>
-        {{ commentsCount }}</b-button
-      >
-    </b-row>
-    <b-col align-self="center">
-      <b-row class="justify-content-md-center">
+    <div v-if="authorized">
+      <b-row align-h="center">
+        <b-img :src="image.url" />
+      </b-row>
+      <b-row align-h="center" class="m-3">
+        <b-col>
+          <b-button
+            variant="outline-success"
+            class="ml-3"
+            @click="submitUpvote"
+            :disabled="!$store.getters.isLoggedIn"
+          >
+            <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
+            {{ upvotesCount }}</b-button
+          >
+          <b-button
+            variant="outline-danger"
+            class="ml-3"
+            @click="submitDownvote"
+            :disabled="!$store.getters.isLoggedIn"
+          >
+            <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
+            {{ downvotesCount }}</b-button
+          >
+          <b-button variant="outline-primary" class="ml-3">
+            <b-icon icon="chat-left" aria-hidden="true"></b-icon>
+            {{ commentsCount }}</b-button
+          >
+        </b-col>
+        <b-col>
+          <twitter :url="image.url" title="" scale="3" class="ml-3"></twitter>
+          <linkedin :url="image.url" scale="3" class="ml-3"></linkedin>
+          <whats-app
+            :url="image.url"
+            title="Hello"
+            scale="3"
+            class="ml-3"
+          ></whats-app>
+          <pinterest :url="image.url" scale="3" class="ml-3"></pinterest>
+          <email
+            :url="image.url"
+            subject="Hello"
+            scale="3"
+            class="ml-3"
+          ></email>
+        </b-col>
+      </b-row>
+      <b-row align-h="center">
         <b-form-input
           v-on:keyup.enter="submitComment"
           v-model="commentInput"
-          class="w-50"
+          class="w-50 m-3"
           type="text"
           placeholder="Type your comment here..."
         />
-        {{ commentErrorText }}
       </b-row>
-      <b-col
+      {{ commentErrorText }}
+      <b-row
         class="justify-content-md-center"
         v-for="comment in comments"
         v-bind:key="comment._id"
+        style="background-color: #e6e6e6"
       >
-        <b-row style="background-color: #e6e6e6">
-          <b-col>
-            <strong>{{ comment.username }}</strong>
-          </b-col>
-          <b-col>
-            {{ comment.creationDate }}
-          </b-col>
-        </b-row>
-        <b-row style="background-color: #e6e6e6" class="mb-2">
-          <b-col>
-            {{ comment.content }}
-          </b-col>
-        </b-row>
-        <div></div>
-      </b-col>
-    </b-col>
+        <b-col>
+          {{ comment.creationDate }}
+          <strong>{{ comment.username }}: </strong>
+        </b-col>
+        <b-col style="text-align: left">
+          {{ comment.content }}
+        </b-col>
+      </b-row>
+    </div>
+    <div v-else>
+      Oh Oh, it seems like you are not authorized to see this meme! :(
+    </div>
   </b-container>
 </template>
 <script>
@@ -136,8 +100,8 @@ export default {
     return {
       imageId: this.$route.params.id,
       title: "Meme view",
-      meme: {},
-      allImages: [],
+      image: {},
+      // allImages: [], not needed for now, get as parameter from overview later for the navigation button (next/previous meme)
       upvotesCount: 0,
       upvotes: [],
       downvotesCount: 0,
@@ -146,6 +110,7 @@ export default {
       comments: [],
       commentInput: "",
       commentErrorText: "",
+      authorized: true,
     };
   },
   methods: {
@@ -267,22 +232,21 @@ export default {
       this.commentsCount = this.comments.length;
     },
     async getImage() {
-      let imagesResult = await fetch("http://localhost:3000/images", {
+      var url = new URL("http://localhost:3000/image");
+      url.searchParams.append("_id", this.imageId);
+      let result = await fetch(url, {
         method: "GET",
+        credentials: "include",
       });
-      const { dbImages } = await imagesResult.json();
-      this.allImages = dbImages;
-      // ----------
-      console.log(this.imageId);
-      var memeUrl = new URL("http://localhost:3000/image"),
-        params = { _id: this.imageId };
-      Object.keys(params).forEach((key) =>
-        memeUrl.searchParams.append(key, params[key])
-      );
-      let memeResult = await fetch(memeUrl);
-      const { image } = await memeResult.json();
-      this.meme = image;
-      this.allImages = [this.meme];
+      if (result.status === 200) {
+        const { image } = await result.json();
+        this.image = image;
+        //additionally save the url into the img object since it is needed multiple times
+        this.image.url =
+          "http://localhost:3000/static/" + image.nameAndFileType;
+      } else if (result.status === 401) {
+        this.authorized = false;
+      }
     },
   },
   mounted() {

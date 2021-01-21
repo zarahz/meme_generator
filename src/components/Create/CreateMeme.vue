@@ -157,6 +157,16 @@
         @clearCanvas="clearDrawingCanvas"
       />
     </b-row>
+    <b-row align-h="center" class="mb-3">
+      <b-form-group label="Visibility of the meme">
+        <b-form-radio-group
+          id="visibility-radio-buttons"
+          v-model="visibility"
+          :options="visibilityOptions"
+        >
+        </b-form-radio-group>
+      </b-form-group>
+    </b-row>
     <b-row class="mb-3">
       <b-col>
         <label>{{ title }}</label>
@@ -178,8 +188,13 @@
     <b-row class="mb-3" align-h="center">
       <b-col cols="4" />
       <b-col>
-        <b-button type="button" class="btn btn-default btn-sm" variant="outline-primary" v-on:click="selectMemeTemplate(0)">
-           previous
+        <b-button
+          type="button"
+          class="btn btn-default btn-sm"
+          variant="outline-primary"
+          v-on:click="selectMemeTemplate(0)"
+        >
+          previous
         </b-button>
       </b-col>
       <b-col>
@@ -192,9 +207,14 @@
           Download
         </b-button>
       </b-col>
-      <b-col> 
-        <b-button type="button" class="btn btn-default btn-sm" variant="outline-primary" v-on:click="selectMemeTemplate(0)">
-           next
+      <b-col>
+        <b-button
+          type="button"
+          class="btn btn-default btn-sm"
+          variant="outline-primary"
+          v-on:click="selectMemeTemplate(0)"
+        >
+          next
         </b-button>
       </b-col>
       <b-col cols="4" />
@@ -239,6 +259,18 @@ export default {
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
       memeSaved: false,
       title: "",
+      visibilityOptions: [
+        { text: "Public (list the finished meme publicly)", value: "public" },
+        {
+          text: "Unlisted (only people with the link can see the meme)",
+          value: "unlisted",
+        },
+        {
+          text: "Private (only you can see the finished meme)",
+          value: "private",
+        },
+      ],
+      visibility: "public",
     };
   },
   methods: {
@@ -275,13 +307,17 @@ export default {
       let canvas = this.$refs.meme.createResultingCanvas();
       canvas.toBlob(async (blob) => {
         let data = new FormData();
-        data.append("file", blob, "file.png");
+        data.append("visibility", this.visibility);
+        data.append("file", blob); //, "file.png"
+        for (var key of data.entries()) {
+          console.log(key[0] + ", " + key[1]);
+        }
         let result = await fetch("http://localhost:3000/upload", {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            //"Content-Type": "multipart/form-data; boundary=70",
-          },
+          // headers: {
+          //   Accept: "application/json",
+          //   // "Content-Type": "multipart/form-data",
+          // },
           credentials: "include",
           body: data,
         });
