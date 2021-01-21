@@ -60,7 +60,7 @@
           <b-button
             size="sm"
             class="my-2 my-sm-0"
-            v-on:click="useCustomTemplate"
+            v-on:click="onUpload"
             >✔</b-button
           >
         </b-row>
