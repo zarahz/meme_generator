@@ -48,22 +48,21 @@
 
     <h3>Upload a template</h3>
     <b-row align-h="center">
-      <b-col cols="2">
-        <b-row class="justify-content-md-center">
+      <b-col cols="6">
+        <b-row align-h="center">
           <input id="imageUpload" type="file" @change="onFileSelected" hidden />
-          <b-button @click="chooseImage">
-            <b-icon icon="camera-fill" aria-hidden="true"></b-icon
-          ></b-button>
-          <label id="idFileName"> {{ selectedFileName }}</label>
-
-          <button
-            button
-            type="button"
-            class="btn btn-light"
-            v-on:click="onUpload"
+          <b-button variant="light" class="pb-2" @click="chooseImage"
+            >Choose an Image</b-button
           >
-            ok
-          </button>
+        </b-row>
+        <label id="idFileName"> {{ selectedFileName }}</label>
+        <b-row align-h="center">
+          <b-button
+            size="sm"
+            class="my-2 my-sm-0"
+            v-on:click="useCustomTemplate"
+            >✔</b-button
+          >
         </b-row>
       </b-col>
     </b-row>
