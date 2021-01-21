@@ -343,6 +343,7 @@ export default {
         let data = new FormData();
         data.append("visibility", this.visibility);
         data.append("file", blob); //, "file.png"
+        data.append("title", this.title);
         for (var key of data.entries()) {
           console.log(key[0] + ", " + key[1]);
         }
@@ -356,7 +357,6 @@ export default {
           body: data,
         });
         if (result.status === 200) {
-          this.deleteDraft();
           router.push({ name: "Home" }).catch((err) => {
             err;
           });

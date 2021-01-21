@@ -1,6 +1,9 @@
 <template>
   <b-container class="justify-content-md-center">
     <div v-if="authorized">
+      <b-row align-h="center" class="pull-right text-large">
+        {{ image.title }}
+      </b-row>
       <b-row align-h="center">
         <b-img :src="image.url" />
       </b-row>
@@ -262,5 +265,8 @@ export default {
 commentBox {
   color: orange;
   background-color: green;
+}
+.text-large {
+  font-size: 180%;
 }
 </style>

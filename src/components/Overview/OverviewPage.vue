@@ -10,6 +10,9 @@
       <b-col />
       <b-col sm="6" align-self="center">
         <div>
+          <b-row align-h="left" class="pull-right text-large">
+            {{ image.title }}
+          </b-row>
           <b-row>
             <img
               class="imageContainer"
@@ -252,5 +255,8 @@ export default {
 <style scoped>
 .imageContainer {
   width: -webkit-fill-available;
+}
+.text-large {
+  font-size: 180%;
 }
 </style>
