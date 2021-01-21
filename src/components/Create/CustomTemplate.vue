@@ -1,5 +1,28 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
+    <h3>Select Webpage to screenshot</h3>
+    <b-row align-h="center">
+      <b-col cols="4">
+        <b-row align-h="center">
+          <b-nav-form>
+            <b-form-input
+              v-on:enter="useWebScreenshotTemplate"
+              v-model="screenshotUrl"
+              size="sm"
+              class="mr-sm-2"
+              placeholder="Webpage to screenshot"
+            ></b-form-input>
+            <b-button
+              size="sm"
+              class="my-2 my-sm-0"
+              v-on:click="useWebScreenshotTemplate"
+              >✔</b-button
+            >
+          </b-nav-form>
+        </b-row>
+      </b-col>
+    </b-row>
+
     <h3>Upload from url</h3>
     <b-row align-h="center">
       <b-col cols="2">
@@ -10,7 +33,7 @@
               v-model="customUrl"
               size="sm"
               class="mr-sm-2"
-              placeholder="url"
+              placeholder="Link to Image file"
             ></b-form-input>
             <b-button
               size="sm"
@@ -57,6 +80,7 @@ export default {
   data() {
     return {
       customUrl: "",
+      screenshotUrl: "",
       selectedFile: null,
       selectedFileName: "",
       selectedImageUrl: null,
@@ -65,6 +89,16 @@ export default {
   methods: {
     useCustomTemplate() {
       this.$emit("newTemplateSelected", this.customUrl);
+    },
+    async useWebScreenshotTemplate() {
+      var screenshotRequestUrl = new URL(
+          "http://localhost:3000/screenshot_webpage"
+        ),
+        params = { webpage: this.screenshotUrl };
+      screenshotRequestUrl.search = new URLSearchParams(params).toString();
+      let result = await fetch(screenshotRequestUrl);
+      const { dbTemplate } = await result.json();
+      this.$emit("newTemplateSelected", dbTemplate.url);
     },
     chooseImage() {
       document.getElementById("imageUpload").click();
