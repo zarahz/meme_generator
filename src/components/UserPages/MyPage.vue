@@ -10,6 +10,9 @@
       <b-col />
       <b-col sm="6" align-self="center">
         <div>
+          <b-row align-h="center">
+            {{ meme.title }} ({{ meme.visibility }})
+          </b-row>
           <b-row>
             <img
               class="imageContainer"
