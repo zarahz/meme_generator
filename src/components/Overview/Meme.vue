@@ -128,7 +128,6 @@ export default {
       var commentUrl = "http://localhost:3000/post-comment";
       var comment = {
         imageId: this.imageId,
-        authorId: this.$store.getters.user._id,
         content: this.commentInput,
       };
       console.log("Comment: " + comment);
@@ -137,6 +136,7 @@ export default {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(comment),
       });
       if (result.status !== 200) {
