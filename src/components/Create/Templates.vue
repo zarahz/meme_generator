@@ -1,6 +1,6 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
-    <h2>Pick a template!</h2>
+    <h3>Available templates</h3>
     <b-row align-h="center">
       <b-form-checkbox
         v-model="showImgflipTemplates"
@@ -34,7 +34,7 @@
           :key="i"
           @click="selectMemeTemplate(i)"
         />
-    
+
         <vue-gallery-slideshow :images="[]" :index="null" @close="index = null">
         </vue-gallery-slideshow>
       </b-col>

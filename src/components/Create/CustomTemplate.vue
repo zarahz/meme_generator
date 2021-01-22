@@ -1,71 +1,37 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
-    <h3>Select Webpage to screenshot</h3>
-    <b-row align-h="center">
-      <b-col cols="4">
-        <b-row align-h="center">
-          <b-nav-form>
-            <b-form-input
-              v-on:enter="useWebScreenshotTemplate"
-              v-model="screenshotUrl"
-              size="sm"
-              class="mr-sm-2"
-              placeholder="Webpage to screenshot"
-            ></b-form-input>
-            <b-button
-              size="sm"
-              class="my-2 my-sm-0"
-              v-on:click="useWebScreenshotTemplate"
-              >✔</b-button
-            >
-          </b-nav-form>
-        </b-row>
-      </b-col>
-    </b-row>
-
-    <h3>Upload from url</h3>
-    <b-row align-h="center">
-      <b-col cols="2">
-        <b-row align-h="center">
-          <b-nav-form>
-            <b-form-input
-              v-on:enter="useCustomTemplate"
-              v-model="customUrl"
-              size="sm"
-              class="mr-sm-2"
-              placeholder="Link to Image file"
-            ></b-form-input>
-            <b-button
-              size="sm"
-              class="my-2 my-sm-0"
-              v-on:click="useCustomTemplate"
-              >✔</b-button
-            >
-          </b-nav-form>
-        </b-row>
-      </b-col>
-    </b-row>
-
-    <h3>Upload a template</h3>
-    <b-row align-h="center">
-      <b-col cols="6">
-        <b-row align-h="center">
-          <input id="imageUpload" type="file" @change="onFileSelected" hidden />
-          <b-button variant="light" class="pb-2" @click="chooseImage"
-            >Choose an Image</b-button
-          >
-        </b-row>
-        <label id="idFileName"> {{ selectedFileName }}</label>
-        <b-row align-h="center">
-          <b-button
+    <h3>Custom Templates</h3>
+    <b-col cols="12" align-h="center">
+      <b-row>
+        <b-nav-form>
+          <b-form-input
+            v-on:enter="useWebScreenshotTemplate"
+            v-model="screenshotUrl"
             size="sm"
-            class="my-2 my-sm-0"
-            v-on:click="onUpload"
-            >✔</b-button
-          >
-        </b-row>
-      </b-col>
-    </b-row>
+            placeholder="Webpage to screenshot"
+          ></b-form-input>
+          <b-button size="sm" v-on:click="useWebScreenshotTemplate">✔</b-button>
+        </b-nav-form>
+      </b-row>
+      <b-row>
+        <b-nav-form>
+          <b-form-input
+            v-on:enter="useCustomTemplate"
+            v-model="customUrl"
+            size="sm"
+            placeholder="Link to Image file"
+          ></b-form-input>
+          <b-button size="sm" v-on:click="useCustomTemplate">✔</b-button>
+        </b-nav-form>
+      </b-row>
+      <b-row>
+        <input id="imageUpload" type="file" @change="onFileSelected" hidden />
+        <b-button variant="outline-primary" @click="chooseImage">
+          {{ selectedFileName }}</b-button
+        >
+        <b-button size="sm" v-on:click="onUpload">✔</b-button>
+      </b-row>
+    </b-col>
   </b-container>
 </template>
 
@@ -81,7 +47,7 @@ export default {
       customUrl: "",
       screenshotUrl: "",
       selectedFile: null,
-      selectedFileName: "",
+      selectedFileName: "Upload local file",
       selectedImageUrl: null,
     };
   },
