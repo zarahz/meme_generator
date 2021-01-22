@@ -8,12 +8,12 @@
       v-bind:key="image._id"
     >
       <b-col />
-      <b-col sm="6" align-self="center">
+      <b-col sm="6">
         <div>
           <b-row align-h="left" class="pull-right text-large">
             {{ image.title }}
           </b-row>
-          <b-row>
+          <b-row align-h="center">
             <img
               class="imageContainer"
               :src="'http://localhost:3000/static/' + image.nameAndFileType"
@@ -255,6 +255,7 @@ export default {
 <style scoped>
 .imageContainer {
   width: -webkit-fill-available;
+  max-width: 50%;
 }
 .text-large {
   font-size: 180%;
