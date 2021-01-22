@@ -31,8 +31,7 @@
             <b-icon icon="chat-left" aria-hidden="true"></b-icon>
             {{ commentsCount }}</b-button
           >
-        </b-col>
-        <b-col>
+
           <twitter :url="image.url" title="" scale="3" class="ml-3"></twitter>
           <linkedin :url="image.url" scale="3" class="ml-3"></linkedin>
           <whats-app
