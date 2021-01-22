@@ -5,7 +5,7 @@
         {{ image.title }}
       </b-row>
       <b-row align-h="center">
-        <b-img :src="image.url" />
+        <b-img class="imageContainer" :src="image.url" />
       </b-row>
       <b-row align-h="center" class="m-3">
         <b-col>
@@ -262,6 +262,10 @@ export default {
 </script>
 
 <style scoped>
+.imageContainer {
+  width: -webkit-fill-available;
+  max-width: 50%;
+}
 commentBox {
   color: orange;
   background-color: green;
