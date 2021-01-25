@@ -56,11 +56,9 @@
       </b-row>
       <b-row>
         <div v-if="isCameraOpen" class="camera-shoot">
-          <button type="button" size="sm" class="button" @click="takePhoto">
-            <img
-              src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png"
-            />
-          </button>
+          <b-button type="button" size="sm" class="button" @click="takePhoto">
+            <b-icon icon="camera" font-scale="2"></b-icon>
+          </b-button>
         </div>
         <div v-if="isPhotoTaken && isCameraOpen" class="camera-download">
           <b-button
@@ -121,6 +119,7 @@ export default {
     },
     onUpload() {
       this.$emit("newTemplateSelected", this.selectedImageUrl);
+      this.selectedFileName = "Upload local file"
     },
     toggleCamera() {
       if (this.isCameraOpen) {
@@ -164,8 +163,7 @@ export default {
       context.drawImage(this.$refs.camera, 0, 0, 450, 337.5);
     },
     onUploadCapturedImage() {
-      const download = document.getElementById("downloadPhoto");
-      console.log(download);
+      
       const capturedImageUrl = document
         .getElementById("photoTaken")
         .toDataURL("image/jpeg");
