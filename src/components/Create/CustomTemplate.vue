@@ -41,10 +41,38 @@
           <span v-else>Close Camera</span>
         </b-button>
       </b-row>
-      <div v-if="isCameraOpen" class="camera-box">
-        <video ref="camera" :width="450" :height="337.5" autoplay></video>
-      </div>
-      <b-row> </b-row>
+
+      <b-row>
+        <div v-if="isCameraOpen" class="camera-box">
+          <video ref="camera" :width="450" :height="300" autoplay></video>
+          <canvas
+            v-show="isPhotoTaken"
+            id="photoTaken"
+            ref="canvas"
+            :width="450"
+            :height="300"
+          ></canvas>
+        </div>
+      </b-row>
+      <b-row>
+        <div v-if="isCameraOpen" class="camera-shoot">
+          <button type="button" size="sm" class="button" @click="takePhoto">
+            <img
+              src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png"
+            />
+          </button>
+        </div>
+        <div v-if="isPhotoTaken && isCameraOpen" class="camera-download">
+          <b-button
+            size="sm"
+            id="downloadPhoto"
+            download="my-photo.jpg"
+            class="button"
+            v-on:click="onUploadCapturedImage"
+            >✔</b-button
+          >
+        </div>
+      </b-row>
     </b-col>
   </b-container>
 </template>
@@ -64,6 +92,7 @@ export default {
       selectedFileName: "Upload local file",
       selectedImageUrl: null,
       isCameraOpen: false,
+      isPhotoTaken: false,
     };
   },
   methods: {
@@ -85,8 +114,10 @@ export default {
     },
     onFileSelected(event) {
       this.selectedFile = event.target.files[0];
+      console.log(this.selectedFile);
       this.selectedFileName = event.target.files[0].name;
       this.selectedImageUrl = URL.createObjectURL(this.selectedFile);
+      console.log(this.selectedImageUrl);
     },
     onUpload() {
       this.$emit("newTemplateSelected", this.selectedImageUrl);
@@ -94,8 +125,8 @@ export default {
     toggleCamera() {
       if (this.isCameraOpen) {
         this.isCameraOpen = false;
+        this.isPhotoTaken = false;
         this.stopCameraStream();
-
       } else {
         this.isCameraOpen = true;
         this.createCameraElement();
@@ -125,6 +156,23 @@ export default {
       tracks.forEach((track) => {
         track.stop();
       });
+    },
+    takePhoto() {
+      this.isPhotoTaken = !this.isPhotoTaken;
+
+      const context = this.$refs.canvas.getContext("2d");
+      context.drawImage(this.$refs.camera, 0, 0, 450, 337.5);
+    },
+    onUploadCapturedImage() {
+      const download = document.getElementById("downloadPhoto");
+      console.log(download);
+      const capturedImageUrl = document
+        .getElementById("photoTaken")
+        .toDataURL("image/jpeg");
+      this.$emit("newTemplateSelected", capturedImageUrl);
+      this.stopCameraStream();
+      this.isCameraOpen = false;
+      this.isPhotoTaken = false;
     },
   },
   mounted() {},
