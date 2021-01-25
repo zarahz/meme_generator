@@ -259,8 +259,38 @@
     </b-row>
 
     <!-- draft popup -->
-    <b-modal id="draftModal" scrollable title="Pick a Draft">
-      <p class="my-4">TODO list all drafts and enable picking one!</p>
+    <b-modal id="draftModal" scrollable title="Pick a Draft" @ok="loadDraft">
+      <b-row v-if="allDrafts.length === 0" class="ml-2"
+        >No drafts are available.</b-row
+      >
+      <!--b-row
+        class="w-100 m-2"
+        v-for="draft in allDrafts"
+        v-bind:key="draft._id"
+      >
+        <b-row v-if="draft.topText"> Top Text: {{ draft.topText }} </b-row>
+        <b-row v-if="draft.bottomText">
+          Top Text: {{ draft.bottomText }}
+        </b-row>
+        <b-row> Image source: {{ draft.memeSource }} </b-row>
+      </b-row-->
+
+      <b-form-group>
+        <div v-for="draft in allDrafts" v-bind:key="draft._id">
+          <b-form-radio v-model="selectedDraft" :value="draft">
+            <b-col class="ml-2">
+              <b-row v-if="draft.topText">
+                Top Text: {{ draft.topText }}
+              </b-row>
+              <b-row v-if="draft.bottomText">
+                Top Text: {{ draft.bottomText }}
+              </b-row>
+              <b-row> Image source: {{ draft.memeSource }} </b-row>
+            </b-col>
+            <hr />
+          </b-form-radio>
+        </div>
+      </b-form-group>
     </b-modal>
   </b-container>
 </template>
@@ -304,6 +334,8 @@ export default {
       ],
       visibility: "public",
       draftSaved: false,
+      allDrafts: [],
+      selectedDraft: {},
       showDraftModal: false,
     };
   },
@@ -371,44 +403,62 @@ export default {
         bottomText: this.bottomText.text,
         bottomTextOffset: [this.bottomText.offsetX, this.bottomText.offsetY],
         memeSource: this.img,
+        title: this.title,
       };
       let result = await fetch("http://localhost:3000/image-draft", {
         method: "POST",
         headers: {
-          Accept: "application/json",
+          // Accept: "application/json",
           "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify(draftModel),
       });
-      if (result.status === 204) this.draftSaved = true;
-      window.scrollTo(0, 0);
-    },
-    async loadDraft(imageDraftId) {
-      let result = await fetch(
-        "http://localhost:3000/image-draft/" + imageDraftId,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
       if (result.status === 200) {
-        const draft = await result.json();
-        this.topText = {
-          text: draft.topText,
-          offsetX: draft.topTextOffset[0],
-          offsetY: draft.topTextOffset[1],
-        };
-        this.bottomText = {
-          text: draft.bottomText,
-          offsetX: draft.bottomTextOffset[0],
-          offsetY: draft.bottomTextOffset[1],
-        };
-        this.img = draft.memeSource;
+        let draft = await result.json();
+        console.log("saved draft!");
+        console.log(draft);
+        this.draftSaved = true;
+        window.scrollTo(0, 0);
       }
+    },
+    async loadDraft() {
+      if (!this.selectedDraft) return;
+      this.topText = {
+        text: this.selectedDraft.topText,
+        offsetX: this.selectedDraft.topTextOffset[0],
+        offsetY: this.selectedDraft.topTextOffset[1],
+      };
+      this.bottomText = {
+        text: this.selectedDraft.bottomText,
+        offsetX: this.selectedDraft.bottomTextOffset[0],
+        offsetY: this.selectedDraft.bottomTextOffset[1],
+      };
+      this.img = this.selectedDraft.memeSource;
+      // let result = await fetch(
+      //   "http://localhost:3000/image-draft/" + imageDraftId,
+      //   {
+      //     method: "GET",
+      //     credentials: "include",
+      //     headers: {
+      //       Accept: "application/json",
+      //     },
+      //   }
+      // );
+      // if (result.status === 200) {
+      //   const draft = await result.json();
+      //   this.topText = {
+      //     text: draft.topText,
+      //     offsetX: draft.topTextOffset[0],
+      //     offsetY: draft.topTextOffset[1],
+      //   };
+      //   this.bottomText = {
+      //     text: draft.bottomText,
+      //     offsetX: draft.bottomTextOffset[0],
+      //     offsetY: draft.bottomTextOffset[1],
+      //   };
+      //   this.img = draft.memeSource;
+      // }
     },
     async getAllDrafts() {
       let result = await fetch("http://localhost:3000/image-drafts", {
@@ -421,7 +471,7 @@ export default {
       if (result.status === 200) {
         const drafts = await result.json();
         this.showDraftModal = true;
-        console.log(drafts);
+        this.allDrafts = drafts;
       }
     },
   },
