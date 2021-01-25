@@ -224,14 +224,20 @@
             v-on:click="saveDraft"
             class="mr-3"
             v-b-tooltip.hover
-            title="Drawings on the meme will not be saved in the draft."
+            :disabled="!$store.getters.isLoggedIn"
+            :title="
+              !$store.getters.isLoggedIn
+                ? 'Log in to use this function'
+                : 'Drawings on the meme will not be saved in the draft.'
+            "
           >
             Save as Draft
           </b-button>
           <b-button
+            :disabled="!$store.getters.isLoggedIn"
             variant="outline-primary"
-            v-on:click="getAllDrafts"
-            v-b-modal.draftModal
+            v-on:click="openModal"
+            :title="!$store.getters.isLoggedIn && 'Log in to use this function'"
           >
             Load from Drafts
           </b-button>
@@ -259,39 +265,7 @@
     </b-row>
 
     <!-- draft popup -->
-    <b-modal id="draftModal" scrollable title="Pick a Draft" @ok="loadDraft">
-      <b-row v-if="allDrafts.length === 0" class="ml-2"
-        >No drafts are available.</b-row
-      >
-      <!--b-row
-        class="w-100 m-2"
-        v-for="draft in allDrafts"
-        v-bind:key="draft._id"
-      >
-        <b-row v-if="draft.topText"> Top Text: {{ draft.topText }} </b-row>
-        <b-row v-if="draft.bottomText">
-          Top Text: {{ draft.bottomText }}
-        </b-row>
-        <b-row> Image source: {{ draft.memeSource }} </b-row>
-      </b-row-->
-
-      <b-form-group>
-        <div v-for="draft in allDrafts" v-bind:key="draft._id">
-          <b-form-radio v-model="selectedDraft" :value="draft">
-            <b-col class="ml-2">
-              <b-row v-if="draft.topText">
-                Top Text: {{ draft.topText }}
-              </b-row>
-              <b-row v-if="draft.bottomText">
-                Top Text: {{ draft.bottomText }}
-              </b-row>
-              <b-row> Image source: {{ draft.memeSource }} </b-row>
-            </b-col>
-            <hr />
-          </b-form-radio>
-        </div>
-      </b-form-group>
-    </b-modal>
+    <draft-modal ref="draftModal" v-on:selected="loadDraftIntoCanvas" />
   </b-container>
 </template>
 
@@ -304,6 +278,7 @@ import Templates from "./Templates.vue";
 import CustomTemplate from "./CustomTemplate.vue";
 import CustomCanvas from "./CustomCanvas.vue";
 import DrawingSettings from "./DrawingSettings";
+import DraftModal from "./DraftModal";
 
 export default {
   name: "CreateMeme",
@@ -312,6 +287,7 @@ export default {
     customTemplate: CustomTemplate,
     customCanvas: CustomCanvas,
     drawingSettings: DrawingSettings,
+    draftModal: DraftModal,
   },
   data() {
     return {
@@ -334,9 +310,6 @@ export default {
       ],
       visibility: "public",
       draftSaved: false,
-      allDrafts: [],
-      selectedDraft: {},
-      showDraftModal: false,
     };
   },
   methods: {
@@ -380,11 +353,6 @@ export default {
           console.log(key[0] + ", " + key[1]);
         }
         let result = await fetch("http://localhost:3000/upload", {
-          method: "POST",
-          // headers: {
-          //   Accept: "application/json",
-          //   // "Content-Type": "multipart/form-data",
-          // },
           credentials: "include",
           body: data,
         });
@@ -397,7 +365,6 @@ export default {
     },
     async saveDraft() {
       let draftModel = {
-        //TODO title
         topText: this.topText.text,
         topTextOffset: [this.topText.offsetX, this.topText.offsetY],
         bottomText: this.bottomText.text,
@@ -408,71 +375,31 @@ export default {
       let result = await fetch("http://localhost:3000/image-draft", {
         method: "POST",
         headers: {
-          // Accept: "application/json",
           "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify(draftModel),
       });
-      if (result.status === 200) {
-        let draft = await result.json();
-        console.log("saved draft!");
-        console.log(draft);
+      if (result.status === 204) {
         this.draftSaved = true;
         window.scrollTo(0, 0);
       }
     },
-    async loadDraft() {
-      if (!this.selectedDraft) return;
+    async loadDraftIntoCanvas(draft) {
       this.topText = {
-        text: this.selectedDraft.topText,
-        offsetX: this.selectedDraft.topTextOffset[0],
-        offsetY: this.selectedDraft.topTextOffset[1],
+        text: draft.topText,
+        offsetX: draft.topTextOffset[0],
+        offsetY: draft.topTextOffset[1],
       };
       this.bottomText = {
-        text: this.selectedDraft.bottomText,
-        offsetX: this.selectedDraft.bottomTextOffset[0],
-        offsetY: this.selectedDraft.bottomTextOffset[1],
+        text: draft.bottomText,
+        offsetX: draft.bottomTextOffset[0],
+        offsetY: draft.bottomTextOffset[1],
       };
-      this.img = this.selectedDraft.memeSource;
-      // let result = await fetch(
-      //   "http://localhost:3000/image-draft/" + imageDraftId,
-      //   {
-      //     method: "GET",
-      //     credentials: "include",
-      //     headers: {
-      //       Accept: "application/json",
-      //     },
-      //   }
-      // );
-      // if (result.status === 200) {
-      //   const draft = await result.json();
-      //   this.topText = {
-      //     text: draft.topText,
-      //     offsetX: draft.topTextOffset[0],
-      //     offsetY: draft.topTextOffset[1],
-      //   };
-      //   this.bottomText = {
-      //     text: draft.bottomText,
-      //     offsetX: draft.bottomTextOffset[0],
-      //     offsetY: draft.bottomTextOffset[1],
-      //   };
-      //   this.img = draft.memeSource;
-      // }
+      this.img = draft.memeSource;
     },
-    async getAllDrafts() {
-      let result = await fetch("http://localhost:3000/image-drafts", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      if (result.status === 200) {
-        const drafts = await result.json();
-        this.showDraftModal = true;
-        this.allDrafts = drafts;
-      }
+    openModal() {
+      this.$refs.draftModal.openModal();
     },
   },
 };
