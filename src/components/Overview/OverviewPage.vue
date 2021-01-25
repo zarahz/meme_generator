@@ -182,13 +182,13 @@ export default {
       var upvoteUrl = "http://localhost:3000/post-upvote";
       var upvote = {
         imageId: currentImageId,
-        authorId: this.$store.getters.user._id,
       };
       let result = await fetch(upvoteUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(upvote),
       });
       if (result.status !== 200) {
@@ -204,13 +204,13 @@ export default {
       var downvoteUrl = "http://localhost:3000/post-downvote";
       var downvote = {
         imageId: currentImageId,
-        authorId: this.$store.getters.user._id,
       };
       let result = await fetch(downvoteUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(downvote),
       });
       if (result.status !== 200) {
