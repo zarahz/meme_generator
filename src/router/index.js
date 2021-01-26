@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
 import CreateMeme from "../components/Create/CreateMeme.vue";
+import RenderMeme from "../components/Create/RenderMeme.vue";
 import Meme from "../components/Overview/Meme.vue";
 import OverviewPage from "../components/Overview/OverviewPage.vue";
 import Login from "../components/Authenticate/Login.vue";
@@ -26,6 +27,12 @@ const routes = [
     path: "/create-meme",
     name: "CreateMeme",
     component: CreateMeme,
+
+  },
+  {
+    path: "/render-meme",
+    name: "RenderMeme",
+    component: RenderMeme,
 
   },
   {

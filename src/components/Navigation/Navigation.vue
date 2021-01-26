@@ -10,7 +10,14 @@
           router
           to="/create-meme"
           :active="$route.name == 'CreateMeme'"
-          >Create a Meme</b-nav-item
+          >Meme Canvas</b-nav-item
+        >
+        <b-nav-item
+          href="#"
+          router
+          to="/render-meme"
+          :active="$route.name == 'RenderMeme'"
+          >Meme Renderer</b-nav-item
         >
       </b-navbar-nav>
 
