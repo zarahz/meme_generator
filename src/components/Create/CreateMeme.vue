@@ -384,10 +384,8 @@ export default {
         data.append("visibility", this.visibility);
         data.append("file", blob); //, "file.png"
         data.append("title", this.title);
-        for (var key of data.entries()) {
-          console.log(key[0] + ", " + key[1]);
-        }
         let result = await fetch("http://localhost:3000/upload", {
+          method: "POST",
           credentials: "include",
           body: data,
         });
