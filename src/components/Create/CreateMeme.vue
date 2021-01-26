@@ -320,6 +320,7 @@ export default {
     return {
       topText: { text: "", offsetX: 0, offsetY: 30 },
       bottomText: { text: "", offsetX: 0, offsetY: -30 },
+      fontSize: 10,
       img: "",
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
