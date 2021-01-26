@@ -140,7 +140,6 @@ export default {
       this.templateSelectionIndex = selectedIndex;
       this.$emit(
         "newTemplateSelected",
-        //this.displayedImgFlipMemes[this.templateSelectionIndex].url,
         this.displayedMemes[this.templateSelectionIndex].url
       );
     },
