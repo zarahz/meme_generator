@@ -169,6 +169,33 @@
           @clearCanvas="clearDrawingCanvas"
         />
       </b-row>
+      <b-button 
+          type="button"
+          class="btn btn-default btn-sm"
+          variant="outline-primary"
+          v-on:click="fontSize++"
+      >
+        Increase font size
+      </b-button>
+      <b-button 
+          type="button"
+          class="btn btn-default btn-sm"
+          variant="outline-primary"
+          v-on:click="fontSize--"
+      >
+        Decrease font size
+      </b-button>
+        <p v-bind:style="{ fontSize: fontSize + 'px' }">
+        Font size: {{ fontSize }}
+      </p>
+      <b-button 
+          type="button"
+          class="btn btn-default btn-sm"
+          variant="outline-primary"
+          v-on:click="fontSize--"
+      >
+        Change format
+      </b-button>
       <b-row align-h="center" class="mb-3">
         <b-form-group label="Visibility of the meme">
           <b-form-radio-group
@@ -297,6 +324,13 @@ export default {
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
       title: "",
+      baseStyles: {
+        fontWeight:'800',
+        color: 'red'
+      },
+      overrideStyles: {
+        color:'blue'
+      },
       visibilityOptions: [
         { text: "Public (list the finished meme publicly)", value: "public" },
         {
@@ -412,3 +446,8 @@ export default {
   max-width: 60%;
 } */
 </style>
+
+
+
+  
+
