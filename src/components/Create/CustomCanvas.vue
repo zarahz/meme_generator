@@ -1,10 +1,54 @@
 <template>
   <b-container fluid>
     <!-- class="justify-content-md-center"-->
-    <b-row align-h="center" :style="{ position: 'relative' }">
-      <canvas ref="memeCanvas" id="memeCanvas" />
-      <canvas class="overlay" ref="drawCanvas" id="drawCanvas" />
-      <canvas ref="resultCanvas" id="resultCanvas" class="hidden" />
+    <b-row align-h="center">
+      <b-button type="button" size="sm" variant="outline-primary">
+        <b-icon icon="plus" font-scale="2"></b-icon>
+      </b-button>
+    </b-row>
+    <b-row align-h="center" class="canvas-row mt-1">
+      <b-col align-self="center" class="plus-button-left">
+        <b-button type="button" size="sm" variant="outline-primary">
+          <b-icon icon="plus" font-scale="2"></b-icon>
+        </b-button>
+      </b-col>
+      <b-col>
+        <canvas ref="memeCanvas" id="memeCanvas" />
+        <canvas class="overlay" ref="drawCanvas" id="drawCanvas" />
+        <canvas ref="resultCanvas" id="resultCanvas" class="hidden" />
+      </b-col>
+      <b-col align-self="center" class="plus-button-right">
+        <b-button type="button" size="sm" variant="outline-primary">
+          <b-icon icon="plus" font-scale="2"></b-icon> </b-button
+      ></b-col>
+    </b-row>
+    <b-row align-h="center">
+      <b-button type="button" size="sm" variant="outline-primary">
+        <b-icon icon="plus" font-scale="2"></b-icon>
+      </b-button>
+    </b-row>
+
+    <b-row align-h="center" class="mt-3">
+      <label class="mr-5">Set Canvas Size</label>
+      <label class="mr-1">Width:</label>
+      <!--v-on:input="changeImageText"-->
+      <b-form-input
+        v-model="canvasWidth"
+        @change="changeCanvasSize(true)"
+        style="width: 60px"
+        class="mr-3"
+        type="text"
+        placeholder="horizontal offset"
+      />
+      <label class="mr-1">Height:</label>
+      <!--v-on:input="changeImageText"-->
+      <b-form-input
+        v-model="canvasHeight"
+        @change="changeCanvasSize(false)"
+        style="width: 60px"
+        type="text"
+        placeholder="horizontal offset"
+      />
     </b-row>
   </b-container>
 </template>
@@ -22,6 +66,8 @@ export default {
   data() {
     return {
       pos: { x: 0, y: 0 },
+      canvasWidth: 0,
+      canvasHeight: 0,
     };
   },
   methods: {
@@ -30,43 +76,61 @@ export default {
       let context = canvas.getContext("2d");
 
       this.drawCanvasImage(canvas, context).then(() => {
-        this.setCanvasTextStyle(context);
-        // wait until picture finished loading and add text afterwards!
-        let topCanvasHorizontalMid =
-          canvas.width / 2 + parseInt(this.topText.offsetX);
-        let bottomCanvasHorizontalMid =
-          canvas.width / 2 + parseInt(this.bottomText.offsetX);
-        let canvasBottom = canvas.height - Math.abs(this.bottomText.offsetY);
-        //show top text
-
-        context.fillText(
-          this.topText.text,
-          topCanvasHorizontalMid,
-          this.topText.offsetY,
-          canvas.width
-        );
-        context.strokeText(
-          this.topText.text,
-          topCanvasHorizontalMid,
-          this.topText.offsetY,
-          canvas.width
-        );
-        //show bottom text
-        context.fillText(
-          this.bottomText.text,
-          bottomCanvasHorizontalMid,
-          canvasBottom,
-          canvas.width
-        );
-        context.strokeText(
-          this.bottomText.text,
-          bottomCanvasHorizontalMid,
-          canvasBottom,
-          canvas.width
-        );
+        this.showTexts(canvas, context);
       });
     },
-    drawCanvasImage(canvas, context) {
+    showTexts(canvas, context) {
+      this.setCanvasTextStyle(context);
+      // wait until picture finished loading and add text afterwards!
+      let topCanvasHorizontalMid =
+        canvas.width / 2 + parseInt(this.topText.offsetX);
+      let bottomCanvasHorizontalMid =
+        canvas.width / 2 + parseInt(this.bottomText.offsetX);
+      let canvasBottom = canvas.height - Math.abs(this.bottomText.offsetY);
+      //show top text
+
+      context.fillText(
+        this.topText.text,
+        topCanvasHorizontalMid,
+        this.topText.offsetY,
+        canvas.width
+      );
+      context.strokeText(
+        this.topText.text,
+        topCanvasHorizontalMid,
+        this.topText.offsetY,
+        canvas.width
+      );
+      //show bottom text
+      context.fillText(
+        this.bottomText.text,
+        bottomCanvasHorizontalMid,
+        canvasBottom,
+        canvas.width
+      );
+      context.strokeText(
+        this.bottomText.text,
+        bottomCanvasHorizontalMid,
+        canvasBottom,
+        canvas.width
+      );
+    },
+    changeCanvasSize(basedOnWidth) {
+      let canvas = this.$refs.memeCanvas;
+      let context = canvas.getContext("2d");
+      this.drawCanvasImage(canvas, context, true, basedOnWidth).then(() => {
+        this.showTexts(canvas, context);
+      });
+    },
+    appendImage(position) {
+      console.log(position);
+    },
+    drawCanvasImage(
+      canvas,
+      context,
+      modifiedCanvasSize = false,
+      ratioBasedOnWidth
+    ) {
       let self = this;
       return new Promise((resolve) => {
         let img = new Image();
@@ -74,25 +138,36 @@ export default {
         img.crossOrigin = "anonymous";
         img.src = this.img;
         img.onload = function () {
-          let width = window.innerWidth;
-          let height = window.innerHeight;
+          let windowWidth = window.innerWidth;
+          let windowHeight = window.innerHeight;
           // in order to show the picture in high resolution, set the canvas to the max height & width
-          canvas.width = width;
-          canvas.height = height;
-          // calculate the scaled (down) image height & width to fit the canvas
-          let imgWidth = img.width;
-          let imgHeight = img.height;
-          let scale = Math.min(
-            canvas.width / imgWidth,
-            canvas.height / imgHeight
-          );
-          // set the canvas back to the scaled values to maintain ratio and hight pic resolution
-          let newImageWidth = imgWidth * scale;
-          let newImageHeight = imgHeight * scale;
-          canvas.width = newImageWidth;
-          canvas.height = newImageHeight;
+          canvas.width = windowWidth;
+          canvas.height = windowHeight;
 
-          self.adaptCanvasSizes();
+          let scale = self.calculateImageScale(
+            img,
+            windowWidth,
+            windowHeight,
+            modifiedCanvasSize,
+            ratioBasedOnWidth
+          );
+
+          //calculate new image size by scaling up/down
+          let imageSize = self.calculateImageSize(
+            img,
+            scale,
+            modifiedCanvasSize
+          );
+
+          // set canvas size based on (scaled) image size
+          canvas.width = imageSize.width;
+          canvas.height = imageSize.height;
+
+          //save canvas width & height values
+          self.canvasWidth = canvas.width;
+          self.canvasHeight = canvas.height;
+
+          self.adaptAllCanvasSizes();
 
           context.mozImageSmoothingEnabled = false;
           context.imageSmoothingEnabled = false;
@@ -102,24 +177,70 @@ export default {
             img,
             0,
             0,
-            imgWidth,
-            imgHeight,
+            img.width,
+            img.height,
             0,
             0,
-            newImageWidth,
-            newImageHeight
+            modifiedCanvasSize ? self.canvasWidth : imageSize.width,
+            modifiedCanvasSize ? self.canvasHeight : imageSize.height
           );
           // register that image loading is complete
           return resolve();
         };
       });
     },
+    calculateImageScale(
+      img,
+      windowWidth,
+      windowHeight,
+      modifiedCanvasSize,
+      ratioBasedOnWidth
+    ) {
+      // calculate the scaled (down) image height & width to fit the canvas
+      let widthRatio = windowWidth / img.width;
+      let heigthRatio = windowHeight / img.height;
+
+      let scale = Math.min(widthRatio, heigthRatio);
+
+      //if user has set a size for the canvas, calculate ratios based on that
+      if (modifiedCanvasSize) {
+        if (ratioBasedOnWidth) {
+          // ratio is based on User set canvas size instead of window size!
+          scale = this.canvasWidth / img.width;
+        } else {
+          scale = this.canvasHeight / img.height;
+        }
+      }
+      return scale;
+    },
+    calculateImageSize(img, scale, modifiedCanvasSize) {
+      let imageSize = {};
+      imageSize.width = img.width;
+      imageSize.height = img.height;
+      //always scale down, scale up only if user manually increased the size
+      if (modifiedCanvasSize || scale < 1) {
+        // maintain ratio and hight resolution
+        imageSize.width = img.width * scale;
+        imageSize.height = img.height * scale;
+      }
+      return imageSize;
+    },
+    adaptAllCanvasSizes() {
+      // layer the drawing canvas above
+      let drawingCanvas = this.$refs.drawCanvas;
+      drawingCanvas.height = this.canvasHeight;
+      drawingCanvas.width = this.canvasWidth;
+
+      let resultCanvas = this.$refs.resultCanvas;
+      resultCanvas.height = this.canvasHeight;
+      resultCanvas.width = this.canvasWidth;
+    },
     loadCanvas() {
       let canvas = this.$refs.memeCanvas;
       let context = canvas.getContext("2d");
       this.drawCanvasImage(canvas, context).then(() => {
         this.setCanvasTextStyle(context);
-        this.adaptCanvasSizes();
+        this.adaptAllCanvasSizes();
       });
     },
     clearDrawingCanvas() {
@@ -128,17 +249,6 @@ export default {
       const context = drawingCanvas.getContext("2d");
 
       context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-    },
-    adaptCanvasSizes() {
-      let canvas = this.$refs.memeCanvas;
-      // layer the drawing canvas above
-      let drawingCanvas = this.$refs.drawCanvas;
-      drawingCanvas.height = canvas.height;
-      drawingCanvas.width = canvas.width;
-
-      let resultCanvas = this.$refs.resultCanvas;
-      resultCanvas.height = canvas.height;
-      resultCanvas.width = canvas.width;
     },
     setCanvasTextStyle(context) {
       context.font = "50px Impact";
@@ -229,8 +339,20 @@ export default {
 .hidden {
   display: none;
 }
+.canvas-row {
+  position: relative;
+}
 .overlay {
   position: absolute;
   z-index: 1;
+  top: 0;
+  left: 0;
+}
+
+.plus-button-left {
+  text-align: right;
+}
+.plus-button-right {
+  text-align: left;
 }
 </style>

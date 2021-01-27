@@ -1,6 +1,6 @@
 <!-- Overview page for endless scroll -> calls meme.vue with header and src information to display memes -->
 <template>
-  <b-container class="justify-content-md-center" fluid>
+  <b-container fluid>
     <b-row
       cols-sm="4"
       class="mb-4"
@@ -10,7 +10,7 @@
       <b-col />
       <b-col sm="6">
         <div>
-          <b-row align-h="left" class="pull-right text-large">
+          <b-row class="pull-right text-large">
             {{ image.title }}
           </b-row>
           <b-row align-h="center">
@@ -20,7 +20,7 @@
               @click="openMemeView(image._id)"
             />
           </b-row>
-          <b-row class="justify-content-md-center" cols="4">
+          <b-row align-h="center">
             <b-button
               variant="outline-success"
               class="m-3"
@@ -48,7 +48,7 @@
             <!-- @click="openMemeView(image._id)" -->
           </b-row>
 
-          <b-row b-row class="mb-3" align-h="center">
+          <b-row class="mb-3" align-h="center">
             <b-col cols="2" />
             <b-col>
               <facebook
@@ -96,6 +96,7 @@
         </div>
       </b-col>
       <b-col />
+      <hr class="w-50" />
     </b-row>
     <infinite-loading @infinite="loadMoreImages"></infinite-loading>
   </b-container>

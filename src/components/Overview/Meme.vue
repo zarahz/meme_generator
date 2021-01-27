@@ -154,7 +154,7 @@ export default {
       console.log("image liked");
       var upvoteUrl = "http://localhost:3000/post-upvote";
       var upvote = {
-        imageId: this.imageId
+        imageId: this.imageId,
       };
       let result = await fetch(upvoteUrl, {
         method: "POST",
@@ -262,7 +262,7 @@ export default {
 
 <style scoped>
 .imageContainer {
-  width: -webkit-fill-available;
+  /* width: -webkit-fill-available; */
   max-width: 50%;
 }
 commentBox {

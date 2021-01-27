@@ -13,6 +13,16 @@
     <h1>Create a Meme!</h1>
 
     <div v-if="img">
+      <b-row align-h="center" class="mb-1">
+        <b-form-group>
+          <b-form-radio-group
+            id="visibility-radio-buttons"
+            v-model="visibility"
+            :options="visibilityOptions"
+          >
+          </b-form-radio-group>
+        </b-form-group>
+      </b-row>
       <b-row align-h="center" class="mb-3">
         <b-col cols="2">
           <label>Top Text:</label>
@@ -169,43 +179,33 @@
           @clearCanvas="clearDrawingCanvas"
         />
       </b-row>
-      <b-button 
-          type="button"
-          class="btn btn-default btn-sm"
-          variant="outline-primary"
-          v-on:click="fontSize++"
+      <b-button
+        type="button"
+        class="btn btn-default btn-sm"
+        variant="outline-primary"
+        v-on:click="fontSize++"
       >
         Increase font size
       </b-button>
-      <b-button 
-          type="button"
-          class="btn btn-default btn-sm"
-          variant="outline-primary"
-          v-on:click="fontSize--"
+      <b-button
+        type="button"
+        class="btn btn-default btn-sm"
+        variant="outline-primary"
+        v-on:click="fontSize--"
       >
         Decrease font size
       </b-button>
-        <p v-bind:style="{ fontSize: fontSize + 'px' }">
+      <p v-bind:style="{ fontSize: fontSize + 'px' }">
         Font size: {{ fontSize }}
       </p>
-      <b-button 
-          type="button"
-          class="btn btn-default btn-sm"
-          variant="outline-primary"
-          v-on:click="fontSize--"
+      <b-button
+        type="button"
+        class="btn btn-default btn-sm"
+        variant="outline-primary"
+        v-on:click="fontSize--"
       >
         Change format
       </b-button>
-      <b-row align-h="center" class="mb-3">
-        <b-form-group label="Visibility of the meme">
-          <b-form-radio-group
-            id="visibility-radio-buttons"
-            v-model="visibility"
-            :options="visibilityOptions"
-          >
-          </b-form-radio-group>
-        </b-form-group>
-      </b-row>
       <b-row v-if="title" class="mb-3">
         <b-col>
           <label>{{ title }}</label>
@@ -326,11 +326,11 @@ export default {
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
       title: "",
       baseStyles: {
-        fontWeight:'800',
-        color: 'red'
+        fontWeight: "800",
+        color: "red",
       },
       overrideStyles: {
-        color:'blue'
+        color: "blue",
       },
       visibilityOptions: [
         { text: "Public (list the finished meme publicly)", value: "public" },

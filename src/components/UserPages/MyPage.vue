@@ -10,7 +10,7 @@
       <b-col />
       <b-col sm="6" align-self="center">
         <div>
-          <b-row align-h="center">
+          <b-row class="pull-right text-large">
             {{ meme.title }} ({{ meme.visibility }})
           </b-row>
           <b-row>
@@ -176,5 +176,8 @@ export default {
 <style scoped>
 .imageContainer {
   width: -webkit-fill-available;
+}
+.text-large {
+  font-size: 180%;
 }
 </style>
