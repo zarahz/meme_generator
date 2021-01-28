@@ -13,7 +13,7 @@
     </b-row>
 
     <b-row align-h="center">
-      <b-col cols="6">
+      <b-col cols="12" md="auto">
         <b-row align-h="center">
           <b-nav-form>
             <b-form-input
@@ -39,7 +39,6 @@
         </vue-gallery-slideshow>
       </b-col>
     </b-row>
-    <b-row align-h="center">Templates </b-row>
   </b-container>
 </template>
 
@@ -140,7 +139,8 @@ export default {
       this.templateSelectionIndex = selectedIndex;
       this.$emit(
         "newTemplateSelected",
-        this.displayedMemes[this.templateSelectionIndex].url
+        this.displayedMemes[this.templateSelectionIndex].url,
+        this.displayedMemes[this.templateSelectionIndex].name
       );
     },
 

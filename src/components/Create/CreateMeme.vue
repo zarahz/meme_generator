@@ -219,6 +219,7 @@
             :bottomText="bottomText"
             :img="img"
             :drawingSettings="drawingSettings"
+            @openTemplatesModal="openTemplatesModal"
             ref="meme"
           />
         </b-col>
@@ -263,7 +264,7 @@
           <b-button
             :disabled="!$store.getters.isLoggedIn"
             variant="outline-primary"
-            v-on:click="openModal"
+            v-on:click="openDraftModal"
             :title="!$store.getters.isLoggedIn && 'Log in to use this function'"
           >
             Load from Drafts
@@ -293,6 +294,12 @@
 
     <!-- draft popup -->
     <draft-modal ref="draftModal" v-on:selected="loadDraftIntoCanvas" />
+
+    <!-- template popup -->
+    <templates-modal
+      ref="templatesModal"
+      v-on:selected="apppendTemplateToCanvas"
+    ></templates-modal>
   </b-container>
 </template>
 
@@ -305,7 +312,8 @@ import Templates from "./Templates.vue";
 import CustomTemplate from "./CustomTemplate.vue";
 import CustomCanvas from "./CustomCanvas.vue";
 import DrawingSettings from "./DrawingSettings";
-import DraftModal from "./DraftModal";
+import DraftModal from "./Modals/DraftModal";
+import TemplatesModal from "./Modals/TemplatesModal";
 
 export default {
   name: "CreateMeme",
@@ -315,6 +323,7 @@ export default {
     customCanvas: CustomCanvas,
     drawingSettings: DrawingSettings,
     draftModal: DraftModal,
+    templatesModal: TemplatesModal,
   },
   data() {
     return {
@@ -418,6 +427,9 @@ export default {
         window.scrollTo(0, 0);
       }
     },
+    apppendTemplateToCanvas(memeUrl) {
+      this.$refs.meme.apppendTemplate(memeUrl);
+    },
     async loadDraftIntoCanvas(draft) {
       this.topText = {
         text: draft.topText,
@@ -431,8 +443,12 @@ export default {
       };
       this.img = draft.memeSource;
     },
-    openModal() {
+    openDraftModal() {
       this.$refs.draftModal.openModal();
+    },
+    openTemplatesModal() {
+      console.log("opening template");
+      this.$refs.templatesModal.openModal();
     },
   },
 };
