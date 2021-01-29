@@ -269,6 +269,27 @@
           >
             Load from Drafts
           </b-button>
+          <b-dropdown
+            text="Share meme"
+            variant="outline-primary"
+            class="m-md-2"
+          >
+            <b-dropdown-item 
+              ><twitter title="" scale="2" class="ml-2"></twitter
+            ></b-dropdown-item>
+            <b-dropdown-item
+              ><linkedin scale="2" class="ml-2"></linkedin
+            ></b-dropdown-item>
+            <b-dropdown-item
+              ><whats-app title="Hello" scale="2" class="ml-2"></whats-app
+            ></b-dropdown-item>
+            <b-dropdown-item>
+              <pinterest scale="2" class="ml-2"></pinterest>
+            </b-dropdown-item>
+            <b-dropdown-item 
+              ><email  subject="Hello" scale="2" class="ml-2"></email
+            ></b-dropdown-item>
+          </b-dropdown>
         </b-col>
         <b-col>
           <b-button
@@ -314,6 +335,13 @@ import CustomCanvas from "./CustomCanvas.vue";
 import DrawingSettings from "./DrawingSettings";
 import DraftModal from "./Modals/DraftModal";
 import TemplatesModal from "./Modals/TemplatesModal";
+import {
+  Twitter,
+  Linkedin,
+  Pinterest,
+  WhatsApp,
+  Email,
+} from "vue-socialmedia-share";
 
 export default {
   name: "CreateMeme",
@@ -324,6 +352,12 @@ export default {
     drawingSettings: DrawingSettings,
     draftModal: DraftModal,
     templatesModal: TemplatesModal,
+    Twitter,
+    Linkedin,
+    Pinterest,
+    WhatsApp,
+    Email,
+    
   },
   data() {
     return {
@@ -382,6 +416,7 @@ export default {
     },
     download() {
       let canvas = this.$refs.meme.createResultingCanvas();
+
       canvas.toBlob(function (blob) {
         saveAs(blob, "meme.png");
       });
@@ -450,6 +485,7 @@ export default {
       console.log("opening template");
       this.$refs.templatesModal.openModal();
     },
+   
   },
 };
 </script>
