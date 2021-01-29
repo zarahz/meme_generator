@@ -377,6 +377,7 @@ export default {
       let context = canvas.getContext("2d");
       //combine the meme and drawing into a result canvas to download
       context.drawImage(this.$refs.memeCanvas, 0, 0);
+      context.drawImage(this.$refs.textCanvas, 0, 0);
       context.drawImage(this.$refs.drawCanvas, 0, 0);
       return canvas;
     },
