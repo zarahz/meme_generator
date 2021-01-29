@@ -24,6 +24,7 @@
       </b-col>
       <b-col>
         <canvas ref="memeCanvas" id="memeCanvas" />
+        <canvas class="overlay" ref="textCanvas" id="textCanvas" />
         <canvas class="overlay" ref="drawCanvas" id="drawCanvas" />
         <canvas ref="resultCanvas" id="resultCanvas" class="hidden" />
       </b-col>
@@ -94,15 +95,13 @@ export default {
   },
   methods: {
     changeImageText() {
-      let canvas = this.$refs.memeCanvas;
-      let context = canvas.getContext("2d");
-
-      this.drawCanvasImage(canvas, context).then(() => {
-        this.showTexts(canvas, context);
-      });
+      this.showTexts();
     },
-    showTexts(canvas, context) {
-      this.setCanvasTextStyle(context);
+    showTexts() {
+      let canvas = this.$refs.textCanvas;
+      let context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      this.setTextStyle();
       // wait until picture finished loading and add text afterwards!
       let topCanvasHorizontalMid =
         canvas.width / 2 + parseInt(this.topText.offsetX);
@@ -143,7 +142,6 @@ export default {
       let self = this;
       new Promise((resolve) => {
         //image must be rerendered on canvas size change!
-        // let img = this.prepareImage(this.img);
         var content = new Image();
         content.src = canvas.toDataURL();
         content.onload = function () {
@@ -171,8 +169,8 @@ export default {
             content,
             0,
             0,
-            imageSize.width,
-            imageSize.height,
+            content.width,
+            content.height,
             0,
             0,
             self.canvasWidth,
@@ -182,7 +180,7 @@ export default {
           return resolve();
         };
       }).then(() => {
-        this.showTexts(canvas, context);
+        this.showTexts();
       });
     },
     prepareImage(url) {
@@ -270,6 +268,8 @@ export default {
           );
           return resolve();
         };
+      }).then(() => {
+        this.showTexts();
       });
     },
     drawCanvasImage(canvas, context) {
@@ -339,6 +339,11 @@ export default {
       drawingCanvas.height = this.canvasHeight;
       drawingCanvas.width = this.canvasWidth;
 
+      // layer the text canvas above
+      let textCanvas = this.$refs.textCanvas;
+      textCanvas.height = this.canvasHeight;
+      textCanvas.width = this.canvasWidth;
+
       let resultCanvas = this.$refs.resultCanvas;
       resultCanvas.height = this.canvasHeight;
       resultCanvas.width = this.canvasWidth;
@@ -347,8 +352,8 @@ export default {
       let canvas = this.$refs.memeCanvas;
       let context = canvas.getContext("2d");
       this.drawCanvasImage(canvas, context).then(() => {
-        this.setCanvasTextStyle(context);
         this.adaptAllCanvasSizes();
+        this.setTextStyle();
       });
     },
     clearDrawingCanvas() {
@@ -358,7 +363,9 @@ export default {
 
       context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
     },
-    setCanvasTextStyle(context) {
+    setTextStyle() {
+      let canvas = this.$refs.textCanvas;
+      let context = canvas.getContext("2d");
       context.font = "50px Impact";
       context.fillStyle = "white";
       context.strokeStyle = "black";
