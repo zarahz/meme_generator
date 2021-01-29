@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <!-- class="justify-content-md-center"-->
-    <b-row align-h="center">
+    <b-row align-h="center" class="m-2">
       <b-button
         type="button"
         size="sm"
@@ -11,7 +11,7 @@
         <b-icon icon="plus" font-scale="2"></b-icon>
       </b-button>
     </b-row>
-    <b-row align-h="center" class="canvas-row mt-1">
+    <b-row align-h="center" class="canvas-row mr-1">
       <b-col align-self="center" class="plus-button-left">
         <b-button
           type="button"
@@ -22,7 +22,7 @@
           <b-icon icon="plus" font-scale="2"></b-icon>
         </b-button>
       </b-col>
-      <b-col>
+      <b-col :style="{ 'max-width': canvasWidth + 'px', 'padding-left': 0 }">
         <canvas ref="memeCanvas" id="memeCanvas" />
         <canvas class="overlay" ref="textCanvas" id="textCanvas" />
         <canvas class="overlay" ref="drawCanvas" id="drawCanvas" />
@@ -39,7 +39,7 @@
         </b-button>
       </b-col>
     </b-row>
-    <b-row align-h="center">
+    <b-row align-h="center" class="m-2">
       <b-button
         type="button"
         size="sm"
@@ -352,8 +352,9 @@ export default {
       let canvas = this.$refs.memeCanvas;
       let context = canvas.getContext("2d");
       this.drawCanvasImage(canvas, context).then(() => {
-        this.adaptAllCanvasSizes();
+        // this.adaptAllCanvasSizes();
         this.setTextStyle();
+        this.showTexts();
       });
     },
     clearDrawingCanvas() {
@@ -445,7 +446,8 @@ export default {
       deep: true,
     },
     img() {
-      this.changeImageText();
+      // this.changeImageText();
+      this.loadCanvas();
     },
   },
 };
@@ -464,8 +466,8 @@ export default {
   top: 0;
   left: 0;
   /**col adds padding! */
-  padding-right: 15px;
-  padding-left: 15px;
+  /* padding-right: 15px;
+  padding-left: 15px; */
 }
 
 .plus-button-left {
