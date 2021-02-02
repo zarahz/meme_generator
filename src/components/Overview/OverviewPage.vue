@@ -1,6 +1,23 @@
 <!-- Overview page for endless scroll -> calls meme.vue with header and src information to display memes -->
 <template>
   <b-container fluid>
+    <b-row>
+      <b-dropdown text="Filter Memes" variant="outline-primary" class="m-md-2">
+        <b-dropdown-item @click="filterAfterCreationDate"
+          >after creation date</b-dropdown-item
+        >
+        <b-dropdown-item @click="filterAfterUpvotes">upvotes</b-dropdown-item>
+        <b-dropdown-item>downvotes</b-dropdown-item>
+        <b-dropdown-item>comments</b-dropdown-item>
+      </b-dropdown>
+      <b-button
+        size="sm"
+        variant="outline-primary"
+        class="m-md-2"
+        v-on:click="show_random_meme"
+        >I'm feeling lucky!</b-button
+      >
+    </b-row>
     <b-row
       cols-sm="4"
       class="mb-4"
@@ -248,6 +265,33 @@ export default {
       var downvotes = dbDownvotes;
       var downvotesCount = downvotes.length;
       this.displayedImages[index].downvoteCount = downvotesCount;
+    },
+    filterAfterCreationDate() {
+      console.log("filtering");
+      this.displayedImages.sort((a, b) => {
+        return new Date(a.creationDate) - new Date(b.creationDate);
+      });
+      console.log(this.displayedImages);
+      return this.displayedImages;
+    },
+    filterAfterUpvotes() {
+      console.log("filtering after upvotes");
+      function compare(a, b) {
+        if (parseInt(a.upvoteCount) < parseInt(b.upvoteCount)) return -1;
+        if (parseInt(a.upvoteCount) > parseInt(b.upvoteCount)) return 1;
+        return 0;
+      }
+      this.displayedImages.sort(compare);
+      console.log(this.displayedImages);
+      return this.displayedImages;
+    },
+    async show_random_meme() {
+      var random_meme_url = "http://localhost:3000/random-meme";
+      let result = await fetch(random_meme_url);
+      const image = await result.json();
+      var meme = image;
+      console.log(meme.title + " ### " + meme._id);
+      this.openMemeView(meme._id);
     },
   },
 };

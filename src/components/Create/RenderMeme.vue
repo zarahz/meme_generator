@@ -18,7 +18,7 @@
           />
         </b-col>
         <b-col cols="1">
-          <label>Offset X:</label>
+          <label>Location X:</label>
         </b-col>
         <b-col cols="1">
           <b-form-input
@@ -55,7 +55,7 @@
           />
         </b-col>
         <b-col cols="1">
-          <label>Offset X:</label>
+          <label>Location X:</label>
         </b-col>
         <b-col cols="1">
           <!--v-on:input="changeImageText"-->
@@ -93,15 +93,15 @@
       </b-row>
     </div>
     <b-row align-h="center" class="mb-3">
-      <div v-if="final_image">
-        <b-img class="template_imageContainer" :src="final_image" />
+      <div v-if="final_image_path">
+        <b-img class="imageContainer" :src="final_image_path" />
       </div>
-      <div v-if="final_image">
+      <div v-if="final_image_path">
         <b-button
           size="sm"
           variant="primary"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="render_on_server"
+          v-on:click="submit"
           >Sumbit</b-button
         >
       </div>
@@ -123,11 +123,11 @@ export default {
   },
   data() {
     return {
-      topText: { text: "", offsetX: 0, offsetY: 30 },
-      bottomText: { text: "", offsetX: 0, offsetY: -30 },
+      topText: { text: "TEXT HERE", offsetX: 100, offsetY: 30 },
+      bottomText: { text: "B", offsetX: 30, offsetY: 100 },
       template_image:
         "http://localhost:3000/static-templates/0e71a5ba-5738-4234-9921-ac587870d8c9.png",
-      final_image: "",
+      final_image_path: "",
     };
   },
   methods: {
@@ -141,11 +141,23 @@ export default {
       var render_simple_meme_url = new URL(
           "http://localhost:3000/render-simple-meme"
         ),
-        params = { template_image_url: this.template_image };
+        params = {
+          template_image_url: this.template_image,
+          top_text: this.topText.text,
+          bottom_text: this.bottomText.text,
+          top_x: this.topText.offsetX,
+          top_y: this.topText.offsetY,
+          bott_x: this.bottomText.offsetX,
+          bott_y: this.bottomText.offsetY,
+        };
       render_simple_meme_url.search = new URLSearchParams(params).toString();
       let result = await fetch(render_simple_meme_url);
-      const { dbTemplate } = await result.json();
-      console.log(dbTemplate);
+      const { path } = await result.json();
+      console.log(path);
+      this.final_image_path = path;
+    },
+    async submit() {
+      console.log("TODO Submit");
     },
   },
 };

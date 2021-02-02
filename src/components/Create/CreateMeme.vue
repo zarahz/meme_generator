@@ -248,6 +248,12 @@
           </b-button>
         </b-col>
         <b-col md="auto">
+          <b-button
+            variant="outline-primary"
+            v-on:click="render_on_server"
+            class="mr-3"
+            >Render on server</b-button
+          >
           <b-button variant="primary" v-on:click="saveOnServer" class="mr-3">
             Submit Meme
           </b-button>
@@ -285,7 +291,7 @@
             variant="outline-primary"
             class="m-md-2"
           >
-            <b-dropdown-item 
+            <b-dropdown-item
               ><twitter title="" scale="2" class="ml-2"></twitter
             ></b-dropdown-item>
             <b-dropdown-item
@@ -297,8 +303,8 @@
             <b-dropdown-item>
               <pinterest scale="2" class="ml-2"></pinterest>
             </b-dropdown-item>
-            <b-dropdown-item 
-              ><email  subject="Hello" scale="2" class="ml-2"></email
+            <b-dropdown-item
+              ><email subject="Hello" scale="2" class="ml-2"></email
             ></b-dropdown-item>
           </b-dropdown>
         </b-col>
@@ -368,7 +374,6 @@ export default {
     Pinterest,
     WhatsApp,
     Email,
-    
   },
   data() {
     return {
@@ -498,8 +503,27 @@ export default {
     },
     changeFontSize(newFontSize) {
       this.fontSize = newFontSize;
-    }
-   
+    },
+  
+    async render_on_server() {
+      var render_simple_meme_url = new URL(
+          "http://localhost:3000/render-simple-meme"
+        ),
+        params = {
+          template_image_url: this.img,
+          top_text: this.topText.text,
+          bottom_text: this.bottomText.text,
+          top_x: this.topText.offsetX,
+          top_y: this.topText.offsetY,
+          bott_x: this.bottomText.offsetX,
+          bott_y: this.bottomText.offsetY,
+          font_size: this.fontSize,
+        };
+      render_simple_meme_url.search = new URLSearchParams(params).toString();
+      let result = await fetch(render_simple_meme_url);
+      const { path } = await result.json();
+      this.changeTemplate(path);
+    },
   },
 };
 </script>
