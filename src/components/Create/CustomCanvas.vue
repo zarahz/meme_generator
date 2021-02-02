@@ -53,21 +53,18 @@
     <b-row align-h="center" class="mt-3">
       <label class="mr-4">Canvas Size</label>
       <label class="mr-1">Width:</label>
-      <!--v-on:input="changeImageText"-->
       <b-form-input
         v-model="canvasWidth"
         @change="changeCanvasSize(true)"
-        style="width: 60px"
-        class="mr-3"
+        class="mr-3 size-input"
         type="text"
         placeholder="horizontal offset"
       />
       <label class="mr-1">Height:</label>
-      <!--v-on:input="changeImageText"-->
       <b-form-input
         v-model="canvasHeight"
         @change="changeCanvasSize(false)"
-        style="width: 60px"
+        class="size-input"
         type="text"
         placeholder="horizontal offset"
       />
@@ -79,8 +76,10 @@
 export default {
   name: "CustomCanvas",
   props: {
-    topText: Object,
-    bottomText: Object,
+    captions: {
+      type: Array,
+      default: () => [],
+    },
     img: String,
     drawingSettings: Object,
   },
@@ -94,47 +93,34 @@ export default {
     };
   },
   methods: {
-    changeImageText() {
-      this.showTexts();
-    },
     showTexts() {
       let canvas = this.$refs.textCanvas;
       let context = canvas.getContext("2d");
       context.clearRect(0, 0, canvas.width, canvas.height);
       this.setTextStyle();
-      // wait until picture finished loading and add text afterwards!
-      let topCanvasHorizontalMid =
-        canvas.width / 2 + parseInt(this.topText.offsetX);
-      let bottomCanvasHorizontalMid =
-        canvas.width / 2 + parseInt(this.bottomText.offsetX);
-      let canvasBottom = canvas.height - Math.abs(this.bottomText.offsetY);
 
-      //show top text
-      context.fillText(
-        this.topText.text,
-        topCanvasHorizontalMid,
-        this.topText.offsetY,
-        canvas.width
-      );
-      context.strokeText(
-        this.topText.text,
-        topCanvasHorizontalMid,
-        this.topText.offsetY,
-        canvas.width
-      );
-      //show bottom text
-      context.fillText(
-        this.bottomText.text,
-        bottomCanvasHorizontalMid,
-        canvasBottom,
-        canvas.width
-      );
-      context.strokeText(
-        this.bottomText.text,
-        bottomCanvasHorizontalMid,
-        canvasBottom,
-        canvas.width
-      );
+      console.log(this.captions);
+
+      this.captions.forEach((caption) => {
+        let topCanvasHorizontalMid =
+          canvas.width / 2 + parseInt(caption.offsetX);
+
+        let yCoordinate = caption.fromBottom
+          ? canvas.height + caption.offsetY
+          : caption.offsetY;
+
+        this.drawTextOnCanvas(
+          caption.text,
+          topCanvasHorizontalMid,
+          yCoordinate
+        );
+      });
+    },
+    drawTextOnCanvas(text, x, y) {
+      let canvas = this.$refs.textCanvas;
+      let context = canvas.getContext("2d");
+      context.fillText(text, x, y, canvas.width);
+      context.strokeText(text, x, y, canvas.width);
     },
     changeCanvasSize(basedOnWidth) {
       let canvas = this.$refs.memeCanvas;
@@ -235,8 +221,6 @@ export default {
             case "top":
               //move previous content down
               context.putImageData(OGCanvasContent, 0, imageSize.height);
-              // context.translate(0, imageSize.height);
-              appendingCoordinates = { x: 0, y: 0 };
               break;
             case "bottom":
               //no need to move previous canvas content
@@ -246,8 +230,6 @@ export default {
             case "left":
               //move previous content right
               context.putImageData(OGCanvasContent, imageSize.width, 0);
-              // context.translate(imageSize.width, 0);
-              appendingCoordinates = { x: 0, y: 0 };
               break;
             default:
               //no need to move previous canvas content
@@ -433,20 +415,7 @@ export default {
     this.loadCanvas();
   },
   watch: {
-    topText: {
-      handler() {
-        this.changeImageText();
-      },
-      deep: true,
-    },
-    bottomText: {
-      handler() {
-        this.changeImageText();
-      },
-      deep: true,
-    },
     img() {
-      // this.changeImageText();
       this.loadCanvas();
     },
   },
@@ -470,6 +439,9 @@ export default {
   padding-left: 15px; */
 }
 
+.size-input {
+  width: 60px;
+}
 .plus-button-left {
   text-align: right;
 }

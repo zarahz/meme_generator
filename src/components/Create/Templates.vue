@@ -27,8 +27,7 @@
         </b-row>
         <img
           crossorigin="anonymous"
-          style="width: 20%"
-          class="image"
+          class="image m-1"
           v-for="(image, i) in displayedMemes"
           :src="displayedMemes[i].url"
           :key="i"
@@ -178,4 +177,8 @@ export default {
 </script>
 
 <style scoped>
+.image {
+  vertical-align: top;
+  max-width: 200px;
+}
 </style>

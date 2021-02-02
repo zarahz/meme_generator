@@ -24,142 +24,6 @@
         </b-form-group>
       </b-row>
       <b-row align-h="center" class="mb-3">
-        <b-col cols="2">
-          <label>Top Text:</label>
-        </b-col>
-        <b-col cols="auto">
-          <!--v-on:input="changeImageText"-->
-          <b-form-input
-            v-model="topText.text"
-            class="w-100"
-            type="text"
-            placeholder="Top Text..."
-          />
-        </b-col>
-        <b-col cols="1">
-          <label>Offset X:</label>
-        </b-col>
-        <b-col cols="1">
-          <!--v-on:input="changeImageText"-->
-          <b-form-input
-            v-model="topText.offsetX"
-            style="min-width: 60px"
-            class="w-50"
-            type="text"
-            placeholder="horizontal offset"
-          />
-        </b-col>
-        <b-col cols="1">
-          <label>Y:</label>
-        </b-col>
-        <b-col cols="1">
-          <!--v-on:input="changeImageText"-->
-          <b-form-input
-            v-model="topText.offsetY"
-            style="min-width: 60px"
-            class="w-50"
-            type="text"
-            placeholder="vertical offset"
-          />
-        </b-col>
-        <!--v-on:input="changeImageText"-->
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="topText.offsetX -= 5"
-          >🡄</b-button
-        >
-        <!--v-on:input="changeImageText"-->
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="topText.offsetX += 5"
-          >🡆</b-button
-        >
-        <!--v-on:input="changeImageText"-->
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="topText.offsetY -= 5"
-          >🡅</b-button
-        >
-        <!--v-on:input="changeImageText"-->
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="topText.offsetY += 5"
-          >🡇</b-button
-        >
-      </b-row>
-      <b-row align-h="center" class="mb-3">
-        <b-col cols="2">
-          <label>Bottom Text:</label>
-        </b-col>
-        <b-col cols="auto">
-          <!--v-on:input="changeImageText"-->
-          <b-form-input
-            v-model="bottomText.text"
-            class="w-100"
-            type="text"
-            placeholder="Bottom Text..."
-          />
-        </b-col>
-        <b-col cols="1">
-          <label>Offset X:</label>
-        </b-col>
-        <b-col cols="1">
-          <!--v-on:input="changeImageText"-->
-          <b-form-input
-            v-model="bottomText.offsetX"
-            style="min-width: 60px"
-            class="w-50"
-            type="text"
-            placeholder="horizontal offset"
-          />
-        </b-col>
-        <b-col cols="1">
-          <label>Y:</label>
-        </b-col>
-        <b-col cols="1">
-          <!--v-on:input="changeImageText"-->
-          <b-form-input
-            v-model="bottomText.offsetY"
-            style="min-width: 60px"
-            class="w-50"
-            type="text"
-            placeholder="vertical offset"
-          />
-        </b-col>
-        <!--v-on:input="changeImageText"-->
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="bottomText.offsetX -= 5"
-          >🡄</b-button
-        >
-        <!--v-on:input="changeImageText"-->
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="bottomText.offsetX += 5"
-          >🡆</b-button
-        >
-        <!--v-on:input="changeImageText"-->
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="bottomText.offsetY -= 5"
-          >🡅</b-button
-        >
-        <!--v-on:input="changeImageText"-->
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="bottomText.offsetY += 5"
-          >🡇</b-button
-        >
-      </b-row>
-      <b-row align-h="center" class="mb-3">
         <b-col cols="1">
           <label>Title:</label>
         </b-col>
@@ -172,7 +36,27 @@
           />
         </b-col>
       </b-row>
-
+      <b-row class="mb-3" align-h="center">
+        <b-container>
+          <our-caption
+            v-for="caption in captions"
+            :key="caption.label"
+            :label="caption.label"
+            :text="caption.text"
+            :deleteable="caption.deleteable"
+            :offsetX="caption.offsetX"
+            :offsetY="caption.offsetY"
+            @delete="() => deleteCaption(caption)"
+            @changeText="(text) => onChangeText(caption, text)"
+            @changeOffset="(offsets) => onChangeOffset(caption, offsets)"
+          />
+          <b-row align-h="center">
+            <b-button variant="outline-primary" @click="addMoreCaptions"
+              >Add more captions</b-button
+            >
+          </b-row>
+        </b-container>
+      </b-row>
       <b-row align-h="center" class="mb-3">
         <drawingSettings
           @toggleCanvasDrawingMode="toggleCanvasDrawingMode"
@@ -215,8 +99,7 @@
       <b-row class="mb-3">
         <b-col>
           <customCanvas
-            :topText="topText"
-            :bottomText="bottomText"
+            :captions="captions"
             :img="img"
             :drawingSettings="drawingSettings"
             @openTemplatesModal="openTemplatesModal"
@@ -314,6 +197,7 @@ import CustomCanvas from "./CustomCanvas.vue";
 import DrawingSettings from "./DrawingSettings";
 import DraftModal from "./Modals/DraftModal";
 import TemplatesModal from "./Modals/TemplatesModal";
+import Caption from "./Captions/Caption";
 
 export default {
   name: "CreateMeme",
@@ -324,11 +208,28 @@ export default {
     drawingSettings: DrawingSettings,
     draftModal: DraftModal,
     templatesModal: TemplatesModal,
+    ourCaption: Caption,
   },
   data() {
     return {
-      topText: { text: "", offsetX: 0, offsetY: 30 },
-      bottomText: { text: "", offsetX: 0, offsetY: -30 },
+      captions: [
+        {
+          label: "Top Text",
+          text: "Top Text",
+          offsetX: 0,
+          offsetY: 30,
+          deleteable: false,
+          fromBottom: false,
+        },
+        {
+          label: "Bottom Text",
+          text: "Bottom Text",
+          offsetX: 0,
+          offsetY: -30,
+          deleteable: false,
+          fromBottom: true,
+        },
+      ],
       fontSize: 10,
       img: "",
       pos: { x: 0, y: 0 },
@@ -450,6 +351,33 @@ export default {
       console.log("opening template");
       this.$refs.templatesModal.openModal();
     },
+    onChangeOffset(caption, { offsetX, offsetY }) {
+      caption.offsetX = offsetX;
+      caption.offsetY = offsetY;
+
+      this.$refs.meme.showTexts();
+    },
+    onChangeText(caption, text) {
+      caption.text = text;
+
+      this.$refs.meme.showTexts();
+    },
+    addMoreCaptions() {
+      this.captions.push({
+        label: `Text ${this.captions.length}`,
+        text: `Text ${this.captions.length}`,
+        offsetX: 0,
+        offsetY: 30 + (this.captions.length - 1) * 45,
+        fromBottom: false,
+      });
+
+      this.$refs.meme.showTexts();
+    },
+    deleteCaption(captionToRemove) {
+      this.captions.splice(this.captions.indexOf(captionToRemove), 1);
+
+      this.$refs.meme.showTexts();
+    },
   },
 };
 </script>
@@ -458,10 +386,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/* Needed to outcomment the width or else the drawing bugs on window resize
- .customCanvas {
-  max-width: 60%;
-} */
 </style>
 
 
