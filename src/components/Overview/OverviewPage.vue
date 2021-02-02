@@ -1,6 +1,18 @@
 <!-- Overview page for endless scroll -> calls meme.vue with header and src information to display memes -->
 <template>
   <b-container fluid>
+    <b-row>
+       <b-dropdown
+            text="Filter Memes"
+            variant="outline-primary"
+            class="m-md-2"
+          >
+            <b-dropdown-item @click="filterAfterCreationDate">after creation date</b-dropdown-item>
+            <b-dropdown-item >upvotes</b-dropdown-item>
+            <b-dropdown-item>downvotes</b-dropdown-item>
+            <b-dropdown-item>comments</b-dropdown-item>
+          </b-dropdown>
+    </b-row>
     <b-row
       cols-sm="4"
       class="mb-4"
@@ -154,6 +166,7 @@ export default {
       });
       //display first two images and wait for scroll to show more
       this.displayedImages = this.allImages.slice(0, this.sliceEnd);
+      //console.log(this.displayedImages[0].upvotesCount)
       return this.allImages.length > 0;
     },
     async loadMoreImages($state) {
@@ -248,6 +261,14 @@ export default {
       var downvotes = dbDownvotes;
       var downvotesCount = downvotes.length;
       this.displayedImages[index].downvoteCount = downvotesCount;
+    },
+    filterAfterCreationDate(){
+      console.log("filtering")
+      this.displayedImages.sort((a, b) => {
+        return new Date(a.creationDate) - new Date (b.creationDate);
+      });
+     console.log(this.displayedImages)
+      return this.displayedImages
     },
   },
 };
