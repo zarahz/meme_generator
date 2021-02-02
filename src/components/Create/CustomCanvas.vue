@@ -83,6 +83,7 @@ export default {
     bottomText: Object,
     img: String,
     drawingSettings: Object,
+    fontSize: Number,
   },
   components: {},
   data() {
@@ -367,7 +368,7 @@ export default {
     setTextStyle() {
       let canvas = this.$refs.textCanvas;
       let context = canvas.getContext("2d");
-      context.font = "50px Impact";
+      context.font = this.fontSize + "px Impact";
       context.fillStyle = "white";
       context.strokeStyle = "black";
       context.textBaseline = "middle";
@@ -448,6 +449,11 @@ export default {
     img() {
       // this.changeImageText();
       this.loadCanvas();
+    },
+    fontSize: {
+      handler() {
+        this.showTexts();
+      },
     },
   },
 };

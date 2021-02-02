@@ -171,6 +171,43 @@
             placeholder="Title..."
           />
         </b-col>
+        <b-col>
+          <label>Size:</label>
+          <b-button
+            type="button"
+            class="btn btn-default btn-sm"
+            variant="outline-primary"
+            v-on:click="changeFontSize(--fontSize)"
+          >
+            - 
+          </b-button>
+          <b-button
+            type="button"
+            class="btn btn-default btn-sm"
+            variant="outline-primary"
+            v-on:click="changeFontSize(++fontSize)"
+
+          >
+            +
+          </b-button>
+        </b-col>
+          {{ fontSize }}
+        <b-col>
+            <b-button-group>
+            <b-button title="Bold">
+              <b-icon icon="type-bold" aria-hidden="true"></b-icon>
+            </b-button>
+            <b-button title="Italic">
+              <b-icon icon="type-italic" aria-hidden="true"></b-icon>
+            </b-button>
+            <b-button title="Underline">
+              <b-icon icon="type-underline" aria-hidden="true"></b-icon>
+            </b-button>
+            <b-button title="Strikethrough">
+              <b-icon icon="type-strikethrough" aria-hidden="true"></b-icon>
+            </b-button>
+            </b-button-group>
+        </b-col>
       </b-row>
 
       <b-row align-h="center" class="mb-3">
@@ -179,33 +216,6 @@
           @clearCanvas="clearDrawingCanvas"
         />
       </b-row>
-      <b-button
-        type="button"
-        class="btn btn-default btn-sm"
-        variant="outline-primary"
-        v-on:click="fontSize++"
-      >
-        Increase font size
-      </b-button>
-      <b-button
-        type="button"
-        class="btn btn-default btn-sm"
-        variant="outline-primary"
-        v-on:click="fontSize--"
-      >
-        Decrease font size
-      </b-button>
-      <p v-bind:style="{ fontSize: fontSize + 'px' }">
-        Font size: {{ fontSize }}
-      </p>
-      <b-button
-        type="button"
-        class="btn btn-default btn-sm"
-        variant="outline-primary"
-        v-on:click="fontSize--"
-      >
-        Change format
-      </b-button>
       <b-row v-if="title" class="mb-3">
         <b-col>
           <label>{{ title }}</label>
@@ -219,6 +229,7 @@
             :bottomText="bottomText"
             :img="img"
             :drawingSettings="drawingSettings"
+            :fontSize="fontSize"
             @openTemplatesModal="openTemplatesModal"
             ref="meme"
           />
@@ -227,7 +238,7 @@
 
       <b-row class="justify-content-md-center mb-3">
         <b-col>
-          <b-button
+          <b-button pill
             type="button"
             class="btn btn-default btn-sm"
             variant="outline-primary"
@@ -292,7 +303,7 @@
           </b-dropdown>
         </b-col>
         <b-col>
-          <b-button
+          <b-button pill
             type="button"
             class="btn btn-default btn-sm"
             variant="outline-primary"
@@ -363,7 +374,7 @@ export default {
     return {
       topText: { text: "", offsetX: 0, offsetY: 30 },
       bottomText: { text: "", offsetX: 0, offsetY: -30 },
-      fontSize: 10,
+      fontSize: 100,
       img: "",
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
@@ -485,6 +496,9 @@ export default {
       console.log("opening template");
       this.$refs.templatesModal.openModal();
     },
+    changeFontSize(newFontSize) {
+      this.fontSize = newFontSize;
+    }
    
   },
 };
@@ -499,6 +513,8 @@ export default {
   max-width: 60%;
 } */
 </style>
+
+
 
 
 
