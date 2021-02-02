@@ -2,16 +2,14 @@
 <template>
   <b-container fluid>
     <b-row>
-       <b-dropdown
-            text="Filter Memes"
-            variant="outline-primary"
-            class="m-md-2"
-          >
-            <b-dropdown-item @click="filterAfterCreationDate">after creation date</b-dropdown-item>
-            <b-dropdown-item >upvotes</b-dropdown-item>
-            <b-dropdown-item>downvotes</b-dropdown-item>
-            <b-dropdown-item>comments</b-dropdown-item>
-          </b-dropdown>
+      <b-dropdown text="Filter Memes" variant="outline-primary" class="m-md-2">
+        <b-dropdown-item @click="filterAfterCreationDate"
+          >after creation date</b-dropdown-item
+        >
+        <b-dropdown-item @click="filterAfterUpvotes">upvotes</b-dropdown-item>
+        <b-dropdown-item>downvotes</b-dropdown-item>
+        <b-dropdown-item>comments</b-dropdown-item>
+      </b-dropdown>
     </b-row>
     <b-row
       cols-sm="4"
@@ -166,7 +164,6 @@ export default {
       });
       //display first two images and wait for scroll to show more
       this.displayedImages = this.allImages.slice(0, this.sliceEnd);
-      //console.log(this.displayedImages[0].upvotesCount)
       return this.allImages.length > 0;
     },
     async loadMoreImages($state) {
@@ -262,13 +259,24 @@ export default {
       var downvotesCount = downvotes.length;
       this.displayedImages[index].downvoteCount = downvotesCount;
     },
-    filterAfterCreationDate(){
-      console.log("filtering")
+    filterAfterCreationDate() {
+      console.log("filtering");
       this.displayedImages.sort((a, b) => {
-        return new Date(a.creationDate) - new Date (b.creationDate);
+        return new Date(a.creationDate) - new Date(b.creationDate);
       });
-     console.log(this.displayedImages)
-      return this.displayedImages
+      console.log(this.displayedImages);
+      return this.displayedImages;
+    },
+    filterAfterUpvotes() {
+      console.log("filtering after upvotes");
+      function compare(a, b) {
+        if (parseInt(a.upvoteCount) < parseInt(b.upvoteCount)) return -1;
+        if (parseInt(a.upvoteCount) > parseInt(b.upvoteCount)) return 1;
+        return 0;
+      }
+      this.displayedImages.sort(compare);
+      console.log(this.displayedImages);
+      return this.displayedImages;
     },
   },
 };
