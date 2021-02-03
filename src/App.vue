@@ -37,7 +37,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  margin-top: 70px;
+  margin-top: 90px;
 }
 </style>
 <style scoped>
