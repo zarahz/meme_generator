@@ -237,16 +237,6 @@
       </b-row>
 
       <b-row class="justify-content-md-center mb-3">
-        <b-col>
-          <b-button pill
-            type="button"
-            class="btn btn-default btn-sm"
-            variant="outline-primary"
-            v-on:click="selectMemeTemplate(0)"
-          >
-            previous
-          </b-button>
-        </b-col>
         <b-col md="auto">
           <b-button
             variant="outline-primary"
@@ -307,16 +297,6 @@
               ><email subject="Hello" scale="2" class="ml-2"></email
             ></b-dropdown-item>
           </b-dropdown>
-        </b-col>
-        <b-col>
-          <b-button pill
-            type="button"
-            class="btn btn-default btn-sm"
-            variant="outline-primary"
-            v-on:click="selectMemeTemplate(0)"
-          >
-            next
-          </b-button>
         </b-col>
       </b-row>
     </div>

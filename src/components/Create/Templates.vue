@@ -11,7 +11,23 @@
         {{ templateSourceText }}
       </b-form-checkbox>
     </b-row>
-
+    <b-button pill
+      type="button"
+      class="btn btn-default btn-sm"
+      variant="outline-primary"
+      v-on:click="selectMemeTemplate(--selectedIndex)"
+    >
+      previous
+    </b-button>
+    <b-button pill
+      type="button"
+      class="btn btn-default btn-sm"
+      variant="outline-primary"
+      v-on:click="selectMemeTemplate(++selectedIndex)"
+    >
+      next
+    </b-button>
+ 
     <b-row align-h="center">
       <b-col cols="12" md="auto">
         <b-row align-h="center">
@@ -64,6 +80,7 @@ export default {
       response: [],
       showImgflipTemplates: false, // server if false, imgflip if true
       templateSourceText: "Server",
+      selectedIndex: 0,
     };
   },
   methods: {
