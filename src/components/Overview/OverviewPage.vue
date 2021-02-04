@@ -2,14 +2,37 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-dropdown text="Filter Memes" variant="outline-primary" class="m-md-2">
-        <b-dropdown-item @click="filterAfterCreationDate"
-          >after creation date</b-dropdown-item
+      <b-col cols="2.5">
+        <b-form-select
+          name="sortBy"
+          id="select"
+          @change="filteredImages"
+          v-model="sortBy"
         >
-        <b-dropdown-item @click="filterAfterUpvotes">upvotes</b-dropdown-item>
-        <b-dropdown-item>downvotes</b-dropdown-item>
-        <b-dropdown-item>comments</b-dropdown-item>
-      </b-dropdown>
+          <b-form-select-option value="null"
+            >select an option to sort images</b-form-select-option
+          >
+          <b-form-select-option value="dateAscending"
+            >Creation date (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="dateDescending"
+            >Creation date (descending)</b-form-select-option
+          >
+          <b-form-select-option value="upvoteAscending"
+            >Upvotes (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="upvoteDescending"
+            >Upvotes (descending)</b-form-select-option
+          >
+          <b-form-select-option value="downvoteAscending"
+            >Downvotes (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="downvoteDescending"
+            >Downvotes (descending)</b-form-select-option
+          >
+        </b-form-select>
+      </b-col>
+
       <b-button
         size="sm"
         variant="outline-primary"
@@ -149,6 +172,7 @@ export default {
       displayedImages: [],
       sliceEnd: 2,
       bottom: false,
+      sortBy: "null",
     };
   },
   methods: {
@@ -266,25 +290,28 @@ export default {
       var downvotesCount = downvotes.length;
       this.displayedImages[index].downvoteCount = downvotesCount;
     },
-    filterAfterCreationDate() {
-      console.log("filtering");
+    
+    filteredImages() {
+      this.displayedImages = this.allImages;
       this.displayedImages.sort((a, b) => {
-        return new Date(a.creationDate) - new Date(b.creationDate);
+        if (this.sortBy == "dateAscending") {
+          return new Date(a.creationDate) - new Date(b.creationDate);
+        } else if (this.sortBy == "dateDescending") {
+          return new Date(b.creationDate) - new Date(a.creationDate);
+        } else if (this.sortBy == "upvoteAscending") {
+          return a.upvoteCount - b.upvoteCount;
+        } else if (this.sortBy == "upvoteDescending") {
+          return b.upvoteCount - a.upvoteCount;
+        } else if (this.sortBy == "downvoteAscending") {
+          return a.downvoteCount - b.downvoteCount;
+        } else if (this.sortBy == "downvoteDescending") {
+          return b.downvoteCount - a.downvoteCount;
+        }
       });
-      console.log(this.displayedImages);
-      return this.displayedImages;
+
+      return this.displayedImage;
     },
-    filterAfterUpvotes() {
-      console.log("filtering after upvotes");
-      function compare(a, b) {
-        if (parseInt(a.upvoteCount) < parseInt(b.upvoteCount)) return -1;
-        if (parseInt(a.upvoteCount) > parseInt(b.upvoteCount)) return 1;
-        return 0;
-      }
-      this.displayedImages.sort(compare);
-      console.log(this.displayedImages);
-      return this.displayedImages;
-    },
+
     async show_random_meme() {
       var random_meme_url = "http://localhost:3000/random-meme";
       let result = await fetch(random_meme_url);
