@@ -179,21 +179,20 @@
             variant="outline-primary"
             v-on:click="changeFontSize(--fontSize)"
           >
-            - 
+            -
           </b-button>
           <b-button
             type="button"
             class="btn btn-default btn-sm"
             variant="outline-primary"
             v-on:click="changeFontSize(++fontSize)"
-
           >
             +
           </b-button>
         </b-col>
-          {{ fontSize }}
+        {{ fontSize }}
         <b-col>
-            <b-button-group>
+          <b-button-group>
             <b-button title="Bold">
               <b-icon icon="type-bold" aria-hidden="true"></b-icon>
             </b-button>
@@ -206,7 +205,7 @@
             <b-button title="Strikethrough">
               <b-icon icon="type-strikethrough" aria-hidden="true"></b-icon>
             </b-button>
-            </b-button-group>
+          </b-button-group>
         </b-col>
       </b-row>
 
@@ -276,27 +275,6 @@
           >
             Load from Drafts
           </b-button>
-          <b-dropdown
-            text="Share meme"
-            variant="outline-primary"
-            class="m-md-2"
-          >
-            <b-dropdown-item
-              ><twitter title="" scale="2" class="ml-2"></twitter
-            ></b-dropdown-item>
-            <b-dropdown-item
-              ><linkedin scale="2" class="ml-2"></linkedin
-            ></b-dropdown-item>
-            <b-dropdown-item
-              ><whats-app title="Hello" scale="2" class="ml-2"></whats-app
-            ></b-dropdown-item>
-            <b-dropdown-item>
-              <pinterest scale="2" class="ml-2"></pinterest>
-            </b-dropdown-item>
-            <b-dropdown-item
-              ><email subject="Hello" scale="2" class="ml-2"></email
-            ></b-dropdown-item>
-          </b-dropdown>
         </b-col>
       </b-row>
     </div>
@@ -332,13 +310,6 @@ import CustomCanvas from "./CustomCanvas.vue";
 import DrawingSettings from "./DrawingSettings";
 import DraftModal from "./Modals/DraftModal";
 import TemplatesModal from "./Modals/TemplatesModal";
-import {
-  Twitter,
-  Linkedin,
-  Pinterest,
-  WhatsApp,
-  Email,
-} from "vue-socialmedia-share";
 
 export default {
   name: "CreateMeme",
@@ -349,11 +320,6 @@ export default {
     drawingSettings: DrawingSettings,
     draftModal: DraftModal,
     templatesModal: TemplatesModal,
-    Twitter,
-    Linkedin,
-    Pinterest,
-    WhatsApp,
-    Email,
   },
   data() {
     return {
@@ -484,7 +450,7 @@ export default {
     changeFontSize(newFontSize) {
       this.fontSize = newFontSize;
     },
-  
+
     async render_on_server() {
       var render_simple_meme_url = new URL(
           "http://localhost:3000/render-simple-meme"
