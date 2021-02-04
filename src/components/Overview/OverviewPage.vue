@@ -4,6 +4,7 @@
     <b-row class="mb-3">
       <b-col cols="1.5">
         <b-form-select
+        class="border border-primary"
           name="sortBy"
           id="select"
           @change="filteredImages"
