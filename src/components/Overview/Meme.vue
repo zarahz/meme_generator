@@ -40,34 +40,34 @@
           </b-button>
 
           <twitter
-            :url="image.url"
-            title=""
+            :url="'http://localhost:3000/static/' + imageId"
+            title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></twitter>
           <linkedin
-            :url="image.url"
+            :url="'http://localhost:3000/static/' + imageId"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></linkedin>
           <whats-app
-            :url="image.url"
-            title="Hello"
+            :url="'http://localhost:3000/static/' + imageId"
+            title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></whats-app>
           <pinterest
-            :url="image.url"
+            :url="'http://localhost:3000/static/' + imageId"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></pinterest>
           <email
-            :url="image.url"
-            subject="Hello"
+            :url="'http://localhost:3000/static/' + imageId"
+            subject="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"

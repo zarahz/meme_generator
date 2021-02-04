@@ -104,44 +104,39 @@
 
           <b-row class="mb-3" align-h="center">
             <b-col cols="2" />
-            <b-col>
-              <facebook
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                scale="3"
-              ></facebook>
-            </b-col>
+            
             <b-col>
               <twitter
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                title=""
+                :url="'http://localhost:8080/meme/' + image._id"  
+                title="Hello from PENG MEMES"
                 scale="3"
               ></twitter>
             </b-col>
             <b-col>
               <linkedin
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
+                :url="'http://localhost:8080/meme/' + image._id"  
                 scale="3"
               ></linkedin>
             </b-col>
             <b-col>
               <whats-app
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                title="Hello"
+                :url="'http://localhost:8080/meme/' + image._id"  
+                title="Hello from PENG MEMES"
                 scale="3"
               ></whats-app>
             </b-col>
 
             <b-col>
               <pinterest
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
+                :url="'http://localhost:8080/meme/' + image._id"  
                 scale="3"
                 class="m-3"
               ></pinterest>
             </b-col>
             <b-col>
               <email
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                subject="Hello"
+                :url="'http://localhost:8080/meme/' + image._id"  
+                subject="Hello from PENG MEMES"
                 scale="3"
               ></email>
             </b-col>
@@ -159,7 +154,7 @@
 <script>
 import InfiniteLoading from "vue-infinite-loading";
 import {
-  Facebook,
+ 
   Twitter,
   Linkedin,
   Pinterest,
@@ -173,7 +168,7 @@ export default {
   name: "OverviewPage",
   components: {
     InfiniteLoading,
-    Facebook,
+
     Twitter,
     Linkedin,
     Pinterest,
