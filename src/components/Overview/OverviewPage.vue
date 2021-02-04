@@ -1,8 +1,8 @@
 <!-- Overview page for endless scroll -> calls meme.vue with header and src information to display memes -->
 <template>
   <b-container fluid>
-    <b-row>
-      <b-col cols="2.5">
+    <b-row class="mb-3">
+      <b-col cols="1.5">
         <b-form-select
           name="sortBy"
           id="select"
@@ -32,15 +32,28 @@
           >
         </b-form-select>
       </b-col>
+      <b-col cols="1" v-if="isFilteredImages">
+        <b-button
+          type="button"
+          variant="link"
+          @click="removeFilter"
+          v-b-tooltip.hover.right="'Click here to remove filter'"
+        >
+          <b-icon icon="x-square" scale="1.5" variant="danger"></b-icon
+        ></b-button>
+      </b-col>
 
-      <b-button
-        size="sm"
-        variant="outline-primary"
-        class="m-md-2"
-        v-on:click="show_random_meme"
-        >I'm feeling lucky!</b-button
-      >
+      <b-col>
+        <b-button
+          class="float-sm-right"
+          size="sm"
+          variant="outline-primary"
+          v-on:click="show_random_meme"
+          >I'm feeling lucky!</b-button
+        >
+      </b-col>
     </b-row>
+
     <b-row
       cols-sm="4"
       class="mb-4"
@@ -173,6 +186,7 @@ export default {
       sliceEnd: 2,
       bottom: false,
       sortBy: "null",
+      isFilteredImages: false,
     };
   },
   methods: {
@@ -290,8 +304,9 @@ export default {
       var downvotesCount = downvotes.length;
       this.displayedImages[index].downvoteCount = downvotesCount;
     },
-    
+
     filteredImages() {
+      this.isFilteredImages = true;
       this.displayedImages = this.allImages;
       this.displayedImages.sort((a, b) => {
         if (this.sortBy == "dateAscending") {
@@ -310,6 +325,12 @@ export default {
       });
 
       return this.displayedImage;
+    },
+
+    removeFilter() {
+      this.getImages();
+      this.isFilteredImages = false;
+      this.sortBy = null;
     },
 
     async show_random_meme() {
