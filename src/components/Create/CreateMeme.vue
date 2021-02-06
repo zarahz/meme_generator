@@ -35,6 +35,42 @@
             placeholder="Title..."
           />
         </b-col>
+        <b-col>
+          <label>Size:</label>
+          <b-button
+            type="button"
+            class="btn btn-default btn-sm"
+            variant="outline-primary"
+            v-on:click="changeFontSize(--fontSize)"
+          >
+            -
+          </b-button>
+          <b-button
+            type="button"
+            class="btn btn-default btn-sm"
+            variant="outline-primary"
+            v-on:click="changeFontSize(++fontSize)"
+          >
+            +
+          </b-button>
+        </b-col>
+        {{ fontSize }}
+        <b-col>
+          <b-button-group>
+            <b-button title="Bold">
+              <b-icon icon="type-bold" aria-hidden="true"></b-icon>
+            </b-button>
+            <b-button title="Italic">
+              <b-icon icon="type-italic" aria-hidden="true"></b-icon>
+            </b-button>
+            <b-button title="Underline">
+              <b-icon icon="type-underline" aria-hidden="true"></b-icon>
+            </b-button>
+            <b-button title="Strikethrough">
+              <b-icon icon="type-strikethrough" aria-hidden="true"></b-icon>
+            </b-button>
+          </b-button-group>
+        </b-col>
       </b-row>
       <b-row class="mb-3" align-h="center">
         <b-container>
@@ -63,33 +99,6 @@
           @clearCanvas="clearDrawingCanvas"
         />
       </b-row>
-      <b-button
-        type="button"
-        class="btn btn-default btn-sm"
-        variant="outline-primary"
-        v-on:click="fontSize++"
-      >
-        Increase font size
-      </b-button>
-      <b-button
-        type="button"
-        class="btn btn-default btn-sm"
-        variant="outline-primary"
-        v-on:click="fontSize--"
-      >
-        Decrease font size
-      </b-button>
-      <p v-bind:style="{ fontSize: fontSize + 'px' }">
-        Font size: {{ fontSize }}
-      </p>
-      <b-button
-        type="button"
-        class="btn btn-default btn-sm"
-        variant="outline-primary"
-        v-on:click="fontSize--"
-      >
-        Change format
-      </b-button>
       <b-row v-if="title" class="mb-3">
         <b-col>
           <label>{{ title }}</label>
@@ -102,6 +111,7 @@
             :captions="captions"
             :img="img"
             :drawingSettings="drawingSettings"
+            :fontSize="fontSize"
             @openTemplatesModal="openTemplatesModal"
             ref="meme"
           />
@@ -109,17 +119,13 @@
       </b-row>
 
       <b-row class="justify-content-md-center mb-3">
-        <b-col>
-          <b-button
-            type="button"
-            class="btn btn-default btn-sm"
-            variant="outline-primary"
-            v-on:click="selectMemeTemplate(0)"
-          >
-            previous
-          </b-button>
-        </b-col>
         <b-col md="auto">
+          <b-button
+            variant="outline-primary"
+            v-on:click="render_on_server"
+            class="mr-3"
+            >Render on server</b-button
+          >
           <b-button variant="primary" v-on:click="saveOnServer" class="mr-3">
             Submit Meme
           </b-button>
@@ -151,16 +157,6 @@
             :title="!$store.getters.isLoggedIn && 'Log in to use this function'"
           >
             Load from Drafts
-          </b-button>
-        </b-col>
-        <b-col>
-          <b-button
-            type="button"
-            class="btn btn-default btn-sm"
-            variant="outline-primary"
-            v-on:click="selectMemeTemplate(0)"
-          >
-            next
           </b-button>
         </b-col>
       </b-row>
@@ -230,7 +226,7 @@ export default {
           fromBottom: true,
         },
       ],
-      fontSize: 10,
+      fontSize: 100,
       img: "",
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
@@ -283,6 +279,7 @@ export default {
     },
     download() {
       let canvas = this.$refs.meme.createResultingCanvas();
+
       canvas.toBlob(function (blob) {
         saveAs(blob, "meme.png");
       });
@@ -308,11 +305,8 @@ export default {
     },
     async saveDraft() {
       let draftModel = {
-        topText: this.topText.text,
-        topTextOffset: [this.topText.offsetX, this.topText.offsetY],
-        bottomText: this.bottomText.text,
-        bottomTextOffset: [this.bottomText.offsetX, this.bottomText.offsetY],
-        memeSource: this.img,
+        captions: this.captions,
+        memeSource: this.$refs.meme.getMemeCanvasURI(),
         title: this.title,
       };
       let result = await fetch("http://localhost:3000/image-draft", {
@@ -332,17 +326,9 @@ export default {
       this.$refs.meme.apppendTemplate(memeUrl);
     },
     async loadDraftIntoCanvas(draft) {
-      this.topText = {
-        text: draft.topText,
-        offsetX: draft.topTextOffset[0],
-        offsetY: draft.topTextOffset[1],
-      };
-      this.bottomText = {
-        text: draft.bottomText,
-        offsetX: draft.bottomTextOffset[0],
-        offsetY: draft.bottomTextOffset[1],
-      };
+      this.captions = draft.captions;
       this.img = draft.memeSource;
+      this.$refs.meme.showTexts();
     },
     openDraftModal() {
       this.$refs.draftModal.openModal();
@@ -378,6 +364,28 @@ export default {
 
       this.$refs.meme.showTexts();
     },
+    changeFontSize(newFontSize) {
+      this.fontSize = newFontSize;
+    },
+    async render_on_server() {
+      var render_simple_meme_url = new URL(
+          "http://localhost:3000/render-simple-meme"
+        ),
+        params = {
+          template_image_url: this.img,
+          top_text: this.topText.text,
+          bottom_text: this.bottomText.text,
+          top_x: this.topText.offsetX,
+          top_y: this.topText.offsetY,
+          bott_x: this.bottomText.offsetX,
+          bott_y: this.bottomText.offsetY,
+          font_size: this.fontSize,
+        };
+      render_simple_meme_url.search = new URLSearchParams(params).toString();
+      let result = await fetch(render_simple_meme_url);
+      const { path } = await result.json();
+      this.changeTemplate(path);
+    },
   },
 };
 </script>
@@ -387,6 +395,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>
+
+
 
 
 

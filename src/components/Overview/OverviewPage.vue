@@ -1,6 +1,60 @@
 <!-- Overview page for endless scroll -> calls meme.vue with header and src information to display memes -->
 <template>
   <b-container fluid>
+    <b-row class="mb-3">
+      <b-col cols="1.5">
+        <b-form-select
+        class="border border-primary"
+          name="sortBy"
+          id="select"
+          @change="filteredImages"
+          v-model="sortBy"
+        >
+          <b-form-select-option value="null"
+            >select an option to sort images</b-form-select-option
+          >
+          <b-form-select-option value="dateAscending"
+            >Creation date (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="dateDescending"
+            >Creation date (descending)</b-form-select-option
+          >
+          <b-form-select-option value="upvoteAscending"
+            >Upvotes (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="upvoteDescending"
+            >Upvotes (descending)</b-form-select-option
+          >
+          <b-form-select-option value="downvoteAscending"
+            >Downvotes (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="downvoteDescending"
+            >Downvotes (descending)</b-form-select-option
+          >
+        </b-form-select>
+      </b-col>
+      <b-col cols="1" v-if="isFilteredImages">
+        <b-button
+          type="button"
+          variant="link"
+          @click="removeFilter"
+          v-b-tooltip.hover.right="'Click here to remove filter'"
+        >
+          <b-icon icon="x-square" scale="1.5" variant="danger"></b-icon
+        ></b-button>
+      </b-col>
+
+      <b-col>
+        <b-button
+          class="float-sm-right"
+          size="sm"
+          variant="outline-primary"
+          v-on:click="show_random_meme"
+          >I'm feeling lucky!</b-button
+        >
+      </b-col>
+    </b-row>
+
     <b-row
       cols-sm="4"
       class="mb-4"
@@ -50,44 +104,39 @@
 
           <b-row class="mb-3" align-h="center">
             <b-col cols="2" />
-            <b-col>
-              <facebook
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                scale="3"
-              ></facebook>
-            </b-col>
+            
             <b-col>
               <twitter
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                title=""
+                :url="'http://localhost:8080/meme/' + image._id"  
+                title="Hello from PENG MEMES"
                 scale="3"
               ></twitter>
             </b-col>
             <b-col>
               <linkedin
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
+                :url="'http://localhost:8080/meme/' + image._id"  
                 scale="3"
               ></linkedin>
             </b-col>
             <b-col>
               <whats-app
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                title="Hello"
+                :url="'http://localhost:8080/meme/' + image._id"  
+                title="Hello from PENG MEMES"
                 scale="3"
               ></whats-app>
             </b-col>
 
             <b-col>
               <pinterest
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
+                :url="'http://localhost:8080/meme/' + image._id"  
                 scale="3"
                 class="m-3"
               ></pinterest>
             </b-col>
             <b-col>
               <email
-                :url="'http://localhost:3000/static/' + image.nameAndFileType"
-                subject="Hello"
+                :url="'http://localhost:8080/meme/' + image._id"  
+                subject="Hello from PENG MEMES"
                 scale="3"
               ></email>
             </b-col>
@@ -105,7 +154,7 @@
 <script>
 import InfiniteLoading from "vue-infinite-loading";
 import {
-  Facebook,
+ 
   Twitter,
   Linkedin,
   Pinterest,
@@ -119,7 +168,7 @@ export default {
   name: "OverviewPage",
   components: {
     InfiniteLoading,
-    Facebook,
+
     Twitter,
     Linkedin,
     Pinterest,
@@ -132,6 +181,8 @@ export default {
       displayedImages: [],
       sliceEnd: 2,
       bottom: false,
+      sortBy: "null",
+      isFilteredImages: false,
     };
   },
   methods: {
@@ -248,6 +299,43 @@ export default {
       var downvotes = dbDownvotes;
       var downvotesCount = downvotes.length;
       this.displayedImages[index].downvoteCount = downvotesCount;
+    },
+
+    filteredImages() {
+      this.isFilteredImages = true;
+      this.displayedImages = this.allImages;
+      this.displayedImages.sort((a, b) => {
+        if (this.sortBy == "dateAscending") {
+          return new Date(a.creationDate) - new Date(b.creationDate);
+        } else if (this.sortBy == "dateDescending") {
+          return new Date(b.creationDate) - new Date(a.creationDate);
+        } else if (this.sortBy == "upvoteAscending") {
+          return a.upvoteCount - b.upvoteCount;
+        } else if (this.sortBy == "upvoteDescending") {
+          return b.upvoteCount - a.upvoteCount;
+        } else if (this.sortBy == "downvoteAscending") {
+          return a.downvoteCount - b.downvoteCount;
+        } else if (this.sortBy == "downvoteDescending") {
+          return b.downvoteCount - a.downvoteCount;
+        }
+      });
+
+      return this.displayedImage;
+    },
+
+    removeFilter() {
+      this.getImages();
+      this.isFilteredImages = false;
+      this.sortBy = null;
+    },
+
+    async show_random_meme() {
+      var random_meme_url = "http://localhost:3000/random-meme";
+      let result = await fetch(random_meme_url);
+      const image = await result.json();
+      var meme = image;
+      console.log(meme.title + " ### " + meme._id);
+      this.openMemeView(meme._id);
     },
   },
 };

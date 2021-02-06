@@ -1,5 +1,6 @@
 <template>
   <b-modal
+    size="xl"
     ref="draftModal"
     id="draftModal"
     scrollable
@@ -11,17 +12,27 @@
       >No drafts are available.</b-row
     >
     <b-form-group>
-      <div v-for="draft in allDrafts" v-bind:key="draft._id">
-        <b-form-radio v-model="selectedDraft" :value="draft">
-          <b-col class="ml-2">
-            <b-row v-if="draft.topText"> Top Text: {{ draft.topText }} </b-row>
-            <b-row v-if="draft.bottomText">
-              Top Text: {{ draft.bottomText }}
-            </b-row>
-            <b-row> Image source: {{ draft.memeSource }} </b-row>
-          </b-col>
-          <hr />
+      <div v-for="(draft, index) in allDrafts" v-bind:key="draft._id">
+        <b-form-radio v-model="selectedDraft" :value="draft" class="w-100">
+          <b-row>
+            <b-col>
+              <b-row>
+                <b-col> Creation Date: </b-col>
+                <b-col>
+                  {{ new Date(draft.creationDate).toDateString() }}
+                </b-col>
+              </b-row>
+              <b-row v-for="caption in draft.captions" :key="caption._id">
+                <b-col> {{ caption.label }}: </b-col>
+                <b-col> {{ caption.text }} </b-col>
+              </b-row>
+            </b-col>
+            <b-col cols="4">
+              <img class="w-50" :src="draft.memeSource" />
+            </b-col>
+          </b-row>
         </b-form-radio>
+        <hr v-if="index !== allDrafts.length - 1" />
       </div>
     </b-form-group>
   </b-modal>
@@ -68,4 +79,7 @@ export default {
 </script>
 
 <style scoped>
+.custom-radio >>> .custom-control-label {
+  width: 100%;
+}
 </style>

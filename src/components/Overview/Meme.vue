@@ -31,21 +31,46 @@
             <b-icon icon="chat-left" aria-hidden="true"></b-icon>
             {{ commentsCount }}</b-button
           >
+          <b-button
+            variant="outline-primary"
+            class="ml-3"
+            @click="downloadImage"
+          >
+            <b-icon icon="download" aria-hidden="true"></b-icon>
+          </b-button>
 
-          <twitter :url="image.url" title="" scale="3" class="ml-3"></twitter>
-          <linkedin :url="image.url" scale="3" class="ml-3"></linkedin>
+          <twitter
+            :url="'http://localhost:3000/static/' + imageId"
+            title="Hello from PENG MEMES"
+            scale="3"
+            class="ml-3"
+            style="cursor: pointer"
+          ></twitter>
+          <linkedin
+            :url="'http://localhost:3000/static/' + imageId"
+            scale="3"
+            class="ml-3"
+            style="cursor: pointer"
+          ></linkedin>
           <whats-app
-            :url="image.url"
-            title="Hello"
+            :url="'http://localhost:3000/static/' + imageId"
+            title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
+            style="cursor: pointer"
           ></whats-app>
-          <pinterest :url="image.url" scale="3" class="ml-3"></pinterest>
-          <email
-            :url="image.url"
-            subject="Hello"
+          <pinterest
+            :url="'http://localhost:3000/static/' + imageId"
             scale="3"
             class="ml-3"
+            style="cursor: pointer"
+          ></pinterest>
+          <email
+            :url="'http://localhost:3000/static/' + imageId"
+            subject="Hello from PENG MEMES"
+            scale="3"
+            class="ml-3"
+            style="cursor: pointer"
           ></email>
         </b-col>
       </b-row>
@@ -80,6 +105,7 @@
   </b-container>
 </template>
 <script>
+import { saveAs } from "file-saver";
 import {
   Twitter,
   Linkedin,
@@ -249,6 +275,9 @@ export default {
       } else if (result.status === 401) {
         this.authorized = false;
       }
+    },
+    downloadImage() {
+      saveAs(this.image.url, "meme.png");
     },
   },
   mounted() {

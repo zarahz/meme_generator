@@ -82,6 +82,7 @@ export default {
     },
     img: String,
     drawingSettings: Object,
+    fontSize: Number,
   },
   components: {},
   data() {
@@ -102,6 +103,7 @@ export default {
       console.log(this.captions);
 
       this.captions.forEach((caption) => {
+        console.log("iterating captions to show!");
         let topCanvasHorizontalMid =
           canvas.width / 2 + parseInt(caption.offsetX);
 
@@ -349,7 +351,7 @@ export default {
     setTextStyle() {
       let canvas = this.$refs.textCanvas;
       let context = canvas.getContext("2d");
-      context.font = "50px Impact";
+      context.font = this.fontSize + "px Impact";
       context.fillStyle = "white";
       context.strokeStyle = "black";
       context.textBaseline = "middle";
@@ -363,6 +365,9 @@ export default {
       context.drawImage(this.$refs.textCanvas, 0, 0);
       context.drawImage(this.$refs.drawCanvas, 0, 0);
       return canvas;
+    },
+    getMemeCanvasURI() {
+      return this.$refs.memeCanvas.toDataURL();
     },
     activateDrawingMode() {
       const canvas = this.$refs.drawCanvas;
@@ -417,6 +422,11 @@ export default {
   watch: {
     img() {
       this.loadCanvas();
+    },
+    fontSize: {
+      handler() {
+        this.showTexts();
+      },
     },
   },
 };

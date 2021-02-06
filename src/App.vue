@@ -11,19 +11,12 @@
 // https://www.positronx.io/create-login-signup-ui-screens-in-vue-js-with-bootstrap/
 
 <script>
-//import CreateMeme from "./components/Create/CreateMeme.vue";
-//import HelloWorld from "./components/HelloWorld.vue";
 import Navigation from "./components/Navigation/Navigation.vue";
-//import OverviewPage from "./components/Overview/OverviewPage.vue";
 
 export default {
   name: "App",
   components: {
-    //HelloWorld,
-    // CreateMeme,
     Navigation,
-    // OverviewPage,
-    //Content
   },
   data() {
     return {
@@ -44,7 +37,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  margin-top: 70px;
+  margin-top: 90px;
 }
 </style>
 <style scoped>

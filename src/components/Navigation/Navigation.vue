@@ -1,7 +1,15 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="dark" fixed="top">
-      <b-navbar-brand router to="/" href="#">Meme Generator</b-navbar-brand>
+    <b-navbar
+      class="fixed-top"
+      toggleable="lg"
+      type="dark"
+      variant="primary"
+      fixed="top"
+    >
+      <b-navbar-brand router to="/" href="#"
+        ><img src="../../assets/logo.png"
+      /></b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-navbar-nav>
@@ -15,9 +23,9 @@
         <b-nav-item
           href="#"
           router
-          to="/render-meme"
-          :active="$route.name == 'RenderMeme'"
-          >Meme Renderer</b-nav-item
+          to="/fabric-meme"
+          :active="$route.name == 'FabricMeme'"
+          >Meme Creator (Fabricjs)</b-nav-item
         >
       </b-navbar-nav>
 

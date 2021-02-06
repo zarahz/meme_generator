@@ -11,6 +11,24 @@
         {{ templateSourceText }}
       </b-form-checkbox>
     </b-row>
+    <b-button
+      pill
+      type="button"
+      class="btn btn-default btn-sm"
+      variant="outline-primary"
+      v-on:click="selectMemeTemplate(--selectedIndex)"
+    >
+      previous
+    </b-button>
+    <b-button
+      pill
+      type="button"
+      class="btn btn-default btn-sm"
+      variant="outline-primary"
+      v-on:click="selectMemeTemplate(++selectedIndex)"
+    >
+      next
+    </b-button>
 
     <b-row align-h="center">
       <b-col cols="12" md="auto">
@@ -45,6 +63,8 @@
 import axios from "axios";
 import VueGallerySlideshow from "vue-gallery-slideshow";
 
+const MAX_DISPLAYED_TEMPLATES = 10;
+
 export default {
   name: "Templates",
   props: {
@@ -63,6 +83,7 @@ export default {
       response: [],
       showImgflipTemplates: false, // server if false, imgflip if true
       templateSourceText: "Server",
+      selectedIndex: 0,
     };
   },
   methods: {
@@ -93,7 +114,7 @@ export default {
           .sort((a, b) => a.sort - b.sort)
           .map((a) => a.value);
 
-        this.displayedMemes = shuffled.slice(0, 11);
+        this.displayedMemes = shuffled.slice(0, MAX_DISPLAYED_TEMPLATES);
       } else {
         console.log("Searching server templates with: " + searchTerm);
         // WITH search term
@@ -102,7 +123,7 @@ export default {
             displayedMemes.push(item);
           }
         });
-        this.displayedMemes = displayedMemes.slice(0, 11);
+        this.displayedMemes = displayedMemes.slice(0, MAX_DISPLAYED_TEMPLATES);
       }
       console.log(
         "Searched server templates. got: " + this.displayedMemes.length
@@ -123,7 +144,7 @@ export default {
           .sort((a, b) => a.sort - b.sort)
           .map((a) => a.value);
 
-        this.displayedMemes = shuffled.slice(0, 11);
+        this.displayedMemes = shuffled.slice(0, MAX_DISPLAYED_TEMPLATES);
       } else {
         // WITH search term
         this.allImgflipMemes.forEach(function (item) {
@@ -131,7 +152,7 @@ export default {
             displayedMemes.push(item);
           }
         });
-        this.displayedMemes = displayedMemes.slice(0, 11);
+        this.displayedMemes = displayedMemes.slice(0, MAX_DISPLAYED_TEMPLATES);
       }
     },
     selectMemeTemplate(selectedIndex) {
