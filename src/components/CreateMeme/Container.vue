@@ -193,7 +193,7 @@ import CustomCanvas from "./CustomCanvas.vue";
 import DrawingSettings from "./DrawingSettings";
 import DraftModal from "./Modals/DraftModal";
 import TemplatesModal from "./Modals/TemplatesModal";
-import Caption from "./Captions/Caption";
+import Caption from "./Caption";
 
 export default {
   name: "CreateMeme",
@@ -334,7 +334,6 @@ export default {
       this.$refs.draftModal.openModal();
     },
     openTemplatesModal() {
-      console.log("opening template");
       this.$refs.templatesModal.openModal();
     },
     onChangeOffset(caption, { offsetX, offsetY }) {
@@ -368,22 +367,19 @@ export default {
       this.fontSize = newFontSize;
     },
     async render_on_server() {
-      var render_simple_meme_url = new URL(
-          "http://localhost:3000/render-simple-meme"
-        ),
-        params = {
-          template_image_url: this.img,
-          top_text: this.topText.text,
-          bottom_text: this.bottomText.text,
-          top_x: this.topText.offsetX,
-          top_y: this.topText.offsetY,
-          bott_x: this.bottomText.offsetX,
-          bott_y: this.bottomText.offsetY,
+      let result = await fetch("http://localhost:3000/render-simple-meme", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          image_url: this.img,
+          captions: this.captions,
           font_size: this.fontSize,
-        };
-      render_simple_meme_url.search = new URLSearchParams(params).toString();
-      let result = await fetch(render_simple_meme_url);
+        }),
+      });
       const { path } = await result.json();
+      console.log(path);
       this.changeTemplate(path);
     },
   },

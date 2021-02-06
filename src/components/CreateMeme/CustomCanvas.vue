@@ -100,10 +100,7 @@ export default {
       context.clearRect(0, 0, canvas.width, canvas.height);
       this.setTextStyle();
 
-      console.log(this.captions);
-
       this.captions.forEach((caption) => {
-        console.log("iterating captions to show!");
         let topCanvasHorizontalMid =
           canvas.width / 2 + parseInt(caption.offsetX);
 
@@ -186,7 +183,6 @@ export default {
       let canvas = this.$refs.memeCanvas;
       let context = canvas.getContext("2d");
       let self = this;
-      console.log(memeUrl);
       return new Promise((resolve) => {
         let img = this.prepareImage(memeUrl);
         img.onload = function () {
@@ -342,7 +338,6 @@ export default {
       });
     },
     clearDrawingCanvas() {
-      console.log("deleting");
       const drawingCanvas = this.$refs.drawCanvas;
       const context = drawingCanvas.getContext("2d");
 

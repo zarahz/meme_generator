@@ -127,7 +127,6 @@ export default {
   },
   methods: {
     openMemeView(id) {
-      console.log("id of the clicked meme is :" + id);
       router.push({ name: "Meme", params: { id } }).catch((err) => {
         err;
       });
@@ -163,8 +162,6 @@ export default {
         return; //No more images to show
       }
       setTimeout(() => {
-        console.log("loading more images!");
-        console.log(imagesToAdd);
         this.userMemes.push(...imagesToAdd);
         $state.loaded();
       }, 2000);

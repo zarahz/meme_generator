@@ -132,12 +132,9 @@ export default {
   },
   methods: {
     changeTemplate(newImageUrl) {
-      console.log("CHANGING TEMPLATE");
       this.template_image = newImageUrl;
     },
     async render_on_server() {
-      console.log("RENDERING");
-
       var render_simple_meme_url = new URL(
           "http://localhost:3000/render-simple-meme"
         ),
@@ -153,7 +150,6 @@ export default {
       render_simple_meme_url.search = new URLSearchParams(params).toString();
       let result = await fetch(render_simple_meme_url);
       const { path } = await result.json();
-      console.log(path);
       this.final_image_path = path;
     },
     async submit() {

@@ -101,13 +101,10 @@ export default {
       var displayedMemes = this.displayedMemes;
       var searchTerm = this.templatesSearchTerm;
       if (searchTerm.length < 1) {
-        console.log("No search term for server templates");
         // NO search term
         this.allServerMemes.forEach(function (item) {
-          console.log("pushing... " + item);
           displayedMemes.push(item);
         });
-        console.log("...... " + displayedMemes.length);
         // inefficient and biased array shuffle
         let shuffled = displayedMemes
           .map((a) => ({ sort: Math.random(), value: a }))
@@ -116,7 +113,6 @@ export default {
 
         this.displayedMemes = shuffled.slice(0, MAX_DISPLAYED_TEMPLATES);
       } else {
-        console.log("Searching server templates with: " + searchTerm);
         // WITH search term
         this.allServerMemes.forEach(function (item) {
           if (item.tags.toLowerCase().includes(searchTerm.toLowerCase())) {
@@ -125,9 +121,6 @@ export default {
         });
         this.displayedMemes = displayedMemes.slice(0, MAX_DISPLAYED_TEMPLATES);
       }
-      console.log(
-        "Searched server templates. got: " + this.displayedMemes.length
-      );
     },
     applySearchToImgflipTemplates() {
       this.displayedMemes = [];
@@ -175,7 +168,6 @@ export default {
       });
     },
     fetchServerMemeTemplates() {
-      console.log("Fetching server memes...");
       axios.get("http://localhost:3000/templates").then((resp) => {
         this.allServerMemes = resp.data;
         this.applySearch();

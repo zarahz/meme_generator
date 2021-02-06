@@ -4,7 +4,7 @@
     <b-row class="mb-3">
       <b-col cols="1.5">
         <b-form-select
-        class="border border-primary"
+          class="border border-primary"
           name="sortBy"
           id="select"
           @change="filteredImages"
@@ -104,23 +104,23 @@
 
           <b-row class="mb-3" align-h="center">
             <b-col cols="2" />
-            
+
             <b-col>
               <twitter
-                :url="'http://localhost:8080/meme/' + image._id"  
+                :url="'http://localhost:8080/meme/' + image._id"
                 title="Hello from PENG MEMES"
                 scale="3"
               ></twitter>
             </b-col>
             <b-col>
               <linkedin
-                :url="'http://localhost:8080/meme/' + image._id"  
+                :url="'http://localhost:8080/meme/' + image._id"
                 scale="3"
               ></linkedin>
             </b-col>
             <b-col>
               <whats-app
-                :url="'http://localhost:8080/meme/' + image._id"  
+                :url="'http://localhost:8080/meme/' + image._id"
                 title="Hello from PENG MEMES"
                 scale="3"
               ></whats-app>
@@ -128,14 +128,14 @@
 
             <b-col>
               <pinterest
-                :url="'http://localhost:8080/meme/' + image._id"  
+                :url="'http://localhost:8080/meme/' + image._id"
                 scale="3"
                 class="m-3"
               ></pinterest>
             </b-col>
             <b-col>
               <email
-                :url="'http://localhost:8080/meme/' + image._id"  
+                :url="'http://localhost:8080/meme/' + image._id"
                 subject="Hello from PENG MEMES"
                 scale="3"
               ></email>
@@ -154,7 +154,6 @@
 <script>
 import InfiniteLoading from "vue-infinite-loading";
 import {
- 
   Twitter,
   Linkedin,
   Pinterest,
@@ -187,7 +186,6 @@ export default {
   },
   methods: {
     openMemeView(imageId) {
-      console.log("id of the clicked image is :" + imageId);
       router.push({ name: "Meme", params: { id: imageId } }).catch((err) => {
         err;
       });
@@ -222,8 +220,6 @@ export default {
         return; //No more images to show
       }
       setTimeout(() => {
-        console.log("loading more images!");
-        console.log(imagesToAdd);
         this.displayedImages.push(...imagesToAdd);
         $state.loaded();
       }, 2000);
@@ -334,7 +330,6 @@ export default {
       let result = await fetch(random_meme_url);
       const image = await result.json();
       var meme = image;
-      console.log(meme.title + " ### " + meme._id);
       this.openMemeView(meme._id);
     },
   },

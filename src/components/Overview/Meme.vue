@@ -144,18 +144,15 @@ export default {
   methods: {
     async submitComment() {
       if (this.$store.getters.user == null) {
-        console.log("Not logged in");
         this.commentErrorText = "You need to login to comment.";
         return;
       }
       this.commentErrorText = "Submitting comment...";
-      console.log("Submitting comment...");
       var commentUrl = "http://localhost:3000/post-comment";
       var comment = {
         imageId: this.imageId,
         content: this.commentInput,
       };
-      console.log("Comment: " + comment);
       let result = await fetch(commentUrl, {
         method: "POST",
         headers: {
@@ -166,7 +163,6 @@ export default {
       });
       if (result.status !== 200) {
         const { error } = await result.json();
-        console.log(error);
         this.commentErrorText = "Error submitting comment: " + error;
         //this.$set(this.errors, "post-comment", error);
       } else {
@@ -177,7 +173,6 @@ export default {
       }
     },
     async submitUpvote() {
-      console.log("image liked");
       var upvoteUrl = "http://localhost:3000/post-upvote";
       var upvote = {
         imageId: this.imageId,
@@ -199,7 +194,6 @@ export default {
       }
     },
     async submitDownvote() {
-      console.log("image disliked");
       var downvoteUrl = "http://localhost:3000/post-downvote";
       var downvote = {
         imageId: this.imageId,

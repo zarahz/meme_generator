@@ -112,14 +112,12 @@ export default {
     },
     onFileSelected(event) {
       this.selectedFile = event.target.files[0];
-      console.log(this.selectedFile);
       this.selectedFileName = event.target.files[0].name;
       this.selectedImageUrl = URL.createObjectURL(this.selectedFile);
-      console.log(this.selectedImageUrl);
     },
     onUpload() {
       this.$emit("newTemplateSelected", this.selectedImageUrl);
-      this.selectedFileName = "Upload local file"
+      this.selectedFileName = "Upload local file";
     },
     toggleCamera() {
       if (this.isCameraOpen) {
@@ -163,7 +161,6 @@ export default {
       context.drawImage(this.$refs.camera, 0, 0, 450, 337.5);
     },
     onUploadCapturedImage() {
-      
       const capturedImageUrl = document
         .getElementById("photoTaken")
         .toDataURL("image/jpeg");
