@@ -25,7 +25,7 @@
           router
           to="/fabric-meme"
           :active="$route.name == 'FabricMeme'"
-          >Meme Creator (Fabricjs)</b-nav-item
+          >WYSIWYG Editor</b-nav-item
         >
       </b-navbar-nav>
 
