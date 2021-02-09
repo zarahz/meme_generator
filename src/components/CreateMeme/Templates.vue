@@ -149,12 +149,18 @@ export default {
       }
     },
     selectMemeTemplate(selectedIndex) {
+      if(selectedIndex == -1){
+        selectedIndex = this.displayedMemes.length - 1;
+      } else if (selectedIndex == this.displayedMemes.length) {
+        selectedIndex = 0;
+      }
       this.templateSelectionIndex = selectedIndex;
       this.$emit(
         "newTemplateSelected",
         this.displayedMemes[this.templateSelectionIndex].url,
         this.displayedMemes[this.templateSelectionIndex].name
       );
+   
     },
 
     fetchImgflipMemeTemplates() {
