@@ -37,22 +37,6 @@
         </b-col>
         <b-col>
           <label>Size:</label>
-          <b-button
-            type="button"
-            class="btn btn-default btn-sm"
-            variant="outline-primary"
-            v-on:click="changeFontSize(--fontSize)"
-          >
-            -
-          </b-button>
-          <b-button
-            type="button"
-            class="btn btn-default btn-sm"
-            variant="outline-primary"
-            v-on:click="changeFontSize(++fontSize)"
-          >
-            +
-          </b-button>
         </b-col>
         <b-col>
           <b-form-input
@@ -62,12 +46,6 @@
             style="min-width: 60px"
             class="w-50"
             type="number"
-            placeholder="100"
-          />
-          <b-form-input
-            v-model="fontSize"
-            class="w-100"
-            type="text"
             placeholder="100"
           />
         </b-col>
