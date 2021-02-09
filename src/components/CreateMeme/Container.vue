@@ -56,6 +56,15 @@
         </b-col>
         <b-col>
           <b-form-input
+            :value="fontSize"
+            @input="changeFontSize"
+            number
+            style="min-width: 60px"
+            class="w-50"
+            type="number"
+            placeholder="100"
+          />
+          <b-form-input
             v-model="fontSize"
             class="w-100"
             type="text"
