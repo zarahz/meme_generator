@@ -83,8 +83,10 @@ export default {
     img: String,
     drawingSettings: Object,
     fontSize: Number,
-    fontColor: Number, 
-
+    isItalic: String,
+    isBold: String,
+    font: String,
+    fontColor: String, 
   },
   components: {},
   data() {
@@ -348,10 +350,10 @@ export default {
     setTextStyle() {
       let canvas = this.$refs.textCanvas;
       let context = canvas.getContext("2d");
-      context.font = this.fontSize + "px Impact";
-      context.color = this.fontColor
-      context.fillStyle = "white";
-      context.strokeStyle = "black";
+      context.font = this.fontSize  + this.font + this.isItalic + this.isBold;
+      context.fontSize = this.fontSize;
+      context.fillStyle = this.fontColor;
+      context.strokeStyle = this.fontColor;
       context.textBaseline = "middle";
       context.textAlign = "center";
     },
@@ -424,10 +426,25 @@ export default {
     fontSize: {
       handler() {
         //this.showTexts(); 
-        this.setTextStyle();
+        this.showTexts();
       },
     },
     fontColor: {
+      handler() {
+        this.showTexts();
+      }
+    },
+    font: {
+      handler() {
+        this.showTexts(); 
+      }
+    },
+    isBold: {
+      handler() {
+        this.showTexts();
+      }
+    },
+    isItalic: {
       handler() {
         this.showTexts();
       }

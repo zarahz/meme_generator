@@ -54,7 +54,14 @@
             +
           </b-button>
         </b-col>
-        {{ fontSize }}
+        <b-col>
+          <b-form-input
+            v-model="fontSize"
+            class="w-100"
+            type="text"
+            placeholder="100"
+          />
+        </b-col>
         <b-col>
           <b-button-group>
             <b-button title="Bold">
@@ -112,6 +119,10 @@
             :img="img"
             :drawingSettings="drawingSettings"
             :fontSize="fontSize"
+            :font="font"
+            :isItalic="isItalic"
+            :isBold="isBold"
+            :fontColor="fontColor"
             @openTemplatesModal="openTemplatesModal"
             ref="meme"
           />
@@ -227,10 +238,15 @@ export default {
         },
       ],
       fontSize: 100,
+      isItalic: "italic",
+      isBold: "bold",
+      fontColor: "green",
+      font: "px Arial",
       img: "",
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
       title: "",
+      /*
       baseStyles: {
         fontWeight: "800",
         color: "red",
@@ -251,6 +267,8 @@ export default {
       ],
       visibility: "public",
       draftSaved: false,
+      */
+
     };
   },
   methods: {
@@ -365,6 +383,9 @@ export default {
     },
     changeFontSize(newFontSize) {
       this.fontSize = newFontSize;
+    },
+    changeFontColor(newFontColor) {
+      this.fontColor = newFontColor;
     },
     async render_on_server() {
       let result = await fetch("http://localhost:3000/render-simple-meme", {
