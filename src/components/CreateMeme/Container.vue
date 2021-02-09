@@ -63,14 +63,13 @@
           />
         </b-col>
         <b-col>
-          <label>color:</label>
-          <b-form-input
-            v-model="fontColor"
-            class="w-100"
-            type="text"
-            placeholder="Color"
+          <label>Color:</label>
+          <v-input-colorpicker  
+          v-model="fontColor"
+          placeholder="color" 
           />
         </b-col>
+
         <b-col>
           <b-button-group>
             <b-button 
@@ -209,6 +208,7 @@
 </template>
 
 <script>
+
 import { saveAs } from "file-saver";
 import FormData from "form-data";
 import router from "../../router/index.js";
@@ -220,6 +220,8 @@ import DrawingSettings from "./DrawingSettings";
 import DraftModal from "./Modals/DraftModal";
 import TemplatesModal from "./Modals/TemplatesModal";
 import Caption from "./Caption";
+import InputColorPicker from 'vue-native-color-picker';
+
 
 export default {
   name: "CreateMeme",
@@ -231,6 +233,7 @@ export default {
     draftModal: DraftModal,
     templatesModal: TemplatesModal,
     ourCaption: Caption,
+    "v-input-colorpicker": InputColorPicker,
   },
   data() {
     return {
@@ -243,6 +246,8 @@ export default {
           deleteable: false,
           fromBottom: false,
         },
+  
+  
         {
           label: "Bottom Text",
           text: "Bottom Text",
@@ -252,10 +257,11 @@ export default {
           fromBottom: true,
         },
       ],
+      //color: "#79c120",
       fontSize: 100,
       isItalic: "",
       isBold: "",
-      fontColor: "white",
+      fontColor: "#000000",
       incItalic: 0,
       incBold: 0, 
       font: "px Arial",

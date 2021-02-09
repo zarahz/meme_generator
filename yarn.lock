@@ -2821,6 +2821,11 @@ core-js-compat@^3.6.5, core-js-compat@^3.7.0:
     browserslist "^4.14.6"
     semver "7.0.0"
 
+core-js@^3.6.4:
+  version "3.8.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.8.3.tgz#c21906e1f14f3689f93abcc6e26883550dd92dd0"
+  integrity sha512-KPYXeVZYemC2TkNEkX/01I+7yd+nX3KddKwZ1Ww7SKWdI2wQprSgLmrTddT8nw92AjEklTsPBoSdQBhbI1bQ6Q==
+
 core-js@^3.6.5:
   version "3.7.0"
   resolved "https://registry.npm.taobao.org/core-js/download/core-js-3.7.0.tgz?cache=0&sync_timestamp=1604675608816&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcore-js%2Fdownload%2Fcore-js-3.7.0.tgz#b0a761a02488577afbf97179e4681bf49568520f"
@@ -9032,6 +9037,14 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-native-color-picker@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/vue-native-color-picker/-/vue-native-color-picker-1.1.4.tgz#ddcf595cd7962513b5a4d02743c173ddaa97eb87"
+  integrity sha512-R3Vd/peN9gS8/R0wu2aUv1yFz6qHOFPbEBT1i2ftlwuOI4DkqhbOsjHMsCS8xBh45C1MdfJVMHCPa9yz5/wh3A==
+  dependencies:
+    core-js "^3.6.4"
+    vue "^2.6.11"
+
 vue-router@^3.4.9:
   version "3.4.9"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.4.9.tgz#c016f42030ae2932f14e4748b39a1d9a0e250e66"
@@ -9085,7 +9098,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
-vue@^2.5.16, vue@^2.6.12, vue@^2.6.6:
+vue@^2.5.16, vue@^2.6.11, vue@^2.6.12, vue@^2.6.6:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg==
