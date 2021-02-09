@@ -63,6 +63,15 @@
           />
         </b-col>
         <b-col>
+          <label>color:</label>
+          <b-form-input
+            v-model="fontColor"
+            class="w-100"
+            type="text"
+            placeholder="Color"
+          />
+        </b-col>
+        <b-col>
           <b-button-group>
             <b-button 
               title="isBold"
@@ -76,12 +85,12 @@
             >
               <b-icon icon="type-italic" aria-hidden="true"></b-icon>
             </b-button>
-            <b-button title="Underline">
+            <!--b-button title="Underline">
               <b-icon icon="type-underline" aria-hidden="true"></b-icon>
             </b-button>
             <b-button title="Strikethrough">
               <b-icon icon="type-strikethrough" aria-hidden="true"></b-icon>
-            </b-button>
+            </b-button-->
           </b-button-group>
         </b-col>
       </b-row>
@@ -244,9 +253,9 @@ export default {
         },
       ],
       fontSize: 100,
-      isItalic: "italic",
-      isBold: "bold",
-      fontColor: "green",
+      isItalic: "",
+      isBold: "",
+      fontColor: "white",
       incItalic: 0,
       incBold: 0, 
       font: "px Arial",
