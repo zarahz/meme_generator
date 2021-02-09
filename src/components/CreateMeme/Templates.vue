@@ -154,13 +154,13 @@ export default {
       } else if (selectedIndex == this.displayedMemes.length) {
         selectedIndex = 0;
       }
-      this.templateSelectionIndex = selectedIndex;
+      this.selectedIndex = selectedIndex;
+      this.templateSelectionIndex = this.selectedIndex;
       this.$emit(
         "newTemplateSelected",
         this.displayedMemes[this.templateSelectionIndex].url,
         this.displayedMemes[this.templateSelectionIndex].name
       );
-   
     },
 
     fetchImgflipMemeTemplates() {
