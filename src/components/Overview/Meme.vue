@@ -14,6 +14,7 @@
             class="ml-3"
             @click="submitUpvote"
             :disabled="!$store.getters.isLoggedIn"
+            :title="!$store.getters.isLoggedIn && 'Please login to like image'"
           >
             <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
             {{ upvotesCount }}</b-button
@@ -23,6 +24,9 @@
             class="ml-3"
             @click="submitDownvote"
             :disabled="!$store.getters.isLoggedIn"
+            :title="
+              !$store.getters.isLoggedIn && 'Please login to dislike image'
+            "
           >
             <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
             {{ downvotesCount }}</b-button

@@ -76,17 +76,25 @@
           </b-row>
           <b-row align-h="center">
             <b-button
+              :disabled="!$store.getters.isLoggedIn"
               variant="outline-success"
               class="m-3"
               @click="submitUpvote(image._id, index)"
+              :title="
+                !$store.getters.isLoggedIn && 'Please login to like image'
+              "
             >
               <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
               {{ image.upvoteCount }}</b-button
             >
             <b-button
+              :disabled="!$store.getters.isLoggedIn"
               variant="outline-danger"
               class="m-3"
               @click="submitDownvote(image._id, index)"
+              :title="
+                !$store.getters.isLoggedIn && 'Please login to dislike image'
+              "
             >
               <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
               {{ image.downvoteCount }}</b-button
