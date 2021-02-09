@@ -83,6 +83,7 @@ export default {
     img: String,
     drawingSettings: Object,
     fontSize: Number,
+    fontLocal : String,
     isItalic: String,
     isBold: String,
     font: String,
@@ -350,7 +351,9 @@ export default {
     setTextStyle() {
       let canvas = this.$refs.textCanvas;
       let context = canvas.getContext("2d");
-      context.font = this.fontSize  + this.font + this.isItalic + this.isBold;
+      //context.font = this.fontSize  + this.font + this.isItalic + this.isBold;
+      this.fontLocal = this.isItalic + " " + this.isBold + " " + this.fontSize + "px Arial";
+      context.font = this.fontLocal;
       context.fontSize = this.fontSize;
       context.fillStyle = this.fontColor;
       context.strokeStyle = this.fontColor;
