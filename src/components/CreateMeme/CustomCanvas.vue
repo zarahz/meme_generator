@@ -352,7 +352,9 @@ export default {
       let canvas = this.$refs.textCanvas;
       let context = canvas.getContext("2d");
       //context.font = this.fontSize  + this.font + this.isItalic + this.isBold;
-      context.font = this.isItalic + " " + this.isBold + " " + this.fontSize + "px Arial";
+      this.isItalic += " "; 
+      this.isBold += " "; 
+      context.font = this.isItalic + this.isBold + this.fontSize + "px Arial";
       context.fontSize = this.fontSize;
       context.fillStyle = this.fontColor;
       context.strokeStyle = this.fontColor;

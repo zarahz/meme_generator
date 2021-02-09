@@ -64,10 +64,16 @@
         </b-col>
         <b-col>
           <b-button-group>
-            <b-button title="Bold">
+            <b-button 
+              title="isBold"
+             v-on:click="setUnsetBold()"
+            >
               <b-icon icon="type-bold" aria-hidden="true"></b-icon>
             </b-button>
-            <b-button title="Italic">
+            <b-button 
+              title="Italic"
+              v-on:click="setUnsetItalic()"
+            >
               <b-icon icon="type-italic" aria-hidden="true"></b-icon>
             </b-button>
             <b-button title="Underline">
@@ -241,6 +247,8 @@ export default {
       isItalic: "italic",
       isBold: "bold",
       fontColor: "green",
+      incItalic: 0,
+      incBold: 0, 
       font: "px Arial",
       img: "",
       pos: { x: 0, y: 0 },
@@ -282,6 +290,20 @@ export default {
     },
     clearDrawingCanvas() {
       this.$refs.meme && this.$refs.meme.clearDrawingCanvas();
+    },
+    setUnsetItalic() {
+      this.isItalic = (this.incItalic % 2 == 0) ? "" :"italic";
+      this.incItalic++;
+      if(this.incItalic == 10) {
+        this.incItalic == 0;
+      }
+    },
+    setUnsetBold() {
+      this.isBold = (this.incBold % 2 == 0) ? "" : "bold";
+      this.incBold++;
+      if(this.incBold == 10) {
+        this.incBold == 0;
+      }
     },
     changeTemplate(newImageUrl) {
       this.img = newImageUrl;
