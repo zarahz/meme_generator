@@ -255,7 +255,7 @@ export default {
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
       title: "",
-      /*
+      
       baseStyles: {
         fontWeight: "800",
         color: "red",
@@ -276,7 +276,7 @@ export default {
       ],
       visibility: "public",
       draftSaved: false,
-      */
+      
 
     };
   },
