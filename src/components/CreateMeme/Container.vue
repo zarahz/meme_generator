@@ -293,14 +293,14 @@ export default {
       this.$refs.meme && this.$refs.meme.clearDrawingCanvas();
     },
     setUnsetItalic() {
-      this.isItalic = (this.incItalic % 2 == 0) ? "" :"italic";
+      this.isItalic = (this.incItalic % 2 == 0) ? "italic" :"";
       this.incItalic++;
       if(this.incItalic == 10) {
         this.incItalic == 0;
       }
     },
     setUnsetBold() {
-      this.isBold = (this.incBold % 2 == 0) ? "" : "bold";
+      this.isBold = (this.incBold % 2 == 0) ? "bold" : "";
       this.incBold++;
       if(this.incBold == 10) {
         this.incBold == 0;
