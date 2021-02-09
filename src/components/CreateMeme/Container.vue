@@ -244,7 +244,7 @@ export default {
         },
       ],
       //color: "#79c120",
-      fontSize: 100,
+      fontSize: 30,
       isItalic: "",
       isBold: "",
       fontColor: "#000000",
@@ -281,14 +281,6 @@ export default {
     };
   },
   methods: {
-    selectMemeTemplate(selectedIndex) {
-      this.templateSelectionIndex = selectedIndex;
-      this.$emit(
-        "newTemplateSelected",
-        //this.displayedImgFlipMemes[this.templateSelectionIndex].url,
-        this.displayedMemes[this.templateSelectionIndex].url
-      );
-    },
     clearDrawingCanvas() {
       this.$refs.meme && this.$refs.meme.clearDrawingCanvas();
     },

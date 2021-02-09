@@ -162,7 +162,6 @@ export default {
         this.displayedMemes[this.templateSelectionIndex].name
       );
     },
-
     fetchImgflipMemeTemplates() {
       axios.get("https://api.imgflip.com/get_memes").then((resp) => {
         if (resp.data.success == true) {
