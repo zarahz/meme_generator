@@ -48,6 +48,29 @@
         >
       </b-row>
       <b-row align-h="center" class="mb-3">
+        <b-button
+          size="sm"
+          variant="outline-primary"
+          class="my-2 my-sm-0 mr-2"
+          v-on:click="savePngToDisk"
+          >Save PNG to Disk</b-button
+        >
+        <b-button
+          size="sm"
+          variant="outline-primary"
+          class="my-2 my-sm-0 mr-2"
+          v-on:click="saveGifToDisk"
+          >Save Gif to Disk</b-button
+        >
+        <b-button
+          size="sm"
+          variant="primary"
+          class="my-2 my-sm-0 mr-2"
+          v-on:click="saveOnServer"
+          >Submit</b-button
+        >
+      </b-row>
+      <b-row align-h="center" class="mb-3">
         <b-form-input
           v-model="canvas_width"
           @input="update_canvas_size"
@@ -81,6 +104,9 @@ import Templates from "../CreateMeme/Templates.vue";
 import CustomTemplate from "../CreateMeme/CustomTemplate.vue";
 import { fabric } from "fabric";
 import { fabricGif } from "./fabricGif";
+import { ccapture_js_npmfixed } from "ccapture.js-npmfixed";
+import router from "../../router/index.js";
+import { saveAs } from "file-saver";
 
 export default {
   name: "FabricMeme",
@@ -108,6 +134,48 @@ export default {
     };
   },
   methods: {
+    async savePngToDisk() {
+      this.canvas.discardActiveObject(); // otherwise selection UI is visible in output
+      this.canvas.getElement().toBlob(function (blob) {
+        saveAs(blob, "meme.png");
+      });
+    },
+    async saveGifToDisk() {
+      var capturer = new ccapture_js_npmfixed.CCapture({
+        format: "gif",
+        workersPath: "js/",
+        framerate: 20,
+        verbose: true,
+        name: "meme.gif",
+      });
+      capturer.start();
+      this.canvas.on("after:render", () => {
+        capturer.capture(this.canvas);
+      });
+      await new Promise((r) => setTimeout(r, 3000));
+      capturer.stop();
+      capturer.save();
+    },
+    async saveOnServer() {
+      this.canvas.discardActiveObject(); // otherwise selection UI is visible in output
+      let canvas = this.$refs.meme.createResultingCanvas();
+      canvas.toBlob(async (blob) => {
+        let data = new FormData();
+        data.append("visibility", this.visibility);
+        data.append("file", blob); //, "file.png"
+        data.append("title", this.title);
+        let result = await fetch("http://localhost:3000/upload", {
+          method: "POST",
+          credentials: "include",
+          body: data,
+        });
+        if (result.status === 200) {
+          router.push({ name: "Home" }).catch((err) => {
+            err;
+          });
+        }
+      });
+    },
     addTemplate(newImageUrl) {
       if (newImageUrl.endsWith(".gif")) {
         console.log("Adding moving image: " + newImageUrl);
@@ -121,24 +189,6 @@ export default {
         var img = oImg.scale(0.5).set({ left: 100, top: 100 });
         canvas.add(img);
       });
-    },
-    async render_on_server() {
-      var render_simple_meme_url = new URL(
-          "http://localhost:3000/render-simple-meme"
-        ),
-        params = {
-          template_image_url: this.template_image,
-          top_text: this.topText.text,
-          bottom_text: this.bottomText.text,
-          top_x: this.topText.offsetX,
-          top_y: this.topText.offsetY,
-          bott_x: this.bottomText.offsetX,
-          bott_y: this.bottomText.offsetY,
-        };
-      render_simple_meme_url.search = new URLSearchParams(params).toString();
-      let result = await fetch(render_simple_meme_url);
-      const { path } = await result.json();
-      this.final_image_path = path;
     },
     add_text_normal() {
       this.canvas.add(
