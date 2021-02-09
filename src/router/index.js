@@ -11,6 +11,8 @@ import Registration from "../components/Authenticate/Registration.vue";
 import ForgotPassword from "../components/Authenticate/ForgotPassword.vue";
 import MyPage from "../components/UserPages/MyPage";
 
+import CreateMovingMeme from "../components/CreateMovingMeme/Container.vue";
+
 const routes = [
   {
     path: "/",
@@ -33,6 +35,12 @@ const routes = [
     path: "/fabric-meme",
     name: "FabricMeme",
     component: FabricMeme,
+
+  },
+  {
+    path: "/create-moving-meme",
+    name: "CreateMovingMeme",
+    component: CreateMovingMeme,
 
   },
   {
