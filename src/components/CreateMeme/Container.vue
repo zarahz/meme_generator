@@ -63,10 +63,9 @@
           />
         </b-col>
         <b-col>
-          <label>Color:</label>
+          <label>Pick a color:</label>
           <v-input-colorpicker  
           v-model="fontColor"
-          placeholder="color" 
           />
         </b-col>
 
