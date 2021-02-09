@@ -44,33 +44,33 @@
           </b-button>
 
           <twitter
-            :url="'http://localhost:3000/static/' + imageId"
+            :url="'http://localhost:8080/meme/' + imageId"
             title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></twitter>
           <linkedin
-            :url="'http://localhost:3000/static/' + imageId"
+            :url="'http://localhost:8080/meme/' + imageId"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></linkedin>
           <whats-app
-            :url="'http://localhost:3000/static/' + imageId"
+            :url="'http://localhost:8080/meme/' + imageId"
             title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></whats-app>
           <pinterest
-            :url="'http://localhost:3000/static/' + imageId"
+            :url="'http://localhost:8080/meme/' + imageId"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></pinterest>
           <email
-            :url="'http://localhost:3000/static/' + imageId"
+            :url="'http://localhost:8080/meme/' + imageId"
             subject="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
