@@ -23,18 +23,24 @@
           </b-form-radio-group>
         </b-form-group>
       </b-row>
+
       <b-row align-h="center" class="mb-3">
-        <b-col cols="1">
-          <label>Title:</label>
-        </b-col>
-        <b-col cols="auto">
+        <b-form-group
+          label-cols="2"
+          content-cols="10"
+          label="Title"
+          class="w-75"
+        >
           <b-form-input
             v-model="title"
-            class="w-100"
             type="text"
             placeholder="Title..."
+            class="w-100"
           />
-        </b-col>
+        </b-form-group>
+      </b-row>
+
+      <b-row align-h="center" class="mb-3">
         <b-col>
           <label>Size:</label>
         </b-col>
@@ -51,23 +57,15 @@
         </b-col>
         <b-col>
           <label>Pick a color:</label>
-          <v-input-colorpicker  
-          v-model="fontColor"
-          />
+          <v-input-colorpicker v-model="fontColor" />
         </b-col>
 
         <b-col>
           <b-button-group>
-            <b-button 
-              title="isBold"
-             v-on:click="setUnsetBold()"
-            >
+            <b-button title="isBold" v-on:click="setUnsetBold()">
               <b-icon icon="type-bold" aria-hidden="true"></b-icon>
             </b-button>
-            <b-button 
-              title="Italic"
-              v-on:click="setUnsetItalic()"
-            >
+            <b-button title="Italic" v-on:click="setUnsetItalic()">
               <b-icon icon="type-italic" aria-hidden="true"></b-icon>
             </b-button>
             <!--b-button title="Underline">
@@ -194,7 +192,6 @@
 </template>
 
 <script>
-
 import { saveAs } from "file-saver";
 import FormData from "form-data";
 import router from "../../router/index.js";
@@ -206,8 +203,7 @@ import DrawingSettings from "./DrawingSettings";
 import DraftModal from "./Modals/DraftModal";
 import TemplatesModal from "./Modals/TemplatesModal";
 import Caption from "./Caption";
-import InputColorPicker from 'vue-native-color-picker';
-
+import InputColorPicker from "vue-native-color-picker";
 
 export default {
   name: "CreateMeme",
@@ -232,8 +228,7 @@ export default {
           deleteable: false,
           fromBottom: false,
         },
-  
-  
+
         {
           label: "Bottom Text",
           text: "Bottom Text",
@@ -249,13 +244,13 @@ export default {
       isBold: "",
       fontColor: "#000000",
       incItalic: 0,
-      incBold: 0, 
+      incBold: 0,
       font: "px Arial",
       img: "",
       pos: { x: 0, y: 0 },
       drawingSettings: { brushSize: "1px", color: "black", isErasing: false },
       title: "",
-      
+
       baseStyles: {
         fontWeight: "800",
         color: "red",
@@ -276,8 +271,6 @@ export default {
       ],
       visibility: "public",
       draftSaved: false,
-      
-
     };
   },
   methods: {
@@ -285,16 +278,16 @@ export default {
       this.$refs.meme && this.$refs.meme.clearDrawingCanvas();
     },
     setUnsetItalic() {
-      this.isItalic = (this.incItalic % 2 == 0) ? "italic" :"";
+      this.isItalic = this.incItalic % 2 == 0 ? "italic" : "";
       this.incItalic++;
-      if(this.incItalic == 10) {
+      if (this.incItalic == 10) {
         this.incItalic == 0;
       }
     },
     setUnsetBold() {
-      this.isBold = (this.incBold % 2 == 0) ? "bold" : "";
+      this.isBold = this.incBold % 2 == 0 ? "bold" : "";
       this.incBold++;
-      if(this.incBold == 10) {
+      if (this.incBold == 10) {
         this.incBold == 0;
       }
     },
