@@ -1,6 +1,6 @@
 <template>
   <b-container class="justify-content-md-center">
-    <div v-if="authorized">
+    <div v-if="authorized && image.fileType">
       <b-row align-h="center" class="pull-right text-large">
         {{ image.title }}
       </b-row>
@@ -10,7 +10,7 @@
           class="imageContainer"
           :src="image.url"
         />
-        <video controls class="imageContainer" v-else>
+        <video autoplay controls class="imageContainer" v-else>
           <source
             :src="image.url"
             :type="'video/' + image.fileType.replace(/\./g, '')"
@@ -48,6 +48,7 @@
           <b-button
             variant="outline-primary"
             class="ml-3"
+            :disabled="!['.gif', '.jpeg', '.png'].includes(image.fileType)"
             @click="downloadImage"
           >
             <b-icon icon="download" aria-hidden="true"></b-icon>
@@ -285,7 +286,8 @@ export default {
       }
     },
     downloadImage() {
-      saveAs(this.image.url, "meme.png");
+      console.log(this.image.url);
+      saveAs(this.image.url, "meme" + this.image.fileType);
     },
   },
   mounted() {

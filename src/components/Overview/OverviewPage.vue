@@ -75,7 +75,6 @@
               @click="openMemeView(image._id)"
             />
             <video
-              controls
               class="imageContainer"
               @click="openMemeView(image._id)"
               v-else
