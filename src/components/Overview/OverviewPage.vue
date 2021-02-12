@@ -69,10 +69,22 @@
           </b-row>
           <b-row align-h="center">
             <img
+              v-if="['.gif', '.jpeg', '.png'].includes(image.fileType)"
               class="imageContainer"
               :src="'http://localhost:3000/static/' + image.nameAndFileType"
               @click="openMemeView(image._id)"
             />
+            <video
+              controls
+              class="imageContainer"
+              @click="openMemeView(image._id)"
+              v-else
+            >
+              <source
+                :src="'http://localhost:3000/static/' + image.nameAndFileType"
+                :type="'video/' + image.fileType.replace(/\./g, '')"
+              />
+            </video>
           </b-row>
           <b-row align-h="center">
             <b-button

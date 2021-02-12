@@ -46,13 +46,11 @@
         </b-col>
         <b-col>
           <b-form-input
-            :value="fontSize"
-            @input="changeFontSize"
+            v-model.number="fontSize"
             number
             style="min-width: 60px"
             class="w-50"
             type="number"
-            placeholder="100"
           />
         </b-col>
         <b-col>
@@ -315,7 +313,7 @@ export default {
       canvas.toBlob(async (blob) => {
         let data = new FormData();
         data.append("visibility", this.visibility);
-        data.append("file", blob); //, "file.png"
+        data.append("file", blob, "file.png");
         data.append("title", this.title);
         let result = await fetch("http://localhost:3000/upload", {
           method: "POST",
@@ -388,9 +386,6 @@ export default {
       this.captions.splice(this.captions.indexOf(captionToRemove), 1);
 
       this.$refs.meme.showTexts();
-    },
-    changeFontSize(newFontSize) {
-      this.fontSize = newFontSize;
     },
     changeFontColor(newFontColor) {
       this.fontColor = newFontColor;

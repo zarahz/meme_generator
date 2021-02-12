@@ -17,8 +17,7 @@
           :value="offsetX"
           @input="updateOffsetX"
           number
-          style="min-width: 60px"
-          class="w-50"
+          class="input w-50"
           type="number"
           placeholder="horizontal offset"
         />
@@ -30,8 +29,7 @@
           :value="offsetY"
           @input="updateOffsetY"
           number
-          style="min-width: 60px"
-          class="w-50"
+          class="input w-50"
           type="number"
           placeholder="vertical offset"
         />
@@ -39,35 +37,35 @@
     </b-col>
     <b-button
       size="sm"
-      class="my-2 my-sm-0 mr-2"
+      class="icon my-2 my-sm-0 mr-2"
       @click="move('left')"
       v-if="showOffsetSettings"
       >🡄</b-button
     >
     <b-button
       size="sm"
-      class="my-2 my-sm-0 mr-2"
+      class="icon my-2 my-sm-0 mr-2"
       @click="move('right')"
       v-if="showOffsetSettings"
       >🡆</b-button
     >
     <b-button
       size="sm"
-      class="my-2 my-sm-0 mr-2"
+      class="icon my-2 my-sm-0 mr-2"
       @click="move('up')"
       v-if="showOffsetSettings"
       >🡅</b-button
     >
     <b-button
       size="sm"
-      class="my-2 my-sm-0 mr-2"
+      class="icon my-2 my-sm-0 mr-2"
       @click="move('down')"
       v-if="showOffsetSettings"
       >🡇</b-button
     >
     <b-button
       size="sm"
-      class="my-2 my-sm-0 mr-2"
+      class="icon my-2 my-sm-0 mr-2"
       variant="danger"
       :style="{ visibility: deleteable ? 'show' : 'hidden' }"
       @click="deleteThis"
@@ -146,4 +144,11 @@ export default {
 </script>
 
 <style scoped>
+.icon {
+  height: 40px;
+}
+
+.input {
+  min-width: 80px;
+}
 </style>

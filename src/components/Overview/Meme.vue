@@ -5,7 +5,17 @@
         {{ image.title }}
       </b-row>
       <b-row align-h="center">
-        <b-img class="imageContainer" :src="image.url" />
+        <b-img
+          v-if="['.gif', '.jpeg', '.png'].includes(image.fileType)"
+          class="imageContainer"
+          :src="image.url"
+        />
+        <video controls class="imageContainer" v-else>
+          <source
+            :src="image.url"
+            :type="'video/' + image.fileType.replace(/\./g, '')"
+          />
+        </video>
       </b-row>
       <b-row align-h="center" class="m-3">
         <b-col>
