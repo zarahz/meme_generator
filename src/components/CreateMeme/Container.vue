@@ -127,12 +127,6 @@
 
       <b-row class="justify-content-md-center mb-3">
         <b-col md="auto">
-          <b-button
-            variant="outline-primary"
-            v-on:click="render_on_server"
-            class="mr-3"
-            >Render on server</b-button
-          >
           <b-button variant="primary" v-on:click="saveOnServer" class="mr-3">
             Submit Meme
           </b-button>
@@ -166,6 +160,22 @@
             Load from Drafts
           </b-button>
         </b-col>
+        <b-row class="justify-content-md-center mb-1">
+          <b-col md="auto">
+            <b-button
+              variant="outline-primary"
+              v-on:click="render_on_server"
+              class="mr-3"
+              >Render on server</b-button
+            >
+            <b-form-input
+              v-model="max_render_size"
+              type="text"
+              placeholder="Max file size in KB"
+              class="mr-3"
+            />
+          </b-col>
+        </b-row>
       </b-row>
     </div>
     <div v-else>Choose your meme image source to start editing!</div>
@@ -268,6 +278,7 @@ export default {
         },
       ],
       visibility: "public",
+      max_render_size: 9001, // in KB
       draftSaved: false,
     };
   },
@@ -397,6 +408,7 @@ export default {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          max_kilobytes: this.max_render_size,
           image_url: this.img,
           captions: this.captions,
           font_size: this.fontSize,
