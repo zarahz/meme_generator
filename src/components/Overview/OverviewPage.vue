@@ -206,7 +206,7 @@ export default {
   methods: {
     openMemeView(imageId) {
       router.push({ name: "Meme", params: { id: imageId } }).catch((err) => {
-        err;
+        err; 
       });
     },
     async getImages() {

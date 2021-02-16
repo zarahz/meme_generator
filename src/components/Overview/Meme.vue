@@ -5,17 +5,29 @@
         {{ image.title }}
       </b-row>
       <b-row align-h="center">
-        <b-img
-          v-if="['.gif', '.jpeg', '.png'].includes(image.fileType)"
-          class="imageContainer"
-          :src="image.url"
-        />
-        <video autoplay controls class="imageContainer" v-else>
-          <source
+        <b-col align-self="center">
+          <b-button variant="light" class="ml-3">
+            <b-icon icon="chevron-left" aria-hidden="true"></b-icon>
+          </b-button>
+        </b-col>
+        <b-col cols="10">
+          <b-img
+            v-if="['.gif', '.jpeg', '.png'].includes(image.fileType)"
+            class="imageContainer"
             :src="image.url"
-            :type="'video/' + image.fileType.replace(/\./g, '')"
           />
-        </video>
+          <video autoplay controls class="imageContainer" v-else>
+            <source
+              :src="image.url"
+              :type="'video/' + image.fileType.replace(/\./g, '')"
+            />
+          </video>
+        </b-col>
+        <b-col align-self="center">
+          <b-button variant="light" class="ml-3">
+            <b-icon icon="chevron-right" aria-hidden="true"></b-icon>
+          </b-button>
+        </b-col>
       </b-row>
       <b-row align-h="center" class="m-3">
         <b-col>
@@ -131,6 +143,7 @@ import {
 
 export default {
   name: "MemePage",
+
   components: {
     Twitter,
     Linkedin,
@@ -144,7 +157,7 @@ export default {
       imageId: this.$route.params.id,
       title: "Meme view",
       image: {},
-      // allImages: [], not needed for now, get as parameter from overview later for the navigation button (next/previous meme)
+      allImages: [],
       upvotesCount: 0,
       upvotes: [],
       downvotesCount: 0,
@@ -154,6 +167,7 @@ export default {
       commentInput: "",
       commentErrorText: "",
       authorized: true,
+      currentImageIndex: 0,
     };
   },
   methods: {
@@ -278,9 +292,36 @@ export default {
       if (result.status === 200) {
         const { image } = await result.json();
         this.image = image;
+        console.log(image);
         //additionally save the url into the img object since it is needed multiple times
         this.image.url =
           "http://localhost:3000/static/" + image.nameAndFileType;
+      } else if (result.status === 401) {
+        this.authorized = false;
+      }
+    },
+    async getImages() {
+      let result = await fetch("http://localhost:3000/memes", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (result.status === 200) {
+        const dbImages = await result.json();
+        this.allImages = dbImages;
+        //sort images by creation date
+        this.allImages.sort(function (a, b) {
+          return new Date(b.creationDate) - new Date(a.creationDate);
+        });
+        for (var image in this.allImages) {
+          if (this.imageId == this.allImages[image]._id) {
+            var Image = this.allImages[image];
+            console.log(Image);
+            this.image = Image;
+            //additionally save the url into the img object since it is needed multiple times
+            this.image.url =
+              "http://localhost:3000/static/" + Image.nameAndFileType;
+          }
+        }
       } else if (result.status === 401) {
         this.authorized = false;
       }
@@ -291,7 +332,8 @@ export default {
     },
   },
   mounted() {
-    this.getImage();
+    // this.getImage();
+    this.getImages();
     this.fetchComments();
     this.fetchupvotes();
     this.fetchdownvotes();
