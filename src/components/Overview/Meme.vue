@@ -273,12 +273,9 @@ export default {
       this.upvotes = dbUpvotes;
       this.upvotesCount = this.upvotes.length;
       for (var upvote in this.upvotes) {
-        console.log(this.upvotes);
         if (this.$store.getters.user._id == this.upvotes[upvote].authorId) {
-          console.log("this image is liked by this user");
           this.imageIsLikedbyCurrentUser = true;
           this.changeVariant();
-          console.log("imageIsLikedbyCurrentUser ist true ")
         }  
       }
     },
@@ -318,7 +315,6 @@ export default {
       if (result.status === 200) {
         const { image } = await result.json();
         this.image = image;
-        console.log(image);
         //additionally save the url into the img object since it is needed multiple times
         this.image.url =
           "http://localhost:3000/static/" + image.nameAndFileType;
@@ -344,8 +340,7 @@ export default {
         for (var image in this.allImages) {
           if (this.imageId == this.allImages[image]._id) {
             var Image = this.allImages[image];
-            console.log(Image);
-
+            
             this.image = Image;
             //additionally save the url into the img object since it is needed multiple times
             this.image.url =
