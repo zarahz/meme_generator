@@ -57,13 +57,6 @@
         >
         <b-button
           size="sm"
-          variant="outline-primary"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="saveGifToDisk"
-          >Save Gif to Disk</b-button
-        >
-        <b-button
-          size="sm"
           variant="primary"
           class="my-2 my-sm-0 mr-2"
           v-on:click="saveOnServer"
@@ -119,15 +112,26 @@ export default {
     const ref = this.$refs.can;
     const canvas = new fabric.Canvas(ref);
     this.canvas = canvas;
-    this.add_gif("https://media.giphy.com/media/11RwocOdukxqN2/giphy.gif");
+    // example gif file
+    //this.add_gif("https://media.giphy.com/media/11RwocOdukxqN2/giphy.gif");
+    // patch fabric for cross domain image jazz
+    fabric.Image.fromURL = function (d, f, e) {
+      var c = fabric.document.createElement("img");
+      c.onload = function () {
+        if (f) {
+          f(new fabric.Image(c, e));
+        }
+        c = c.onload = null;
+      };
+      c.setAttribute("crossOrigin", "anonymous");
+      c.src = d;
+    };
   },
   data() {
     return {
       canvas: 0,
       canvas_width: 1000,
       canvas_height: 500,
-      topText: { text: "TEXT HERE", offsetX: 100, offsetY: 30 },
-      bottomText: { text: "B", offsetX: 30, offsetY: 100 },
       template_image:
         "http://localhost:3000/static-templates/0e71a5ba-5738-4234-9921-ac587870d8c9.png",
       final_image_path: "",
@@ -136,6 +140,7 @@ export default {
   methods: {
     async savePngToDisk() {
       this.canvas.discardActiveObject(); // otherwise selection UI is visible in output
+      this.fix_cross_domain_security();
       this.canvas.getElement().toBlob(function (blob) {
         saveAs(blob, "meme.png");
       });
@@ -176,13 +181,26 @@ export default {
         }
       });
     },
+    fix_cross_domain_security() {
+      // patch fabric for cross domain image jazz
+      fabric.Image.fromURL = function (d, f, e) {
+        var c = fabric.document.createElement("img");
+        c.onload = function () {
+          if (f) {
+            f(new fabric.Image(c, e));
+          }
+          c = c.onload = null;
+        };
+        c.setAttribute("crossOrigin", "anonymous");
+        c.src = d;
+      };
+    },
     addTemplate(newImageUrl) {
       if (newImageUrl.endsWith(".gif")) {
         console.log("Adding moving image: " + newImageUrl);
         this.add_gif(newImageUrl);
         return;
       }
-
       console.log("Adding static image: " + newImageUrl);
       let canvas = this.canvas;
       fabric.Image.fromURL(newImageUrl, function (oImg) {
