@@ -42,7 +42,7 @@
             {{ upvotesCount }}</b-button
           >
           <b-button
-            variant="outline-danger"
+            :variant="downvoteButtonVariant"
             class="ml-3"
             @click="submitDownvote"
             :disabled="!$store.getters.isLoggedIn"
@@ -182,6 +182,14 @@ export default {
         this.upvoteButtonVariant = "outline-success";
       }
     },
+
+    changeDownvoteVariant() {
+      if (this.imageIsDislikedbyCurrentUser == true) {
+        this.downvoteButtonVariant = "danger";
+      } else if (this.imageIsDislikedbyCurrentUser == false) {
+        this.downvoteButtonVariant = "outline-danger";
+      }
+    },
     async submitComment() {
       if (this.$store.getters.user == null) {
         this.commentErrorText = "You need to login to comment.";
@@ -230,11 +238,13 @@ export default {
         console.log(error);
       } else {
         // success
-        if (this.imageIsLikedbyCurrentUser == false){
-          this.imageIsLikedbyCurrentUser = true
-        } else if (this.imageIsLikedbyCurrentUser == true){
-          this.imageIsLikedbyCurrentUser = false 
+        if (this.imageIsLikedbyCurrentUser == false) {
+          this.imageIsLikedbyCurrentUser = true;
+        } else if (this.imageIsLikedbyCurrentUser == true) {
+          this.imageIsLikedbyCurrentUser = false;
         }
+        this.imageIsDislikedbyCurrentUser = false;
+        this.changeDownvoteVariant();
         this.changeUpvoteVariant();
         this.fetchupvotes();
         this.fetchdownvotes();
@@ -258,6 +268,14 @@ export default {
         console.log(error);
       } else {
         // success
+        if (this.imageIsDislikedbyCurrentUser == false) {
+          this.imageIsDislikedbyCurrentUser = true;
+        } else if (this.imageIsDislikedbyCurrentUser == true) {
+          this.imageIsDislikedbyCurrentUser = false;
+        }
+        this.imageIsLikedbyCurrentUser = false;
+        this.changeDownvoteVariant();
+        this.changeUpvoteVariant();
         this.fetchdownvotes();
         this.fetchupvotes();
       }
@@ -278,7 +296,7 @@ export default {
         if (this.$store.getters.user._id == this.upvotes[upvote].authorId) {
           this.imageIsLikedbyCurrentUser = true;
           this.changeUpvoteVariant();
-        }  
+        }
       }
     },
 
@@ -293,6 +311,12 @@ export default {
       const { dbDownvotes } = await result.json();
       this.downvotes = dbDownvotes;
       this.downvotesCount = this.downvotes.length;
+      for (var downvote in this.downvotes) {
+        if (this.$store.getters.user._id == this.downvotes[downvote].authorId) {
+          this.imageIsDislikedbyCurrentUser = true;
+          this.changeDownvoteVariant();
+        }
+      }
     },
     async fetchComments() {
       var currentImageId = this.imageId; // only used once, simplify
@@ -365,6 +389,7 @@ export default {
     this.fetchupvotes();
     this.fetchdownvotes();
     this.changeUpvoteVariant();
+    this.changeDownvoteVariant();
   },
 };
 </script>
