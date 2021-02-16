@@ -139,6 +139,7 @@ export default {
     const canvas = new fabric.Canvas(ref);
     this.canvas = canvas;
     this.canvas.preserveObjectStacking = true; // fix text disappearing behind image
+
     // example gif file
     //this.add_gif("https://media.giphy.com/media/11RwocOdukxqN2/giphy.gif");
     // patch fabric for cross domain image jazz
@@ -180,7 +181,6 @@ export default {
   methods: {
     async savePngToDisk() {
       this.canvas.discardActiveObject(); // otherwise selection UI is visible in output
-      this.fix_cross_domain_security();
       this.canvas.getElement().toBlob(function (blob) {
         saveAs(blob, "meme.png");
       });
@@ -207,7 +207,6 @@ export default {
     },
     async saveOnServer() {
       this.canvas.discardActiveObject(); // otherwise selection UI is visible in output
-
       this.canvas.getElement().toBlob(async (blob) => {
         let data = new FormData();
         data.append("visibility", this.visibility);
