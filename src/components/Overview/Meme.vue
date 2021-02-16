@@ -170,10 +170,12 @@ export default {
       currentImageIndex: 0,
       imageIsLikedbyCurrentUser: false,
       upvoteButtonVariant: "outline-success",
+      imageIsDislikedbyCurrentUser: false,
+      downvoteButtonVariant: "outline-danger",
     };
   },
   methods: {
-    changeVariant() {
+    changeUpvoteVariant() {
       if (this.imageIsLikedbyCurrentUser == true) {
         this.upvoteButtonVariant = "success";
       } else if (this.imageIsLikedbyCurrentUser == false) {
@@ -233,7 +235,7 @@ export default {
         } else if (this.imageIsLikedbyCurrentUser == true){
           this.imageIsLikedbyCurrentUser = false 
         }
-        this.changeVariant();
+        this.changeUpvoteVariant();
         this.fetchupvotes();
         this.fetchdownvotes();
       }
@@ -275,7 +277,7 @@ export default {
       for (var upvote in this.upvotes) {
         if (this.$store.getters.user._id == this.upvotes[upvote].authorId) {
           this.imageIsLikedbyCurrentUser = true;
-          this.changeVariant();
+          this.changeUpvoteVariant();
         }  
       }
     },
@@ -340,7 +342,7 @@ export default {
         for (var image in this.allImages) {
           if (this.imageId == this.allImages[image]._id) {
             var Image = this.allImages[image];
-            
+
             this.image = Image;
             //additionally save the url into the img object since it is needed multiple times
             this.image.url =
@@ -362,7 +364,7 @@ export default {
     this.fetchComments();
     this.fetchupvotes();
     this.fetchdownvotes();
-    this.changeVariant();
+    this.changeUpvoteVariant();
   },
 };
 </script>
