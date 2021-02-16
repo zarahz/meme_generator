@@ -470,6 +470,7 @@ export default {
   /**col adds padding! */
   /* padding-right: 15px;
   padding-left: 15px; */
+  box-shadow: 0px 0px 32px 2px grey;
 }
 
 .size-input {
