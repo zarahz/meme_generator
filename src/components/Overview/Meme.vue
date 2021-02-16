@@ -32,7 +32,7 @@
       <b-row align-h="center" class="m-3">
         <b-col>
           <b-button
-            variant="outline-success"
+            :variant="upvoteButtonVariant"
             class="ml-3"
             @click="submitUpvote"
             :disabled="!$store.getters.isLoggedIn"
@@ -168,9 +168,18 @@ export default {
       commentErrorText: "",
       authorized: true,
       currentImageIndex: 0,
+      imageIsLikedbyCurrentUser: false,
+      upvoteButtonVariant: "outline-success",
     };
   },
   methods: {
+    changeVariant() {
+      if (this.imageIsLikedbyCurrentUser == true) {
+        this.upvoteButtonVariant = "success";
+      } else if (this.imageIsLikedbyCurrentUser == false) {
+        this.upvoteButtonVariant = "outline-success";
+      }
+    },
     async submitComment() {
       if (this.$store.getters.user == null) {
         this.commentErrorText = "You need to login to comment.";
@@ -219,7 +228,14 @@ export default {
         console.log(error);
       } else {
         // success
+        if (this.imageIsLikedbyCurrentUser == false){
+          this.imageIsLikedbyCurrentUser = true
+        } else if (this.imageIsLikedbyCurrentUser == true){
+          this.imageIsLikedbyCurrentUser = false 
+        }
+        this.changeVariant();
         this.fetchupvotes();
+        this.fetchdownvotes();
       }
     },
     async submitDownvote() {
@@ -241,6 +257,7 @@ export default {
       } else {
         // success
         this.fetchdownvotes();
+        this.fetchupvotes();
       }
     },
 
@@ -255,6 +272,15 @@ export default {
       const { dbUpvotes } = await result.json();
       this.upvotes = dbUpvotes;
       this.upvotesCount = this.upvotes.length;
+      for (var upvote in this.upvotes) {
+        console.log(this.upvotes);
+        if (this.$store.getters.user._id == this.upvotes[upvote].authorId) {
+          console.log("this image is liked by this user");
+          this.imageIsLikedbyCurrentUser = true;
+          this.changeVariant();
+          console.log("imageIsLikedbyCurrentUser ist true ")
+        }  
+      }
     },
 
     async fetchdownvotes() {
@@ -301,6 +327,7 @@ export default {
       }
     },
     async getImages() {
+      //het all images
       let result = await fetch("http://localhost:3000/memes", {
         method: "GET",
         credentials: "include",
@@ -312,10 +339,13 @@ export default {
         this.allImages.sort(function (a, b) {
           return new Date(b.creationDate) - new Date(a.creationDate);
         });
+
+        //check for the current imageId
         for (var image in this.allImages) {
           if (this.imageId == this.allImages[image]._id) {
             var Image = this.allImages[image];
             console.log(Image);
+
             this.image = Image;
             //additionally save the url into the img object since it is needed multiple times
             this.image.url =
@@ -337,6 +367,7 @@ export default {
     this.fetchComments();
     this.fetchupvotes();
     this.fetchdownvotes();
+    this.changeVariant();
   },
 };
 </script>

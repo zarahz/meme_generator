@@ -206,7 +206,7 @@ export default {
   methods: {
     openMemeView(imageId) {
       router.push({ name: "Meme", params: { id: imageId } }).catch((err) => {
-        err; 
+        err;
       });
     },
     async getImages() {
@@ -264,6 +264,7 @@ export default {
       } else {
         // success
         this.fetchupvotes(imageId, index);
+        this.fetchdownvotes(imageId, index);
       }
     },
     async submitDownvote(currentImageId, index) {
@@ -286,6 +287,7 @@ export default {
       } else {
         // success
         this.fetchdownvotes(imageId, index);
+        this.fetchupvotes(imageId, index);
       }
     },
     async fetchupvotes(currentImageId, index) {
