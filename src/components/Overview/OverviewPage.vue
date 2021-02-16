@@ -64,7 +64,7 @@
       <b-col />
       <b-col sm="6">
         <div>
-          <b-row class="pull-right text-large">
+          <b-row class="text-large justify-content-md-center">
             {{ image.title }}
           </b-row>
           <b-row align-h="center">

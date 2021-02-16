@@ -10,7 +10,7 @@
       <b-col />
       <b-col sm="6" align-self="center">
         <div>
-          <b-row class="pull-right text-large">
+          <b-row class="text-large justify-content-md-center">
             {{ meme.title }} ({{ meme.visibility }})
           </b-row>
           <b-row>
