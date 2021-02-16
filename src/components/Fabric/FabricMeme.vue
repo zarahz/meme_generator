@@ -2,6 +2,14 @@
   <b-container class="justify-content-md-center" fluid>
     <div v-if="template_image">
       <b-row align-h="center" class="mb-3">
+        <b-form-input
+          v-model="title"
+          type="text"
+          placeholder="Title..."
+          class="w-50"
+        />
+      </b-row>
+      <b-row align-h="center" class="mb-3">
         <canvas
           class="myCanvas"
           ref="can"
@@ -36,6 +44,13 @@
           size="sm"
           variant="outline-primary"
           class="my-2 my-sm-0 mr-2"
+          v-on:click="fix"
+          >Unselect</b-button
+        >
+        <b-button
+          size="sm"
+          variant="outline-primary"
+          class="my-2 my-sm-0 mr-2"
           v-on:click="switch_drawing_mode"
           >Drawing Mode toggle</b-button
         >
@@ -46,6 +61,17 @@
           v-on:click="delete_selected"
           >Delete selected</b-button
         >
+      </b-row>
+
+      <b-row align-h="center" class="mb-1">
+        <b-form-group>
+          <b-form-radio-group
+            id="visibility-radio-buttons"
+            v-model="visibility"
+            :options="visibilityOptions"
+          >
+          </b-form-radio-group>
+        </b-form-group>
       </b-row>
       <b-row align-h="center" class="mb-3">
         <b-button
@@ -112,6 +138,7 @@ export default {
     const ref = this.$refs.can;
     const canvas = new fabric.Canvas(ref);
     this.canvas = canvas;
+    this.canvas.preserveObjectStacking = true; // fix text disappearing behind image
     // example gif file
     //this.add_gif("https://media.giphy.com/media/11RwocOdukxqN2/giphy.gif");
     // patch fabric for cross domain image jazz
@@ -132,6 +159,19 @@ export default {
       canvas: 0,
       canvas_width: 1000,
       canvas_height: 500,
+      title: "",
+      visibilityOptions: [
+        { text: "Public (list the finished meme publicly)", value: "public" },
+        {
+          text: "Unlisted (only people with the link can see the meme)",
+          value: "unlisted",
+        },
+        {
+          text: "Private (only you can see the finished meme)",
+          value: "private",
+        },
+      ],
+      visibility: "public",
       template_image:
         "http://localhost:3000/static-templates/0e71a5ba-5738-4234-9921-ac587870d8c9.png",
       final_image_path: "",
@@ -144,6 +184,10 @@ export default {
       this.canvas.getElement().toBlob(function (blob) {
         saveAs(blob, "meme.png");
       });
+    },
+    fix() {
+      this.canvas.discardActiveObject();
+      this.canvas.renderAll();
     },
     async saveGifToDisk() {
       var capturer = new ccapture_js_npmfixed.CCapture({
@@ -163,11 +207,11 @@ export default {
     },
     async saveOnServer() {
       this.canvas.discardActiveObject(); // otherwise selection UI is visible in output
-      let canvas = this.$refs.meme.createResultingCanvas();
-      canvas.toBlob(async (blob) => {
+
+      this.canvas.getElement().toBlob(async (blob) => {
         let data = new FormData();
         data.append("visibility", this.visibility);
-        data.append("file", blob); //, "file.png"
+        data.append("file", blob, "file.png");
         data.append("title", this.title);
         let result = await fetch("http://localhost:3000/upload", {
           method: "POST",
@@ -180,20 +224,6 @@ export default {
           });
         }
       });
-    },
-    fix_cross_domain_security() {
-      // patch fabric for cross domain image jazz
-      fabric.Image.fromURL = function (d, f, e) {
-        var c = fabric.document.createElement("img");
-        c.onload = function () {
-          if (f) {
-            f(new fabric.Image(c, e));
-          }
-          c = c.onload = null;
-        };
-        c.setAttribute("crossOrigin", "anonymous");
-        c.src = d;
-      };
     },
     addTemplate(newImageUrl) {
       if (newImageUrl.endsWith(".gif")) {
