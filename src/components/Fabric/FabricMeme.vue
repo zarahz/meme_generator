@@ -1,6 +1,6 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
-    <div v-if="template_image">
+    <div v-if="templateImage">
       <b-row align-h="center" class="mb-3">
         <b-form-input
           v-model="title"
@@ -14,8 +14,8 @@
           class="myCanvas"
           ref="can"
           id="c"
-          :width="canvas_width"
-          :height="canvas_height"
+          :width="canvasWidth"
+          :height="canvasHeight"
         ></canvas>
       </b-row>
       <b-row align-h="center" class="mb-3">
@@ -23,21 +23,21 @@
           size="sm"
           variant="outline-primary"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="add_text_normal"
+          v-on:click="addTextNormal"
           >Add normal caption</b-button
         >
         <b-button
           size="sm"
           variant="outline-primary"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="add_text_italic"
+          v-on:click="addTextItalic"
           >Add italic caption</b-button
         >
         <b-button
           size="sm"
           variant="outline-primary"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="add_text_bold"
+          v-on:click="addTextBold"
           >Add bold caption</b-button
         >
         <b-button
@@ -51,14 +51,14 @@
           size="sm"
           variant="outline-primary"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="switch_drawing_mode"
+          v-on:click="switchDrawingMode"
           >Drawing Mode toggle</b-button
         >
         <b-button
           size="sm"
           variant="danger"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="delete_selected"
+          v-on:click="deleteSelected"
           >Delete selected</b-button
         >
       </b-row>
@@ -91,8 +91,8 @@
       </b-row>
       <b-row align-h="center" class="mb-3">
         <b-form-input
-          v-model="canvas_width"
-          @input="update_canvas_size"
+          v-model="canvasWidth"
+          @input="updateCanvasSize"
           number
           style="min-width: 30px"
           class="w-20"
@@ -100,8 +100,8 @@
         />
         x
         <b-form-input
-          v-model="canvas_height"
-          @input="update_canvas_size"
+          v-model="canvasHeight"
+          @input="updateCanvasSize"
           number
           style="min-width: 30px"
           class="w-20"
@@ -126,6 +126,8 @@ import { fabricGif } from "./fabricGif";
 import { ccapture_js_npmfixed } from "ccapture.js-npmfixed";
 import router from "../../router/index.js";
 import { saveAs } from "file-saver";
+import { backendURL } from "../../config";
+import { upload } from "../../api";
 
 export default {
   name: "FabricMeme",
@@ -141,7 +143,7 @@ export default {
     this.canvas.preserveObjectStacking = true; // fix text disappearing behind image
 
     // example gif file
-    //this.add_gif("https://media.giphy.com/media/11RwocOdukxqN2/giphy.gif");
+    //this.addGif("https://media.giphy.com/media/11RwocOdukxqN2/giphy.gif");
     // patch fabric for cross domain image jazz
     fabric.Image.fromURL = function (d, f, e) {
       var c = fabric.document.createElement("img");
@@ -158,8 +160,8 @@ export default {
   data() {
     return {
       canvas: 0,
-      canvas_width: 1000,
-      canvas_height: 500,
+      canvasWidth: 1000,
+      canvasHeight: 500,
       title: "",
       visibilityOptions: [
         { text: "Public (list the finished meme publicly)", value: "public" },
@@ -173,9 +175,9 @@ export default {
         },
       ],
       visibility: "public",
-      template_image:
-        "http://localhost:3000/static-templates/0e71a5ba-5738-4234-9921-ac587870d8c9.png",
-      final_image_path: "",
+      templateImage:
+        backendURL +
+        "static-templates/0e71a5ba-5738-4234-9921-ac587870d8c9.png",
     };
   },
   methods: {
@@ -212,11 +214,7 @@ export default {
         data.append("visibility", this.visibility);
         data.append("file", blob, "file.png");
         data.append("title", this.title);
-        let result = await fetch("http://localhost:3000/upload", {
-          method: "POST",
-          credentials: "include",
-          body: data,
-        });
+        let result = await upload(data);
         if (result.status === 200) {
           router.push({ name: "Home" }).catch((err) => {
             err;
@@ -227,7 +225,7 @@ export default {
     addTemplate(newImageUrl) {
       if (newImageUrl.endsWith(".gif")) {
         console.log("Adding moving image: " + newImageUrl);
-        this.add_gif(newImageUrl);
+        this.addGif(newImageUrl);
         return;
       }
       console.log("Adding static image: " + newImageUrl);
@@ -237,7 +235,7 @@ export default {
         canvas.add(img);
       });
     },
-    add_text_normal() {
+    addTextNormal() {
       this.canvas.add(
         new fabric.IText("new caption", {
           fontFamily: "Impact",
@@ -247,7 +245,7 @@ export default {
         })
       );
     },
-    add_text_italic() {
+    addTextItalic() {
       this.canvas.add(
         new fabric.IText("new caption", {
           fontFamily: "Impact",
@@ -257,7 +255,7 @@ export default {
         })
       );
     },
-    add_text_bold() {
+    addTextBold() {
       this.canvas.add(
         new fabric.IText("new caption", {
           fontFamily: "Impact",
@@ -274,18 +272,18 @@ export default {
         this.canvas.remove(objects[objects.length - 1]); // remove previously-added fabric.Rect
       }
     },
-    delete_selected() {
+    deleteSelected() {
       this.canvas.remove(this.canvas.getActiveObject());
     },
-    update_canvas_size() {
-      this.canvas.setHeight(this.canvas_height);
-      this.canvas.setWidth(this.canvas_width);
+    updateCanvasSize() {
+      this.canvas.setHeight(this.canvasHeight);
+      this.canvas.setWidth(this.canvasWidth);
       // this.canvas.renderAll();
     },
-    switch_drawing_mode() {
+    switchDrawingMode() {
       this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
     },
-    async add_gif(url) {
+    async addGif(url) {
       const canvas = this.canvas;
       const gif = await fabricGif(url, 200, 200);
       gif.set({ top: 50, left: 50 });

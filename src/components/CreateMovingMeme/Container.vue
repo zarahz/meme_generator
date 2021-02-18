@@ -134,6 +134,7 @@
 <script>
 import Caption from "../CreateMeme/Caption";
 import router from "../../router/index.js";
+import { upload } from "../../api";
 
 export default {
   name: "CreateMovingMeme",
@@ -230,8 +231,8 @@ export default {
     computeFrame() {
       let video = this.$refs.video;
       let canvas = this.$refs.canvas;
-      canvas.width = video.clientWidth; //clientWidth;
-      canvas.height = video.clientHeight;
+      canvas.width = video.videoWidth; //clientWidth;
+      canvas.height = video.videoHeight;
       let ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -322,11 +323,7 @@ export default {
       let data = new FormData();
       data.append("file", blob, "video.webm");
       data.append("title", this.title);
-      let result = await fetch("http://localhost:3000/upload", {
-        method: "POST",
-        credentials: "include",
-        body: data,
-      });
+      let result = await upload(data);
       if (result.status === 200) {
         router.push({ name: "Home" }).catch((err) => {
           err;

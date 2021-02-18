@@ -76,6 +76,8 @@
 </template>
 
 <script>
+import { getWebpageScreenshot } from "../../api";
+
 export default {
   name: "Templates",
   props: {
@@ -98,13 +100,9 @@ export default {
       this.$emit("newTemplateSelected", this.customUrl);
     },
     async useWebScreenshotTemplate() {
-      var screenshotRequestUrl = new URL(
-          "http://localhost:3000/screenshot_webpage"
-        ),
-        params = { webpage: this.screenshotUrl };
-      screenshotRequestUrl.search = new URLSearchParams(params).toString();
-      let result = await fetch(screenshotRequestUrl);
-      const { dbTemplate } = await result.json();
+      const params = { webpage: this.screenshotUrl };
+      let result = await getWebpageScreenshot(params);
+      const { dbTemplate } = result.body;
       this.$emit("newTemplateSelected", dbTemplate.url);
     },
     chooseImage() {

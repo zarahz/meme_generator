@@ -164,7 +164,7 @@
           <b-col md="auto">
             <b-button
               variant="outline-primary"
-              v-on:click="render_on_server"
+              v-on:click="renderOnServer"
               class="mr-3"
               >Render on server</b-button
             >
@@ -201,6 +201,7 @@
 
 <script>
 import { saveAs } from "file-saver";
+import { upload, saveDraft, renderSimpleMeme } from "../../api";
 import FormData from "form-data";
 import router from "../../router/index.js";
 
@@ -326,11 +327,7 @@ export default {
         data.append("visibility", this.visibility);
         data.append("file", blob, "file.png");
         data.append("title", this.title);
-        let result = await fetch("http://localhost:3000/upload", {
-          method: "POST",
-          credentials: "include",
-          body: data,
-        });
+        let result = await upload(data);
         if (result.status === 200) {
           router.push({ name: "Home" }).catch((err) => {
             err;
@@ -344,14 +341,7 @@ export default {
         memeSource: this.$refs.meme.getMemeCanvasURI(),
         title: this.title,
       };
-      let result = await fetch("http://localhost:3000/image-draft", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(draftModel),
-      });
+      let result = await saveDraft(draftModel);
       if (result.status === 204) {
         this.draftSaved = true;
         window.scrollTo(0, 0);
@@ -401,22 +391,16 @@ export default {
     changeFontColor(newFontColor) {
       this.fontColor = newFontColor;
     },
-    async render_on_server() {
-      let result = await fetch("http://localhost:3000/render-simple-meme", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          max_kilobytes: this.max_render_size,
-          image_url: this.img,
-          captions: this.captions,
-          font_size: this.fontSize,
-        }),
-      });
-      const { path } = await result.json();
-      console.log(path);
-      this.changeTemplate(path);
+    async renderOnServer() {
+      const memeData = {
+        max_kilobytes: this.max_render_size,
+        image_url: this.img,
+        captions: this.captions,
+        font_size: this.fontSize,
+      };
+      let result = await renderSimpleMeme(memeData);
+      console.log(result);
+      this.changeTemplate(result.body.path);
     },
   },
 };

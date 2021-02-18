@@ -1,4 +1,3 @@
-<!-- Overview page for endless scroll -> calls meme.vue with header and src information to display memes -->
 <template>
   <b-container fluid>
     <b-row class="mb-3">
@@ -68,22 +67,11 @@
             {{ image.title }}
           </b-row>
           <b-row align-h="center">
-            <img
-              v-if="['.gif', '.jpeg', '.png'].includes(image.fileType)"
+            <meme
               class="imageContainer"
-              :src="'http://localhost:3000/static/' + image.nameAndFileType"
-              @click="openMemeView(image._id)"
+              :meme="image"
+              @openMemeView="openMemeView"
             />
-            <video
-              class="imageContainer"
-              @click="openMemeView(image._id)"
-              v-else
-            >
-              <source
-                :src="'http://localhost:3000/static/' + image.nameAndFileType"
-                :type="'video/' + image.fileType.replace(/\./g, '')"
-              />
-            </video>
           </b-row>
           <b-row align-h="center">
             <b-button
@@ -126,20 +114,17 @@
 
             <b-col>
               <twitter
-                :url="'http://localhost:8080/meme/' + image._id"
+                :url="frontendURL(image)"
                 title="Hello from PENG MEMES"
                 scale="3"
               ></twitter>
             </b-col>
             <b-col>
-              <linkedin
-                :url="'http://localhost:8080/meme/' + image._id"
-                scale="3"
-              ></linkedin>
+              <linkedin :url="frontendURL(image)" scale="3"></linkedin>
             </b-col>
             <b-col>
               <whats-app
-                :url="'http://localhost:8080/meme/' + image._id"
+                :url="frontendURL(image)"
                 title="Hello from PENG MEMES"
                 scale="3"
               ></whats-app>
@@ -147,14 +132,14 @@
 
             <b-col>
               <pinterest
-                :url="'http://localhost:8080/meme/' + image._id"
+                :url="frontendURL(image)"
                 scale="3"
                 class="m-3"
               ></pinterest>
             </b-col>
             <b-col>
               <email
-                :url="'http://localhost:8080/meme/' + image._id"
+                :url="frontendURL(image)"
                 subject="Hello from PENG MEMES"
                 scale="3"
               ></email>
@@ -181,17 +166,27 @@ import {
 } from "vue-socialmedia-share";
 
 import router from "../../router/index.js";
+import { getBackendMemeURL, getFrontendMemeURL } from "../../helper";
+import {
+  getMemes,
+  postUpvote,
+  postDownvote,
+  getUpvotes,
+  getDownvotes,
+  getRandomMeme,
+} from "../../api";
+import Meme from "./Meme";
 
 export default {
   name: "OverviewPage",
   components: {
     InfiniteLoading,
-
     Twitter,
     Linkedin,
     Pinterest,
     WhatsApp,
     Email,
+    Meme,
   },
   data() {
     return {
@@ -204,17 +199,22 @@ export default {
     };
   },
   methods: {
+    frontendURL(image) {
+      return getFrontendMemeURL(image);
+    },
+    backendURL(image) {
+      return getBackendMemeURL(image);
+    },
     openMemeView(imageId) {
-      router.push({ name: "Meme", params: { id: imageId } }).catch((err) => {
-        err;
-      });
+      router
+        .push({ name: "MemePage", params: { id: imageId } })
+        .catch((err) => {
+          err;
+        });
     },
     async getImages() {
-      let result = await fetch("http://localhost:3000/memes", {
-        method: "GET",
-      });
-      const dbImages = await result.json();
-      this.allImages = dbImages;
+      let result = await getMemes();
+      this.allImages = result.memes;
 
       //sort images by creation date
       this.allImages.sort(function (a, b) {
@@ -245,75 +245,38 @@ export default {
     },
 
     async submitUpvote(currentImageId, index) {
-      var imageId = currentImageId;
-      var upvoteUrl = "http://localhost:3000/post-upvote";
       var upvote = {
         imageId: currentImageId,
       };
-      let result = await fetch(upvoteUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(upvote),
-      });
-      if (result.status !== 200) {
-        const { error } = await result.json();
-        console.log(error);
-      } else {
-        // success
-        this.fetchupvotes(imageId, index);
-        this.fetchdownvotes(imageId, index);
+      let result = await postUpvote(upvote);
+      if (result.status === 200) {
+        this.fetchupvotes(currentImageId, index);
+        this.fetchdownvotes(currentImageId, index);
       }
     },
     async submitDownvote(currentImageId, index) {
-      var imageId = currentImageId;
-      var downvoteUrl = "http://localhost:3000/post-downvote";
       var downvote = {
         imageId: currentImageId,
       };
-      let result = await fetch(downvoteUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(downvote),
-      });
-      if (result.status !== 200) {
-        const { error } = await result.json();
-        console.log(error);
-      } else {
+      let result = await postDownvote(downvote);
+      if (result.status === 200) {
         // success
-        this.fetchdownvotes(imageId, index);
-        this.fetchupvotes(imageId, index);
+        this.fetchdownvotes(currentImageId, index);
+        this.fetchupvotes(currentImageId, index);
       }
     },
     async fetchupvotes(currentImageId, index) {
-      var ImageId = currentImageId;
-      var upvoteUrl = new URL("http://localhost:3000/upvotes"),
-        params = { imageId: ImageId };
-      Object.keys(params).forEach((key) =>
-        upvoteUrl.searchParams.append(key, params[key])
-      );
-      let result = await fetch(upvoteUrl);
-      const { dbUpvotes } = await result.json();
-      var upvotes = dbUpvotes;
+      const params = { imageId: currentImageId };
+      let result = await getUpvotes(params);
+      var upvotes = result.body.dbUpvotes;
       var upvotesCount = upvotes.length;
       this.displayedImages[index].upvoteCount = upvotesCount;
     },
 
     async fetchdownvotes(currentImageId, index) {
-      var ImageId = currentImageId;
-      var downvoteUrl = new URL("http://localhost:3000/downvotes"),
-        params = { imageId: ImageId };
-      Object.keys(params).forEach((key) =>
-        downvoteUrl.searchParams.append(key, params[key])
-      );
-      let result = await fetch(downvoteUrl);
-      const { dbDownvotes } = await result.json();
-      var downvotes = dbDownvotes;
+      const params = { imageId: currentImageId };
+      let result = await getDownvotes(params);
+      var downvotes = result.body.dbDownvotes;
       var downvotesCount = downvotes.length;
       this.displayedImages[index].downvoteCount = downvotesCount;
     },
@@ -347,11 +310,8 @@ export default {
     },
 
     async show_random_meme() {
-      var random_meme_url = "http://localhost:3000/random-meme";
-      let result = await fetch(random_meme_url);
-      const image = await result.json();
-      var meme = image;
-      this.openMemeView(meme._id);
+      let result = await getRandomMeme();
+      this.openMemeView(result.meme._id);
     },
   },
 };
@@ -359,8 +319,7 @@ export default {
 
 <style scoped>
 .imageContainer {
-  width: -webkit-fill-available;
-  max-width: 50%;
+  /* max-width: 50%; */
 }
 .text-large {
   font-size: 180%;

@@ -1,409 +1,53 @@
 <template>
-  <b-container class="justify-content-md-center">
-    <div v-if="authorized && image.fileType">
-      <b-row align-h="center" class="pull-right text-large">
-        {{ image.title }}
-      </b-row>
-      <b-row align-h="center">
-        <b-col align-self="center">
-          <b-button variant="light" class="ml-3">
-            <b-icon icon="chevron-left" aria-hidden="true"></b-icon>
-          </b-button>
-        </b-col>
-        <b-col cols="10">
-          <b-img
-            v-if="['.gif', '.jpeg', '.png'].includes(image.fileType)"
-            class="imageContainer"
-            :src="image.url"
-          />
-          <video autoplay controls class="imageContainer" v-else>
-            <source
-              :src="image.url"
-              :type="'video/' + image.fileType.replace(/\./g, '')"
-            />
-          </video>
-        </b-col>
-        <b-col align-self="center">
-          <b-button variant="light" class="ml-3">
-            <b-icon icon="chevron-right" aria-hidden="true"></b-icon>
-          </b-button>
-        </b-col>
-      </b-row>
-      <b-row align-h="center" class="m-3">
-        <b-col>
-          <b-button
-            :variant="upvoteButtonVariant"
-            class="ml-3"
-            @click="submitUpvote"
-            :disabled="!$store.getters.isLoggedIn"
-            :title="!$store.getters.isLoggedIn && 'Please login to like image'"
-          >
-            <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
-            {{ upvotesCount }}</b-button
-          >
-          <b-button
-            :variant="downvoteButtonVariant"
-            class="ml-3"
-            @click="submitDownvote"
-            :disabled="!$store.getters.isLoggedIn"
-            :title="
-              !$store.getters.isLoggedIn && 'Please login to dislike image'
-            "
-          >
-            <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
-            {{ downvotesCount }}</b-button
-          >
-          <b-button variant="outline-primary" class="ml-3">
-            <b-icon icon="chat-left" aria-hidden="true"></b-icon>
-            {{ commentsCount }}</b-button
-          >
-          <b-button
-            variant="outline-primary"
-            class="ml-3"
-            :disabled="!['.gif', '.jpeg', '.png'].includes(image.fileType)"
-            @click="downloadImage"
-          >
-            <b-icon icon="download" aria-hidden="true"></b-icon>
-          </b-button>
-
-          <twitter
-            :url="'http://localhost:8080/meme/' + imageId"
-            title="Hello from PENG MEMES"
-            scale="3"
-            class="ml-3"
-            style="cursor: pointer"
-          ></twitter>
-          <linkedin
-            :url="'http://localhost:8080/meme/' + imageId"
-            scale="3"
-            class="ml-3"
-            style="cursor: pointer"
-          ></linkedin>
-          <whats-app
-            :url="'http://localhost:8080/meme/' + imageId"
-            title="Hello from PENG MEMES"
-            scale="3"
-            class="ml-3"
-            style="cursor: pointer"
-          ></whats-app>
-          <pinterest
-            :url="'http://localhost:8080/meme/' + imageId"
-            scale="3"
-            class="ml-3"
-            style="cursor: pointer"
-          ></pinterest>
-          <email
-            :url="'http://localhost:8080/meme/' + imageId"
-            subject="Hello from PENG MEMES"
-            scale="3"
-            class="ml-3"
-            style="cursor: pointer"
-          ></email>
-        </b-col>
-      </b-row>
-      <b-row align-h="center">
-        <b-form-input
-          v-on:keyup.enter="submitComment"
-          v-model="commentInput"
-          class="w-50 m-3"
-          type="text"
-          placeholder="Type your comment here..."
-        />
-      </b-row>
-      {{ commentErrorText }}
-      <b-row
-        class="justify-content-md-center"
-        v-for="comment in comments"
-        v-bind:key="comment._id"
-        style="background-color: #e6e6e6"
-      >
-        <b-col>
-          {{ comment.creationDate }}
-          <strong>{{ comment.username }}: </strong>
-        </b-col>
-        <b-col style="text-align: left">
-          {{ comment.content }}
-        </b-col>
-      </b-row>
-    </div>
-    <div v-else>
-      Oh Oh, it seems like you are not authorized to see this meme! :(
-    </div>
+  <b-container>
+    {{ meme.url }}
+    <b-img
+      class="container"
+      v-if="['.gif', '.jpeg', '.png'].includes(meme.fileType)"
+      :src="getBackendMemeURL(meme)"
+      @click="openMemeView(meme._id)"
+    />
+    <video
+      class="container"
+      :autoplay="autoplay"
+      :controls="autoplay"
+      @click="openMemeView(meme._id)"
+      v-else
+    >
+      <source
+        :src="getBackendMemeURL(meme)"
+        :type="'video/' + meme.fileType.replace(/\./g, '')"
+      />
+    </video>
   </b-container>
 </template>
+
 <script>
-import { saveAs } from "file-saver";
-import {
-  Twitter,
-  Linkedin,
-  Pinterest,
-  WhatsApp,
-  Email,
-} from "vue-socialmedia-share";
-
+import { getBackendMemeURL } from "../../helper";
 export default {
-  name: "MemePage",
-
-  components: {
-    Twitter,
-    Linkedin,
-    Pinterest,
-    WhatsApp,
-    Email,
+  name: "Meme",
+  props: {
+    meme: Object,
+    autoplay: {
+      type: Boolean,
+      default: false,
+    },
   },
-
   data() {
-    return {
-      imageId: this.$route.params.id,
-      title: "Meme view",
-      image: {},
-      allImages: [],
-      upvotesCount: 0,
-      upvotes: [],
-      downvotesCount: 0,
-      downvotes: [],
-      commentsCount: 0,
-      comments: [],
-      commentInput: "",
-      commentErrorText: "",
-      authorized: true,
-      currentImageIndex: 0,
-      imageIsLikedbyCurrentUser: false,
-      upvoteButtonVariant: "outline-success",
-      imageIsDislikedbyCurrentUser: false,
-      downvoteButtonVariant: "outline-danger",
-    };
+    return {};
   },
   methods: {
-    changeUpvoteVariant() {
-      if (this.imageIsLikedbyCurrentUser == true) {
-        this.upvoteButtonVariant = "success";
-      } else if (this.imageIsLikedbyCurrentUser == false) {
-        this.upvoteButtonVariant = "outline-success";
-      }
+    getBackendMemeURL,
+    openMemeView(id) {
+      this.$emit("openMemeView", id);
     },
-
-    changeDownvoteVariant() {
-      if (this.imageIsDislikedbyCurrentUser == true) {
-        this.downvoteButtonVariant = "danger";
-      } else if (this.imageIsDislikedbyCurrentUser == false) {
-        this.downvoteButtonVariant = "outline-danger";
-      }
-    },
-    async submitComment() {
-      if (this.$store.getters.user == null) {
-        this.commentErrorText = "You need to login to comment.";
-        return;
-      }
-      this.commentErrorText = "Submitting comment...";
-      var commentUrl = "http://localhost:3000/post-comment";
-      var comment = {
-        imageId: this.imageId,
-        content: this.commentInput,
-      };
-      let result = await fetch(commentUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(comment),
-      });
-      if (result.status !== 200) {
-        const { error } = await result.json();
-        this.commentErrorText = "Error submitting comment: " + error;
-        //this.$set(this.errors, "post-comment", error);
-      } else {
-        // success
-        this.commentInput = "";
-        this.commentErrorText = "Comment submitted!";
-        this.fetchComments();
-      }
-    },
-    async submitUpvote() {
-      var upvoteUrl = "http://localhost:3000/post-upvote";
-      var upvote = {
-        imageId: this.imageId,
-      };
-      let result = await fetch(upvoteUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(upvote),
-      });
-      if (result.status !== 200) {
-        const { error } = await result.json();
-        console.log(error);
-      } else {
-        // success
-        if (this.imageIsLikedbyCurrentUser == false) {
-          this.imageIsLikedbyCurrentUser = true;
-        } else if (this.imageIsLikedbyCurrentUser == true) {
-          this.imageIsLikedbyCurrentUser = false;
-        }
-        this.imageIsDislikedbyCurrentUser = false;
-        this.changeDownvoteVariant();
-        this.changeUpvoteVariant();
-        this.fetchupvotes();
-        this.fetchdownvotes();
-      }
-    },
-    async submitDownvote() {
-      var downvoteUrl = "http://localhost:3000/post-downvote";
-      var downvote = {
-        imageId: this.imageId,
-      };
-      let result = await fetch(downvoteUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(downvote),
-      });
-      if (result.status !== 200) {
-        const { error } = await result.json();
-        console.log(error);
-      } else {
-        // success
-        if (this.imageIsDislikedbyCurrentUser == false) {
-          this.imageIsDislikedbyCurrentUser = true;
-        } else if (this.imageIsDislikedbyCurrentUser == true) {
-          this.imageIsDislikedbyCurrentUser = false;
-        }
-        this.imageIsLikedbyCurrentUser = false;
-        this.changeDownvoteVariant();
-        this.changeUpvoteVariant();
-        this.fetchdownvotes();
-        this.fetchupvotes();
-      }
-    },
-
-    async fetchupvotes() {
-      var currentImageId = this.imageId;
-      var upvoteUrl = new URL("http://localhost:3000/upvotes"),
-        params = { imageId: currentImageId };
-      Object.keys(params).forEach((key) =>
-        upvoteUrl.searchParams.append(key, params[key])
-      );
-      let result = await fetch(upvoteUrl);
-      const { dbUpvotes } = await result.json();
-      this.upvotes = dbUpvotes;
-      this.upvotesCount = this.upvotes.length;
-      for (var upvote in this.upvotes) {
-        if (this.$store.getters.user._id == this.upvotes[upvote].authorId) {
-          this.imageIsLikedbyCurrentUser = true;
-          this.changeUpvoteVariant();
-        }
-      }
-    },
-
-    async fetchdownvotes() {
-      var currentImageId = this.imageId;
-      var downvoteUrl = new URL("http://localhost:3000/downvotes"),
-        params = { imageId: currentImageId };
-      Object.keys(params).forEach((key) =>
-        downvoteUrl.searchParams.append(key, params[key])
-      );
-      let result = await fetch(downvoteUrl);
-      const { dbDownvotes } = await result.json();
-      this.downvotes = dbDownvotes;
-      this.downvotesCount = this.downvotes.length;
-      for (var downvote in this.downvotes) {
-        if (this.$store.getters.user._id == this.downvotes[downvote].authorId) {
-          this.imageIsDislikedbyCurrentUser = true;
-          this.changeDownvoteVariant();
-        }
-      }
-    },
-    async fetchComments() {
-      var currentImageId = this.imageId; // only used once, simplify
-      var commentUrl = new URL("http://localhost:3000/comments"),
-        params = { imageId: currentImageId };
-      Object.keys(params).forEach((key) =>
-        commentUrl.searchParams.append(key, params[key])
-      );
-      let result = await fetch(commentUrl);
-
-      const dbComments = await result.json();
-      this.comments = dbComments;
-      this.commentsCount = this.comments.length;
-    },
-    async getImage() {
-      var url = new URL("http://localhost:3000/image");
-      url.searchParams.append("_id", this.imageId);
-      let result = await fetch(url, {
-        method: "GET",
-        credentials: "include",
-      });
-      if (result.status === 200) {
-        const { image } = await result.json();
-        this.image = image;
-        //additionally save the url into the img object since it is needed multiple times
-        this.image.url =
-          "http://localhost:3000/static/" + image.nameAndFileType;
-      } else if (result.status === 401) {
-        this.authorized = false;
-      }
-    },
-    async getImages() {
-      //het all images
-      let result = await fetch("http://localhost:3000/memes", {
-        method: "GET",
-        credentials: "include",
-      });
-      if (result.status === 200) {
-        const dbImages = await result.json();
-        this.allImages = dbImages;
-        //sort images by creation date
-        this.allImages.sort(function (a, b) {
-          return new Date(b.creationDate) - new Date(a.creationDate);
-        });
-
-        //check for the current imageId
-        for (var image in this.allImages) {
-          if (this.imageId == this.allImages[image]._id) {
-            var Image = this.allImages[image];
-
-            this.image = Image;
-            //additionally save the url into the img object since it is needed multiple times
-            this.image.url =
-              "http://localhost:3000/static/" + Image.nameAndFileType;
-          }
-        }
-      } else if (result.status === 401) {
-        this.authorized = false;
-      }
-    },
-    downloadImage() {
-      console.log(this.image.url);
-      saveAs(this.image.url, "meme" + this.image.fileType);
-    },
-  },
-  mounted() {
-    // this.getImage();
-    this.getImages();
-    this.fetchComments();
-    this.fetchupvotes();
-    this.fetchdownvotes();
-    this.changeUpvoteVariant();
-    this.changeDownvoteVariant();
   },
 };
 </script>
 
 <style scoped>
-.imageContainer {
-  /* width: -webkit-fill-available; */
-  max-width: 50%;
-}
-commentBox {
-  color: orange;
-  background-color: green;
-}
-.text-large {
-  font-size: 180%;
+.container {
+  width: -webkit-fill-available;
+  display: block;
 }
 </style>

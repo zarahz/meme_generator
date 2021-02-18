@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { loadDraft } from "../../../api";
 export default {
   name: "DraftModal",
   data() {
@@ -52,17 +53,8 @@ export default {
   methods: {
     async getAllDrafts() {
       this.loading = true;
-      let result = await fetch("http://localhost:3000/image-drafts", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      if (result.status === 200) {
-        const drafts = await result.json();
-        this.allDrafts = drafts;
-      }
+      let result = await loadDraft();
+      this.allDrafts = result.body;
       this.loading = false;
       this.$refs["draftModal"].show();
     },

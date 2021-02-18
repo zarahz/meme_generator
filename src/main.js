@@ -19,12 +19,10 @@ Vue.use(IconsPlugin)
 Vue.config.productionTip = false
 
 Vue.use(SocialSharing);
-Vue.c
 
 new Vue({
   router,
   store,
   el: '#app',
-
   render: h => h(App),
 }).$mount('#app')

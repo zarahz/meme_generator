@@ -62,6 +62,7 @@
 <script>
 import axios from "axios";
 import VueGallerySlideshow from "vue-gallery-slideshow";
+import { getServerMemes } from "../../api";
 
 const MAX_DISPLAYED_TEMPLATES = 10;
 
@@ -149,7 +150,7 @@ export default {
       }
     },
     selectMemeTemplate(selectedIndex) {
-      if(selectedIndex == -1){
+      if (selectedIndex == -1) {
         selectedIndex = this.displayedMemes.length - 1;
       } else if (selectedIndex == this.displayedMemes.length) {
         selectedIndex = 0;
@@ -172,11 +173,10 @@ export default {
         this.applySearch();
       });
     },
-    fetchServerMemeTemplates() {
-      axios.get("http://localhost:3000/templates").then((resp) => {
-        this.allServerMemes = resp.data;
-        this.applySearch();
-      });
+    async fetchServerMemeTemplates() {
+      const result = await getServerMemes();
+      this.allServerMemes = result.body;
+      this.applySearch();
     },
     switchTemplates() {
       if (this.showImgflipTemplates) {

@@ -4,7 +4,7 @@ Vue.use(VueRouter);
 
 import CreateMeme from "../components/CreateMeme/Container.vue";
 import FabricMeme from "../components/Fabric/FabricMeme.vue";
-import Meme from "../components/Overview/Meme.vue";
+import MemePage from "../components/Overview/MemePage.vue";
 import OverviewPage from "../components/Overview/OverviewPage.vue";
 import Login from "../components/Authenticate/Login.vue";
 import Registration from "../components/Authenticate/Registration.vue";
@@ -21,9 +21,9 @@ const routes = [
   },
   {
     path: "/meme/:id",
-    name: "Meme",
+    name: "MemePage",
     props: true,
-    component: Meme
+    component: MemePage
   },
   {
     path: "/create-meme",

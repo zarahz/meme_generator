@@ -1,4 +1,3 @@
-<!-- Overview page for endless scroll -> calls meme.vue with header and src information to display memes -->
 <template>
   <b-container class="justify-content-md-center" fluid>
     <b-row
@@ -14,11 +13,11 @@
             {{ meme.title }} ({{ meme.visibility }})
           </b-row>
           <b-row>
-            <img
+            <meme
               class="imageContainer"
-              :src="'http://localhost:3000/static/' + meme.nameAndFileType"
-              @click="openMemeView(meme._id)"
-            />
+              :meme="meme"
+              @openMemeView="openMemeView"
+            ></meme>
           </b-row>
           <b-row class="justify-content-md-center" cols="4">
             <b-button variant="outline-success" class="m-3" disabled>
@@ -43,27 +42,21 @@
           <b-row b-row class="mb-3" align-h="center">
             <b-col cols="2" />
             <b-col>
-              <facebook
-                :url="'http://localhost:3000/static/' + meme.nameAndFileType"
-                scale="3"
-              ></facebook>
+              <facebook :url="getFrontendMemeURL(meme)" scale="3"></facebook>
             </b-col>
             <b-col>
               <twitter
-                :url="'http://localhost:3000/static/' + meme.nameAndFileType"
+                :url="getFrontendMemeURL(meme)"
                 title=""
                 scale="3"
               ></twitter>
             </b-col>
             <b-col>
-              <linkedin
-                :url="'http://localhost:3000/static/' + meme.nameAndFileType"
-                scale="3"
-              ></linkedin>
+              <linkedin :url="getFrontendMemeURL(meme)" scale="3"></linkedin>
             </b-col>
             <b-col>
               <whats-app
-                :url="'http://localhost:3000/static/' + meme.nameAndFileType"
+                :url="getFrontendMemeURL(meme)"
                 title="Hello"
                 scale="3"
               ></whats-app>
@@ -71,14 +64,14 @@
 
             <b-col>
               <pinterest
-                :url="'http://localhost:3000/static/' + meme.nameAndFileType"
+                :url="getFrontendMemeURL(meme)"
                 scale="3"
                 class="m-3"
               ></pinterest>
             </b-col>
             <b-col>
               <email
-                :url="'http://localhost:3000/static/' + meme.nameAndFileType"
+                :url="getFrontendMemeURL(meme)"
                 subject="Hello"
                 scale="3"
               ></email>
@@ -95,6 +88,7 @@
 
 <script>
 import InfiniteLoading from "vue-infinite-loading";
+
 import {
   Facebook,
   Twitter,
@@ -105,6 +99,9 @@ import {
 } from "vue-socialmedia-share";
 
 import router from "../../router/index.js";
+import Meme from "../Overview/Meme";
+import { getFrontendMemeURL } from "../../helper";
+import { getUserMemes } from "../../api";
 
 export default {
   name: "MyPage",
@@ -116,6 +113,7 @@ export default {
     Pinterest,
     WhatsApp,
     Email,
+    Meme,
   },
   data() {
     return {
@@ -126,18 +124,15 @@ export default {
     };
   },
   methods: {
+    getFrontendMemeURL,
     openMemeView(id) {
-      router.push({ name: "Meme", params: { id } }).catch((err) => {
+      router.push({ name: "MemePage", params: { id } }).catch((err) => {
         err;
       });
     },
     async getMemes() {
-      let result = await fetch("http://localhost:3000/user-memes", {
-        method: "GET",
-        credentials: "include",
-      });
-      const dbImages = await result.json();
-      this.allUserMemes = dbImages;
+      let result = await getUserMemes();
+      this.allUserMemes = result.memes;
 
       //sort images by creation date
       this.allUserMemes.sort(function (a, b) {
@@ -172,7 +167,7 @@ export default {
 
 <style scoped>
 .imageContainer {
-  width: -webkit-fill-available;
+  max-width: 50%;
 }
 .text-large {
   font-size: 180%;

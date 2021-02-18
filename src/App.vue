@@ -2,7 +2,11 @@
   <div id="app">
     <div>
       <Navigation />
-      <router-view />
+      <b-row align-h="center">
+        <b-col md="8" cols="12">
+          <router-view />
+        </b-col>
+      </b-row>
     </div>
   </div>
 </template> 
