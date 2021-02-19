@@ -399,8 +399,7 @@ export default {
         font_size: this.fontSize,
       };
       let result = await renderSimpleMeme(memeData);
-      console.log(result);
-      this.changeTemplate(result.body.path);
+      saveAs(result.body.path, "meme-rendered.jpg");
     },
   },
 };
