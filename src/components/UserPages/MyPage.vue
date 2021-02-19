@@ -128,7 +128,7 @@ export default {
     },
     async getMemes() {
       let result = await getUserMemes();
-      this.allUserMemes = result.memes;
+      this.allUserMemes = result.body;
 
       //sort images by creation date
       this.allUserMemes.sort(function (a, b) {

@@ -284,7 +284,7 @@ export default {
         this.authorized = false;
         return;
       }
-      this.allImages = result.memes;
+      this.allImages = result.body;
       //sort images by creation date
       this.allImages.sort(function (a, b) {
         return new Date(b.creationDate) - new Date(a.creationDate);

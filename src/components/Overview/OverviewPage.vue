@@ -214,7 +214,7 @@ export default {
     },
     async getImages() {
       let result = await getMemes();
-      this.allImages = result.memes;
+      this.allImages = result.body;
 
       //sort images by creation date
       this.allImages.sort(function (a, b) {
@@ -311,7 +311,7 @@ export default {
 
     async show_random_meme() {
       let result = await getRandomMeme();
-      this.openMemeView(result.meme._id);
+      this.openMemeView(result.body._id);
     },
   },
 };
