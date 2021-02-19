@@ -74,77 +74,81 @@
             />
           </b-row>
           <b-row align-h="center">
-            <b-button
-              :disabled="!$store.getters.isLoggedIn"
-              variant="outline-success"
-              class="m-3"
-              @click="submitUpvote(image._id, index)"
-              :title="
-                !$store.getters.isLoggedIn && 'Please login to like image'
-              "
-            >
-              <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
-              {{ image.upvoteCount }}</b-button
-            >
-            <b-button
-              :disabled="!$store.getters.isLoggedIn"
-              variant="outline-danger"
-              class="m-3"
-              @click="submitDownvote(image._id, index)"
-              :title="
-                !$store.getters.isLoggedIn && 'Please login to dislike image'
-              "
-            >
-              <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
-              {{ image.downvoteCount }}</b-button
-            >
-            <b-button
-              variant="outline-primary"
-              class="m-3"
-              @click="openMemeView(image._id)"
-            >
-              <b-icon icon="chat-left" aria-hidden="true"></b-icon>
-              {{ image.commentCount }}</b-button
-            >
-            <!-- @click="openMemeView(image._id)" -->
-          </b-row>
-
-          <b-row class="mb-3" align-h="center">
-            <b-col cols="2" />
-
             <b-col>
+              <b-button
+                :disabled="!$store.getters.isLoggedIn"
+                variant="outline-success"
+                class="ml-3"
+                @click="submitUpvote(image._id, index)"
+                :title="
+                  !$store.getters.isLoggedIn && 'Please login to like image'
+                "
+              >
+                <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
+                {{ image.upvoteCount }}</b-button
+              >
+              <b-button
+                :disabled="!$store.getters.isLoggedIn"
+                variant="outline-danger"
+                class="ml-3"
+                @click="submitDownvote(image._id, index)"
+                :title="
+                  !$store.getters.isLoggedIn && 'Please login to dislike image'
+                "
+              >
+                <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
+                {{ image.downvoteCount }}</b-button
+              >
+              <b-button
+                variant="outline-primary"
+                class="ml-3"
+                @click="openMemeView(image._id)"
+              >
+                <b-icon icon="chat-left" aria-hidden="true"></b-icon>
+                {{ image.commentCount }}</b-button
+              >
+              <!-- @click="openMemeView(image._id)" -->
+
               <twitter
                 :url="frontendURL(image)"
                 title="Hello from PENG MEMES"
                 scale="3"
+                class="ml-3"
+                style="cursor: pointer"
               ></twitter>
-            </b-col>
-            <b-col>
-              <linkedin :url="frontendURL(image)" scale="3"></linkedin>
-            </b-col>
-            <b-col>
+
+              <linkedin
+                :url="frontendURL(image)"
+                title="Hello from PENG MEMES"
+                scale="3"
+                class="ml-3"
+                style="cursor: pointer"
+              >
+              </linkedin>
+
               <whats-app
                 :url="frontendURL(image)"
                 title="Hello from PENG MEMES"
                 scale="3"
+                class="ml-3"
+                style="cursor: pointer"
               ></whats-app>
-            </b-col>
 
-            <b-col>
               <pinterest
                 :url="frontendURL(image)"
                 scale="3"
-                class="m-3"
+                class="ml-3"
+                style="cursor: pointer"
               ></pinterest>
-            </b-col>
-            <b-col>
+
               <email
                 :url="frontendURL(image)"
                 subject="Hello from PENG MEMES"
                 scale="3"
+                class="ml-3"
+                style="cursor: pointer"
               ></email>
             </b-col>
-            <b-col cols="2" />
           </b-row>
         </div>
       </b-col>

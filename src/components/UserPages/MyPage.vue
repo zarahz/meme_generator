@@ -1,82 +1,81 @@
 <template>
   <b-container fluid>
     <b-row
-      cols-sm="4"
+      cols-sm="12"
       class="mb-4"
+      align-h="center"
       v-for="meme in userMemes"
       v-bind:key="meme._id"
     >
-      <b-col />
       <b-col sm="6">
-        <div>
-          <b-row class="text-large justify-content-md-center">
-            {{ meme.title }} ({{ meme.visibility }})
-          </b-row>
-          <b-row>
-            <meme :meme="meme" @openMemeView="openMemeView"></meme>
-          </b-row>
-          <b-row class="justify-content-md-center">
-            <b-button variant="outline-success" class="m-3" disabled>
+        <b-row class="text-large justify-content-md-center">
+          {{ meme.title }} ({{ meme.visibility }})
+        </b-row>
+        <b-row>
+          <meme :meme="meme" @openMemeView="openMemeView"></meme>
+        </b-row>
+
+        <b-row align-h="center" class="m-3">
+          <b-col>
+            <b-button variant="outline-success" class="ml-3" disabled>
               <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
               {{ meme.upvoteCount }}</b-button
             >
-            <b-button variant="outline-danger" class="m-3" disabled>
+            <b-button variant="outline-danger" class="ml-3" disabled>
               <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
               {{ meme.downvoteCount }}</b-button
             >
             <b-button
               variant="outline-primary"
-              class="m-3"
+              class="ml-3"
               @click="openMemeView(meme._id)"
             >
               <b-icon icon="chat-left" aria-hidden="true"></b-icon>
               {{ meme.commentCount }}</b-button
             >
-            <!-- @click="openMemeView(meme._id)" -->
-          </b-row>
 
-          <b-row b-row class="mb-3" align-h="center">
-            <b-col cols="2" />
-            <b-col>
-              <facebook :url="getFrontendMemeURL(meme)" scale="3"></facebook>
-            </b-col>
-            <b-col>
-              <twitter
-                :url="getFrontendMemeURL(meme)"
-                title=""
-                scale="3"
-              ></twitter>
-            </b-col>
-            <b-col>
-              <linkedin :url="getFrontendMemeURL(meme)" scale="3"></linkedin>
-            </b-col>
-            <b-col>
-              <whats-app
-                :url="getFrontendMemeURL(meme)"
-                title="Hello"
-                scale="3"
-              ></whats-app>
-            </b-col>
+            <twitter
+              :url="getFrontendMemeURL(meme)"
+              title="Hello from PENG MEMES"
+              scale="3"
+              class="ml-3"
+              style="cursor: pointer"
+            ></twitter>
 
-            <b-col>
-              <pinterest
-                :url="getFrontendMemeURL(meme)"
-                scale="3"
-                class="m-3"
-              ></pinterest>
-            </b-col>
-            <b-col>
-              <email
-                :url="getFrontendMemeURL(meme)"
-                subject="Hello"
-                scale="3"
-              ></email>
-            </b-col>
-            <b-col cols="2" />
-          </b-row>
-        </div>
+            <linkedin
+              :url="getFrontendMemeURL(meme)"
+              title="Hello from PENG MEMES"
+              scale="3"
+              class="ml-3"
+              style="cursor: pointer"
+            >
+            </linkedin>
+
+            <whats-app
+              :url="getFrontendMemeURL(meme)"
+              title="Hello from PENG MEMES"
+              scale="3"
+              class="ml-3"
+              style="cursor: pointer"
+            ></whats-app>
+
+            <pinterest
+              :url="getFrontendMemeURL(meme)"
+              scale="3"
+              class="ml-3"
+              style="cursor: pointer"
+            ></pinterest>
+
+            <email
+              :url="getFrontendMemeURL(meme)"
+              subject="Hello from PENG MEMES"
+              scale="3"
+              class="ml-3"
+              style="cursor: pointer"
+            ></email>
+          </b-col>
+        </b-row>
       </b-col>
-      <b-col />
     </b-row>
     <infinite-loading @infinite="loadMoreImages"></infinite-loading>
   </b-container>
@@ -86,7 +85,6 @@
 import InfiniteLoading from "vue-infinite-loading";
 
 import {
-  Facebook,
   Twitter,
   Linkedin,
   Pinterest,
@@ -103,7 +101,6 @@ export default {
   name: "MyPage",
   components: {
     InfiniteLoading,
-    Facebook,
     Twitter,
     Linkedin,
     Pinterest,
