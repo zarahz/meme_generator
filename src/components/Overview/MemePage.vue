@@ -5,7 +5,7 @@
         {{ image.title }}
       </b-row>
       <b-row align-h="center">
-        <b-col align-self="center">
+        <b-col cols="1" align-self="center">
           <b-button variant="light" class="ml-3">
             <b-icon icon="chevron-left" aria-hidden="true"></b-icon>
           </b-button>
@@ -13,7 +13,7 @@
         <b-col cols="10">
           <meme :meme="image" :autoplay="true" />
         </b-col>
-        <b-col align-self="center">
+        <b-col cols="1" align-self="center">
           <b-button variant="light" class="ml-3">
             <b-icon icon="chevron-right" aria-hidden="true"></b-icon>
           </b-button>

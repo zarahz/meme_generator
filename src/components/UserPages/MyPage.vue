@@ -1,5 +1,5 @@
 <template>
-  <b-container class="justify-content-md-center" fluid>
+  <b-container fluid>
     <b-row
       cols-sm="4"
       class="mb-4"
@@ -7,19 +7,15 @@
       v-bind:key="meme._id"
     >
       <b-col />
-      <b-col sm="6" align-self="center">
+      <b-col sm="6">
         <div>
           <b-row class="text-large justify-content-md-center">
             {{ meme.title }} ({{ meme.visibility }})
           </b-row>
           <b-row>
-            <meme
-              class="imageContainer"
-              :meme="meme"
-              @openMemeView="openMemeView"
-            ></meme>
+            <meme :meme="meme" @openMemeView="openMemeView"></meme>
           </b-row>
-          <b-row class="justify-content-md-center" cols="4">
+          <b-row class="justify-content-md-center">
             <b-button variant="outline-success" class="m-3" disabled>
               <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
               {{ meme.upvoteCount }}</b-button
@@ -166,9 +162,6 @@ export default {
 </script>
 
 <style scoped>
-.imageContainer {
-  max-width: 50%;
-}
 .text-large {
   font-size: 180%;
 }
