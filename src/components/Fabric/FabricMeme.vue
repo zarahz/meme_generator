@@ -182,7 +182,7 @@ export default {
   },
   methods: {
     async savePngToDisk() {
-      this.canvas.discardActiveObject(); // otherwise selection UI is visible in output
+      this.fix(); // otherwise selection UI is visible in output
       this.canvas.getElement().toBlob(function (blob) {
         saveAs(blob, "meme.png");
       });
@@ -208,7 +208,7 @@ export default {
       capturer.save();
     },
     async saveOnServer() {
-      this.canvas.discardActiveObject(); // otherwise selection UI is visible in output
+      this.fix(); // otherwise selection UI is visible in output
       this.canvas.getElement().toBlob(async (blob) => {
         let data = new FormData();
         data.append("visibility", this.visibility);
