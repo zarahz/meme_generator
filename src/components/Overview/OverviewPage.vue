@@ -304,7 +304,7 @@ export default {
         }
       });
 
-      return this.displayedImage;
+      return this.displayedImages;
     },
 
     removeFilter() {

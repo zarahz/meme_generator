@@ -14,7 +14,11 @@
           <meme :meme="image" :autoplay="true" />
         </b-col>
         <b-col cols="1" align-self="center">
-          <b-button variant="light" class="ml-3">
+          <b-button
+            variant="light"
+            class="ml-3"
+            @click="changeImage(++currentImageIndex)"
+          >
             <b-icon icon="chevron-right" aria-hidden="true"></b-icon>
           </b-button>
         </b-col>
@@ -292,7 +296,22 @@ export default {
       //filter for the current imageId
       this.image = this.allImages.filter((img) => img._id === this.imageId)[0];
       this.imageURL = getBackendMemeURL(this.image);
+
+      for (var image in this.allImages) {
+        if (this.imageId == this.allImages[image]._id) {
+          this.currentImageIndex = image;
+        }
+      }
     },
+
+    changeImage(index) {
+      if (index == this.allImages.length) {
+        index = 0;
+        this.currentImageIndex = 0;
+      }
+      this.image = this.allImages[index];
+    },
+
     downloadImage() {
       console.log(this.imageURL);
       saveAs(this.imageURL, "meme" + this.image.fileType);
