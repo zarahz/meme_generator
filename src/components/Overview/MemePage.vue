@@ -310,6 +310,10 @@ export default {
         this.currentImageIndex = 0;
       }
       this.image = this.allImages[index];
+      this.imageId = this.allImages[index]._id;
+      this.fetchupvotes();
+      this.fetchdownvotes();
+      this.fetchComments();
     },
 
     downloadImage() {
