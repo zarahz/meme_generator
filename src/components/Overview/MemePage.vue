@@ -19,6 +19,9 @@
           </b-button>
         </b-col>
       </b-row>
+      <b-row align-h="center" v-if="image.memeStats">
+        <b-icon icon="eye" class="m-1" /> {{ image.memeStats.viewed }}
+      </b-row>
       <b-row align-h="center" class="m-3">
         <b-col>
           <b-button
@@ -139,6 +142,8 @@ import {
   getUpvotes,
   getDownvotes,
   getMemes,
+  updateMultipleTemplatesViewedAfterCreationStats,
+  updateMultipleMemesViewedStats,
 } from "../../api";
 import { getBackendMemeURL } from "../../helper";
 import Meme from "./Meme";
@@ -179,6 +184,15 @@ export default {
     };
   },
   methods: {
+    async updateStats() {
+      console.log(this.image);
+      let templateStatsResult = await updateMultipleTemplatesViewedAfterCreationStats(
+        [this.image]
+      );
+      let imageStatsResult = await updateMultipleMemesViewedStats([this.image]);
+      this.$set(this.image, "memeStats", imageStatsResult.body[0]);
+      this.$set(this.image, "templateStats", templateStatsResult.body[0]);
+    },
     changeUpvoteVariant() {
       if (this.imageIsLikedbyCurrentUser == true) {
         this.upvoteButtonVariant = "success";
@@ -291,14 +305,14 @@ export default {
       });
       //filter for the current imageId
       this.image = this.allImages.filter((img) => img._id === this.imageId)[0];
+      await this.updateStats();
       this.imageURL = getBackendMemeURL(this.image);
     },
     downloadImage() {
-      console.log(this.imageURL);
       saveAs(this.imageURL, "meme" + this.image.fileType);
     },
   },
-  mounted() {
+  async mounted() {
     // this.getImage();
     this.getImages();
     this.fetchComments();

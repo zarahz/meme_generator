@@ -73,6 +73,9 @@
               @openMemeView="openMemeView"
             />
           </b-row>
+          <b-row align-h="center" image.memeStats>
+            <b-icon icon="eye" class="m-1" /> {{ image.memeStats.viewed }}
+          </b-row>
           <b-row align-h="center">
             <b-col>
               <b-button
@@ -170,7 +173,7 @@ import {
 } from "vue-socialmedia-share";
 
 import router from "../../router/index.js";
-import { getBackendMemeURL, getFrontendMemeURL } from "../../helper";
+import { getFrontendMemeURL } from "../../helper";
 import {
   getMemes,
   postUpvote,
@@ -178,6 +181,8 @@ import {
   getUpvotes,
   getDownvotes,
   getRandomMeme,
+  updateMultipleTemplatesViewedAfterCreationStats,
+  updateMultipleMemesViewedStats,
 } from "../../api";
 import Meme from "./Meme";
 
@@ -206,9 +211,6 @@ export default {
     frontendURL(image) {
       return getFrontendMemeURL(image);
     },
-    backendURL(image) {
-      return getBackendMemeURL(image);
-    },
     openMemeView(imageId) {
       router
         .push({ name: "MemePage", params: { id: imageId } })
@@ -216,16 +218,35 @@ export default {
           err;
         });
     },
+    async updateDisplayedImages(images) {
+      let imagesWithStats = [];
+      if (images && images.length) {
+        let templateStatsResult = await updateMultipleTemplatesViewedAfterCreationStats(
+          images
+        );
+        let imageStatsResult = await updateMultipleMemesViewedStats(images);
+        console.log(imageStatsResult);
+        imagesWithStats = images.map((image, index) => {
+          return Object.assign(image, {
+            templateStats: templateStatsResult.body[index],
+            memeStats: imageStatsResult.body[index],
+          });
+        });
+        this.displayedImages = [...this.displayedImages, ...imagesWithStats];
+      }
+    },
     async getImages() {
       let result = await getMemes();
       this.allImages = result.body;
 
       //sort images by creation date
-      this.allImages.sort(function (a, b) {
-        return new Date(b.creationDate) - new Date(a.creationDate);
-      });
+      const images = this.allImages
+        .sort(function (a, b) {
+          return new Date(b.creationDate) - new Date(a.creationDate);
+        })
+        .slice(0, this.sliceEnd);
       //display first two images and wait for scroll to show more
-      this.displayedImages = this.allImages.slice(0, this.sliceEnd);
+      await this.updateDisplayedImages(images);
       return this.allImages.length > 0;
     },
     async loadMoreImages($state) {
@@ -234,7 +255,7 @@ export default {
         dbImagesAvailable = await this.getImages();
       }
       this.sliceEnd = this.displayedImages.length + 2;
-      const imagesToAdd = this.allImages.slice(
+      let imagesToAdd = this.allImages.slice(
         this.displayedImages.length,
         this.sliceEnd
       );
@@ -242,8 +263,8 @@ export default {
         $state.complete();
         return; //No more images to show
       }
-      setTimeout(() => {
-        this.displayedImages.push(...imagesToAdd);
+      setTimeout(async () => {
+        await this.updateDisplayedImages(imagesToAdd);
         $state.loaded();
       }, 2000);
     },
@@ -287,22 +308,25 @@ export default {
 
     filteredImages() {
       this.isFilteredImages = true;
-      this.displayedImages = this.allImages;
-      this.displayedImages.sort((a, b) => {
-        if (this.sortBy == "dateAscending") {
-          return new Date(a.creationDate) - new Date(b.creationDate);
-        } else if (this.sortBy == "dateDescending") {
-          return new Date(b.creationDate) - new Date(a.creationDate);
-        } else if (this.sortBy == "upvoteAscending") {
-          return a.upvoteCount - b.upvoteCount;
-        } else if (this.sortBy == "upvoteDescending") {
-          return b.upvoteCount - a.upvoteCount;
-        } else if (this.sortBy == "downvoteAscending") {
-          return a.downvoteCount - b.downvoteCount;
-        } else if (this.sortBy == "downvoteDescending") {
-          return b.downvoteCount - a.downvoteCount;
-        }
-      });
+      //reset sliceEnd and display images for endless scroll
+      this.sliceEnd = 2;
+      this.displayedImages = this.allImages
+        .sort((a, b) => {
+          if (this.sortBy == "dateAscending") {
+            return new Date(a.creationDate) - new Date(b.creationDate);
+          } else if (this.sortBy == "dateDescending") {
+            return new Date(b.creationDate) - new Date(a.creationDate);
+          } else if (this.sortBy == "upvoteAscending") {
+            return a.upvoteCount - b.upvoteCount;
+          } else if (this.sortBy == "upvoteDescending") {
+            return b.upvoteCount - a.upvoteCount;
+          } else if (this.sortBy == "downvoteAscending") {
+            return a.downvoteCount - b.downvoteCount;
+          } else if (this.sortBy == "downvoteDescending") {
+            return b.downvoteCount - a.downvoteCount;
+          }
+        })
+        .slice(0, this.sliceEnd);
 
       return this.displayedImage;
     },

@@ -311,7 +311,6 @@ export default {
 
       this.recorder.onstop = () => {
         const fullBlob = new Blob(allChunks, { type: "video/webm" });
-        console.log({ fullBlob });
         this.isLoading = false;
         this.upload(fullBlob);
       };

@@ -129,19 +129,20 @@ export default {
       if (searchTerm.length < 1) {
         // NO search term
         // inefficient and biased array shuffle
-        let shuffled = this.allServerMemes
+        let templates = this.allServerMemes
           .map((a) => ({ sort: Math.random(), value: a }))
           .sort((a, b) => a.sort - b.sort)
-          .map((a) => a.value);
-        this.updateDisplayedMemes(shuffled.slice(0, MAX_DISPLAYED_TEMPLATES));
+          .map((a) => a.value)
+          .slice(0, MAX_DISPLAYED_TEMPLATES);
+        this.updateDisplayedMemes(templates);
       } else {
         // WITH search term
-        let searchResult = this.allServerMemes.filter((template) => {
-          template.tags.toLowerCase().includes(searchTerm.toLowerCase());
-        });
-        this.updateDisplayedMemes(
-          searchResult.slice(0, MAX_DISPLAYED_TEMPLATES)
-        );
+        let searchResult = this.allServerMemes
+          .filter((template) => {
+            template.tags.toLowerCase().includes(searchTerm.toLowerCase());
+          })
+          .slice(0, MAX_DISPLAYED_TEMPLATES);
+        this.updateDisplayedMemes(searchResult);
       }
     },
     applySearchToImgflipTemplates() {
@@ -159,7 +160,9 @@ export default {
         // WITH search term
         templates = this.allImgflipMemes
           .filter((template) => {
-            template.name.toLowerCase().includes(searchTerm.toLowerCase());
+            return template.name
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase());
           })
           .slice(0, MAX_DISPLAYED_TEMPLATES);
       }

@@ -325,6 +325,7 @@ export default {
       canvas.toBlob(async (blob) => {
         let data = new FormData();
         data.append("visibility", this.visibility);
+        data.append("template", this.img);
         data.append("file", blob, "file.png");
         data.append("title", this.title);
         let result = await upload(data);

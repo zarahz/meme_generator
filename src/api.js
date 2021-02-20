@@ -80,6 +80,10 @@ export const getDownvotes = (params) => get("downvotes?" + new URLSearchParams(p
 /** -------------- Statistics ---------- */
 export const updateMultipleTemplatesViewedStats = (templates) => post("stats/templates/viewed", JSON.stringify(templates));
 
+export const updateMultipleTemplatesViewedAfterCreationStats = (templates) => post("stats/templates/viewed-after-creation", JSON.stringify(templates));
+
 export const updateTemplateChosenStats = (template) => post("stats/templates/chosen", JSON.stringify(template));
 
-export const updateTemplateGeneratedStats = (template) => post("stats/templates/generated", JSON.stringify(template));
+
+export const updateMultipleMemesViewedStats = (memes) => post("stats/memes/viewed", JSON.stringify(memes));
+

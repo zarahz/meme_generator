@@ -1,7 +1,6 @@
 import { backendURL, frontendURL } from "./config";
 
 export function getBackendMemeURL(image) {
-    console.log(image)
     return backendURL + "static/" + image.nameAndFileType;
 }
 
