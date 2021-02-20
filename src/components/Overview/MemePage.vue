@@ -6,7 +6,11 @@
       </b-row>
       <b-row align-h="center">
         <b-col cols="1" align-self="center">
-          <b-button variant="light" class="ml-3">
+          <b-button
+            variant="light"
+            class="ml-3"
+            @click="changeImage(--currentImageIndex)"
+          >
             <b-icon icon="chevron-left" aria-hidden="true"></b-icon>
           </b-button>
         </b-col>
@@ -308,7 +312,11 @@ export default {
       if (index == this.allImages.length) {
         index = 0;
         this.currentImageIndex = 0;
+      } else if (index == -1) {
+        index = this.allImages.length - 1;
+        this.currentImageIndex = this.allImages.length - 1;
       }
+
       this.image = this.allImages[index];
       this.imageId = this.allImages[index]._id;
       this.fetchupvotes();
