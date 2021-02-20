@@ -65,33 +65,33 @@
           </b-button>
 
           <twitter
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></twitter>
           <linkedin
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></linkedin>
           <whats-app
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></whats-app>
           <pinterest
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></pinterest>
           <email
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             subject="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
@@ -148,7 +148,7 @@ import {
   getDownvotes,
   getMemes,
 } from "../../api";
-import { getBackendMemeURL } from "../../helper";
+import { getBackendMemeURL, getFrontendMemeURL } from "../../helper";
 import Meme from "./Meme";
 
 export default {
@@ -187,6 +187,7 @@ export default {
     };
   },
   methods: {
+    getFrontendMemeURL,
     changeUpvoteVariant() {
       if (this.imageIsLikedbyCurrentUser == true) {
         this.upvoteButtonVariant = "success";
