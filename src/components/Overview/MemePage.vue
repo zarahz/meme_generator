@@ -260,6 +260,11 @@ export default {
       for (var upvote in this.upvotes) {
         if (this.$store.getters.user._id === this.upvotes[upvote].authorId) {
           this.imageIsLikedbyCurrentUser = true;
+          this.imageIsDislikedbyCurrentUser = false;
+          this.changeUpvoteVariant();
+          this.changeDownvoteVariant();
+        } else {
+          this.imageIsLikedbyCurrentUser = false;
           this.changeUpvoteVariant();
         }
       }
@@ -273,6 +278,11 @@ export default {
       for (var downvote in this.downvotes) {
         if (this.$store.getters.user._id == this.downvotes[downvote].authorId) {
           this.imageIsDislikedbyCurrentUser = true;
+          this.imageIsLikedbyCurrentUser = false;
+          this.changeDownvoteVariant();
+          this.changeUpvoteVariant();
+        } else {
+          this.imageIsDislikedbyCurrentUser = false;
           this.changeDownvoteVariant();
         }
       }
