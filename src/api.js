@@ -1,6 +1,6 @@
 import { backendURL } from "./config"
 
-async function get(path) {
+function get(path) {
     const fetchObj = {
         method: "GET",
         credentials: 'include'
@@ -8,7 +8,7 @@ async function get(path) {
     return executeFetch(`${backendURL}${path}`, fetchObj);
 }
 
-async function post(api, body, headers = { "Content-Type": "application/json" }) {
+function post(api, body, headers = { "Content-Type": "application/json" }) {
     let fetchObj = {
         method: "POST",
         credentials: "include",
@@ -76,3 +76,10 @@ export const getComments = (params) => get("comments?" + new URLSearchParams(par
 export const getUpvotes = (params) => get("upvotes?" + new URLSearchParams(params));
 
 export const getDownvotes = (params) => get("downvotes?" + new URLSearchParams(params));
+
+/** -------------- Statistics ---------- */
+export const updateMultipleTemplatesViewedStats = (templates) => post("stats/templates/viewed", JSON.stringify(templates));
+
+export const updateTemplateChosenStats = (template) => post("stats/templates/chosen", JSON.stringify(template));
+
+export const updateTemplateGeneratedStats = (template) => post("stats/templates/generated", JSON.stringify(template));

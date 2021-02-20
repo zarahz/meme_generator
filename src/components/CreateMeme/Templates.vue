@@ -1,6 +1,6 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
-    <h3>Available templates</h3>
+    <h3>Available Templates</h3>
     <b-row align-h="center">
       <b-form-checkbox
         v-model="showImgflipTemplates"
@@ -11,27 +11,29 @@
         {{ templateSourceText }}
       </b-form-checkbox>
     </b-row>
-    <b-button
-      pill
-      type="button"
-      class="btn btn-default btn-sm"
-      variant="outline-primary"
-      v-on:click="selectMemeTemplate(--selectedIndex)"
-    >
-      previous
-    </b-button>
-    <b-button
-      pill
-      type="button"
-      class="btn btn-default btn-sm"
-      variant="outline-primary"
-      v-on:click="selectMemeTemplate(++selectedIndex)"
-    >
-      next
-    </b-button>
+    <b-row align-h="center" class="mb-1">
+      <b-button
+        pill
+        type="button"
+        class="btn btn-default btn-sm"
+        variant="outline-primary"
+        v-on:click="selectMemeTemplate(--selectedIndex)"
+      >
+        previous
+      </b-button>
+      <b-button
+        pill
+        type="button"
+        class="btn btn-default btn-sm"
+        variant="outline-primary"
+        v-on:click="selectMemeTemplate(++selectedIndex)"
+      >
+        next
+      </b-button>
+    </b-row>
 
-    <b-row align-h="center">
-      <b-col cols="12" md="auto">
+    <b-row>
+      <b-col sm="12" md="12">
         <b-row align-h="center">
           <b-nav-form>
             <b-form-input
@@ -43,17 +45,27 @@
             ></b-form-input>
           </b-nav-form>
         </b-row>
-        <img
-          crossorigin="anonymous"
-          class="image m-1"
-          v-for="(image, i) in displayedMemes"
-          :src="displayedMemes[i].url"
-          :key="i"
-          @click="selectMemeTemplate(i)"
-        />
-
-        <vue-gallery-slideshow :images="[]" :index="null" @close="index = null">
-        </vue-gallery-slideshow>
+        <b-row align-h="center">
+          <div v-for="(image, i) in displayedMemes" :key="image.url">
+            <b-img
+              :id="image.url"
+              crossorigin="anonymous"
+              class="image m-1"
+              :src="image.url"
+              @click="selectMemeTemplate(i)"
+            ></b-img>
+            <b-popover :target="image.url" triggers="hover" placement="top">
+              <stats
+                :viewed="image.stats.viewed"
+                :chosen.sync="image.stats.chosen"
+                :generated.sync="image.stats.generated"
+                :viewedAfterCreation.sync="image.stats.viewedAfterCreation"
+                :upvoted.sync="image.stats.upvoted"
+                :downvoted.sync="image.stats.downvoted"
+              />
+            </b-popover>
+          </div>
+        </b-row>
       </b-col>
     </b-row>
   </b-container>
@@ -61,8 +73,13 @@
 
 <script>
 import axios from "axios";
-import VueGallerySlideshow from "vue-gallery-slideshow";
-import { getServerMemes } from "../../api";
+import {
+  getServerMemes,
+  updateMultipleTemplatesViewedStats,
+  updateTemplateChosenStats,
+} from "../../api";
+
+import Stats from "../Stats/Stats";
 
 const MAX_DISPLAYED_TEMPLATES = 10;
 
@@ -72,12 +89,11 @@ export default {
     searchString: String,
   },
   components: {
-    VueGallerySlideshow,
+    Stats,
   },
   data() {
     return {
       templatesSearchTerm: "",
-      templateSelectionIndex: null,
       displayedMemes: [],
       allImgflipMemes: [],
       allServerMemes: [],
@@ -97,70 +113,74 @@ export default {
         this.applySearchToServerTemplates();
       }
     },
+    async updateDisplayedMemes(templates) {
+      if (templates.length) {
+        let result = await updateMultipleTemplatesViewedStats(templates);
+        if (result.body.length) {
+          templates = templates.map((template, index) => {
+            return Object.assign(template, { stats: result.body[index] });
+          });
+        }
+      }
+      this.displayedMemes = templates;
+    },
     applySearchToServerTemplates() {
-      this.displayedMemes = [];
-      var displayedMemes = this.displayedMemes;
       var searchTerm = this.templatesSearchTerm;
       if (searchTerm.length < 1) {
         // NO search term
-        this.allServerMemes.forEach(function (item) {
-          displayedMemes.push(item);
-        });
         // inefficient and biased array shuffle
-        let shuffled = displayedMemes
+        let shuffled = this.allServerMemes
           .map((a) => ({ sort: Math.random(), value: a }))
           .sort((a, b) => a.sort - b.sort)
           .map((a) => a.value);
-
-        this.displayedMemes = shuffled.slice(0, MAX_DISPLAYED_TEMPLATES);
+        this.updateDisplayedMemes(shuffled.slice(0, MAX_DISPLAYED_TEMPLATES));
       } else {
         // WITH search term
-        this.allServerMemes.forEach(function (item) {
-          if (item.tags.toLowerCase().includes(searchTerm.toLowerCase())) {
-            displayedMemes.push(item);
-          }
+        let searchResult = this.allServerMemes.filter((template) => {
+          template.tags.toLowerCase().includes(searchTerm.toLowerCase());
         });
-        this.displayedMemes = displayedMemes.slice(0, MAX_DISPLAYED_TEMPLATES);
+        this.updateDisplayedMemes(
+          searchResult.slice(0, MAX_DISPLAYED_TEMPLATES)
+        );
       }
     },
     applySearchToImgflipTemplates() {
-      this.displayedMemes = [];
-      var displayedMemes = this.displayedMemes;
       var searchTerm = this.templatesSearchTerm;
+      let templates = [];
       if (searchTerm.length < 1) {
         // NO search term
-        this.allImgflipMemes.forEach(function (item) {
-          displayedMemes.push(item);
-        });
         // inefficient and biased array shuffle
-        let shuffled = displayedMemes
+        templates = this.allImgflipMemes
           .map((a) => ({ sort: Math.random(), value: a }))
           .sort((a, b) => a.sort - b.sort)
-          .map((a) => a.value);
-
-        this.displayedMemes = shuffled.slice(0, MAX_DISPLAYED_TEMPLATES);
+          .map((a) => a.value)
+          .slice(0, MAX_DISPLAYED_TEMPLATES);
       } else {
         // WITH search term
-        this.allImgflipMemes.forEach(function (item) {
-          if (item.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-            displayedMemes.push(item);
-          }
-        });
-        this.displayedMemes = displayedMemes.slice(0, MAX_DISPLAYED_TEMPLATES);
+        templates = this.allImgflipMemes
+          .filter((template) => {
+            template.name.toLowerCase().includes(searchTerm.toLowerCase());
+          })
+          .slice(0, MAX_DISPLAYED_TEMPLATES);
       }
+      this.updateDisplayedMemes(templates);
     },
-    selectMemeTemplate(selectedIndex) {
+    async selectMemeTemplate(selectedIndex) {
       if (selectedIndex == -1) {
         selectedIndex = this.displayedMemes.length - 1;
       } else if (selectedIndex == this.displayedMemes.length) {
         selectedIndex = 0;
       }
       this.selectedIndex = selectedIndex;
-      this.templateSelectionIndex = this.selectedIndex;
+      const selectedTemplate = this.displayedMemes[selectedIndex];
+      let result = await updateTemplateChosenStats(selectedTemplate);
+      selectedTemplate.stats = result.body;
+      //update displaymemes here to dynamically change the stats!
+      this.$set(this.displayedMemes, selectedIndex, selectedTemplate);
       this.$emit(
         "newTemplateSelected",
-        this.displayedMemes[this.templateSelectionIndex].url,
-        this.displayedMemes[this.templateSelectionIndex].name
+        selectedTemplate.url,
+        selectedTemplate.name
       );
     },
     fetchImgflipMemeTemplates() {
