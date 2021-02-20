@@ -6,7 +6,11 @@
       </b-row>
       <b-row align-h="center">
         <b-col cols="1" align-self="center">
-          <b-button variant="light" class="ml-3">
+          <b-button
+            variant="light"
+            class="ml-3"
+            @click="changeImage(--currentImageIndex)"
+          >
             <b-icon icon="chevron-left" aria-hidden="true"></b-icon>
           </b-button>
         </b-col>
@@ -14,7 +18,11 @@
           <meme :meme="image" :autoplay="true" />
         </b-col>
         <b-col cols="1" align-self="center">
-          <b-button variant="light" class="ml-3">
+          <b-button
+            variant="light"
+            class="ml-3"
+            @click="changeImage(++currentImageIndex)"
+          >
             <b-icon icon="chevron-right" aria-hidden="true"></b-icon>
           </b-button>
         </b-col>
@@ -60,33 +68,33 @@
           </b-button>
 
           <twitter
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></twitter>
           <linkedin
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></linkedin>
           <whats-app
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             title="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></whats-app>
           <pinterest
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             scale="3"
             class="ml-3"
             style="cursor: pointer"
           ></pinterest>
           <email
-            :url="'http://localhost:8080/meme/' + imageId"
+            :url="getFrontendMemeURL(image)"
             subject="Hello from PENG MEMES"
             scale="3"
             class="ml-3"
@@ -145,7 +153,7 @@ import {
   updateMultipleTemplatesViewedAfterCreationStats,
   updateMultipleMemesViewedStats,
 } from "../../api";
-import { getBackendMemeURL } from "../../helper";
+import { getBackendMemeURL, getFrontendMemeURL } from "../../helper";
 import Meme from "./Meme";
 
 export default {
@@ -184,6 +192,7 @@ export default {
     };
   },
   methods: {
+    getFrontendMemeURL,
     async updateStats() {
       console.log(this.image);
       let templateStatsResult = await updateMultipleTemplatesViewedAfterCreationStats(
@@ -266,6 +275,11 @@ export default {
       for (var upvote in this.upvotes) {
         if (this.$store.getters.user._id === this.upvotes[upvote].authorId) {
           this.imageIsLikedbyCurrentUser = true;
+          this.imageIsDislikedbyCurrentUser = false;
+          this.changeUpvoteVariant();
+          this.changeDownvoteVariant();
+        } else {
+          this.imageIsLikedbyCurrentUser = false;
           this.changeUpvoteVariant();
         }
       }
@@ -279,6 +293,11 @@ export default {
       for (var downvote in this.downvotes) {
         if (this.$store.getters.user._id == this.downvotes[downvote].authorId) {
           this.imageIsDislikedbyCurrentUser = true;
+          this.imageIsLikedbyCurrentUser = false;
+          this.changeDownvoteVariant();
+          this.changeUpvoteVariant();
+        } else {
+          this.imageIsDislikedbyCurrentUser = false;
           this.changeDownvoteVariant();
         }
       }
@@ -307,7 +326,30 @@ export default {
       this.image = this.allImages.filter((img) => img._id === this.imageId)[0];
       await this.updateStats();
       this.imageURL = getBackendMemeURL(this.image);
+
+      for (var image in this.allImages) {
+        if (this.imageId == this.allImages[image]._id) {
+          this.currentImageIndex = image;
+        }
+      }
     },
+
+    changeImage(index) {
+      if (index == this.allImages.length) {
+        index = 0;
+        this.currentImageIndex = 0;
+      } else if (index == -1) {
+        index = this.allImages.length - 1;
+        this.currentImageIndex = this.allImages.length - 1;
+      }
+
+      this.image = this.allImages[index];
+      this.imageId = this.allImages[index]._id;
+      this.fetchupvotes();
+      this.fetchdownvotes();
+      this.fetchComments();
+    },
+
     downloadImage() {
       saveAs(this.imageURL, "meme" + this.image.fileType);
     },

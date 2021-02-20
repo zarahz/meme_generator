@@ -328,7 +328,7 @@ export default {
         })
         .slice(0, this.sliceEnd);
 
-      return this.displayedImage;
+      return this.displayedImages;
     },
 
     removeFilter() {
