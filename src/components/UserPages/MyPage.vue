@@ -14,7 +14,9 @@
         <b-row>
           <meme :meme="meme" @openMemeView="openMemeView"></meme>
         </b-row>
-
+        <b-row align-h="center" meme.memeStats>
+          <b-icon icon="eye" class="m-1" /> {{ meme.memeStats.viewed }}
+        </b-row>
         <b-row align-h="center" class="m-3">
           <b-col>
             <b-button variant="outline-success" class="ml-3" disabled>
@@ -95,7 +97,11 @@ import {
 import router from "../../router/index.js";
 import Meme from "../Overview/Meme";
 import { getFrontendMemeURL } from "../../helper";
-import { getUserMemes } from "../../api";
+import {
+  getUserMemes,
+  updateMultipleMemesViewedStats,
+  updateMultipleTemplatesViewedAfterCreationStats,
+} from "../../api";
 
 export default {
   name: "MyPage",
@@ -123,16 +129,34 @@ export default {
         err;
       });
     },
+    async updateUserMemes(memes) {
+      let memesWithStats = [];
+      if (memes && memes.length) {
+        let templateStatsResult = await updateMultipleTemplatesViewedAfterCreationStats(
+          memes
+        );
+        let memeStatsResult = await updateMultipleMemesViewedStats(memes);
+        memesWithStats = memes.map((meme, index) => {
+          return Object.assign(meme, {
+            templateStats: templateStatsResult.body[index],
+            memeStats: memeStatsResult.body[index],
+          });
+        });
+        this.userMemes = [...this.userMemes, ...memesWithStats];
+      }
+    },
     async getMemes() {
       let result = await getUserMemes();
       this.allUserMemes = result.body;
 
       //sort images by creation date
-      this.allUserMemes.sort(function (a, b) {
-        return new Date(b.creationDate) - new Date(a.creationDate);
-      });
+      const memes = this.allUserMemes
+        .sort(function (a, b) {
+          return new Date(b.creationDate) - new Date(a.creationDate);
+        })
+        .slice(0, this.sliceEnd);
       //display first two images and wait for scroll to show more
-      this.userMemes = this.allUserMemes.slice(0, this.sliceEnd);
+      await this.updateUserMemes(memes);
       return this.allUserMemes.length > 0;
     },
     async loadMoreImages($state) {
@@ -149,8 +173,9 @@ export default {
         $state.complete();
         return; //No more images to show
       }
-      setTimeout(() => {
-        this.userMemes.push(...imagesToAdd);
+      setTimeout(async () => {
+        await this.updateUserMemes(imagesToAdd);
+        // this.userMemes.push(...imagesToAdd);
         $state.loaded();
       }, 2000);
     },

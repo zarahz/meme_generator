@@ -225,7 +225,6 @@ export default {
           images
         );
         let imageStatsResult = await updateMultipleMemesViewedStats(images);
-        console.log(imageStatsResult);
         imagesWithStats = images.map((image, index) => {
           return Object.assign(image, {
             templateStats: templateStatsResult.body[index],
