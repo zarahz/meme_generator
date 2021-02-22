@@ -15,7 +15,7 @@
           <meme :meme="meme" @openMemeView="openMemeView"></meme>
         </b-row>
         <b-row align-h="center" meme.memeStats>
-          <b-icon icon="eye" class="m-1" /> {{ meme.memeStats.viewed }}
+          <b-icon icon="eye" class="m-1" /> {{ meme.memeStats.viewed.length }}
         </b-row>
         <b-row align-h="center" class="m-3">
           <b-col>

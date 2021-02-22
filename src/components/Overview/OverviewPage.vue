@@ -74,7 +74,8 @@
             />
           </b-row>
           <b-row align-h="center" image.memeStats>
-            <b-icon icon="eye" class="m-1" /> {{ image.memeStats.viewed }}
+            <b-icon icon="eye" class="m-1" />
+            {{ image.memeStats.viewed.length }}
           </b-row>
           <b-row align-h="center">
             <b-col>

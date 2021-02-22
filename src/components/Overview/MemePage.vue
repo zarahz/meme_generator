@@ -28,7 +28,7 @@
         </b-col>
       </b-row>
       <b-row align-h="center" v-if="image.memeStats">
-        <b-icon icon="eye" class="m-1" /> {{ image.memeStats.viewed }}
+        <b-icon icon="eye" class="m-1" /> {{ image.memeStats.viewed.length }}
       </b-row>
       <b-row align-h="center" class="m-3">
         <b-col>
@@ -126,6 +126,18 @@
           {{ comment.content }}
         </b-col>
       </b-row>
+
+      <b-row>
+        <!-- STATS! -->
+        <meme-statistics
+          v-if="image.memeStats"
+          :upvoteDates="upvotes.map((upvote) => upvote.creationDate)"
+          :downvoteDates="downvotes.map((downvote) => downvote.creationDate)"
+          :viewDates="image.memeStats.viewed"
+          :viewAfterCreationDates="image.templateStats.viewedAfterCreation"
+          :generatedDates="image.templateStats.generated"
+        />
+      </b-row>
     </div>
     <div v-else>
       Oh Oh, it seems like you are not authorized to see this meme! :(
@@ -155,6 +167,7 @@ import {
 } from "../../api";
 import { getBackendMemeURL, getFrontendMemeURL } from "../../helper";
 import Meme from "./Meme";
+import MemeStatistics from "./MemeStatistics.vue";
 
 export default {
   name: "MemePage",
@@ -166,6 +179,7 @@ export default {
     WhatsApp,
     Email,
     Meme,
+    MemeStatistics,
   },
 
   data() {
@@ -194,7 +208,6 @@ export default {
   methods: {
     getFrontendMemeURL,
     async updateStats() {
-      console.log(this.image);
       let templateStatsResult = await updateMultipleTemplatesViewedAfterCreationStats(
         [this.image]
       );
