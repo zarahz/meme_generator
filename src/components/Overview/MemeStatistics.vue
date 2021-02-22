@@ -3,7 +3,7 @@
     <chart
       v-if="chartData.datasets && chartData.datasets.length"
       :chartData="chartData"
-      :options="options"
+      :options="chartOptions"
     />
   </b-container>
 </template>
