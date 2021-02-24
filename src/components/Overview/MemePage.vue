@@ -145,6 +145,7 @@
   </b-container>
 </template>
 <script>
+import moment from "moment";
 import { saveAs } from "file-saver";
 import {
   Twitter,
@@ -325,6 +326,14 @@ export default {
       const dbComments = result.body;
       this.comments = dbComments;
       this.commentsCount = this.comments.length;
+      this.prettifyCommentTime(this.comments);
+    },
+    prettifyCommentTime(comments) {
+      comments.forEach(function (item, index) {
+        console.log(item.creationDate + index);
+        let d1 = moment(item.creationDate);
+        item.creationDate = d1.format("ll") + " " + d1.format("HH:mm:ss");
+      });
     },
     async getImages() {
       //get all images
