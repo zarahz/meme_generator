@@ -34,146 +34,86 @@ export default {
     };
   },
   methods: {
-    getParsedDates(dateArray) {
-      let parsedDateArray = dateArray.sort().map((date) => {
-        //parse!
-        return new Date(date).getMinutes(); //.toDateString();
-      });
-      return this.removeDuplicates(parsedDateArray);
+    createChartDataFromDates(fixedDates, dates) {
+      return fixedDates.map((fixedDate) => ({
+        x: fixedDate,
+        y: dates.filter((date) => {
+          const endDate = new Date(fixedDate);
+          endDate.setDate(endDate.getDate() + 1);
+          return date >= fixedDate && date <= endDate;
+        }).length,
+      }));
     },
-    removeDuplicates(array) {
-      return array.reduce(function (a, b) {
-        //remove duplicates
-        if (a.indexOf(b) < 0) a.push(b);
-        return a;
-      }, []);
-    },
-    countOccurences(dateArray) {
-      //key is date and value are the occurences
-      let occurenceObject = {};
-      dateArray.forEach((date) => {
-        let parsedDate = new Date(date).getMinutes(); //.toDateString();
-        occurenceObject[parsedDate] = occurenceObject[parsedDate]
-          ? occurenceObject[parsedDate] + 1
-          : 1;
-      });
-      return occurenceObject;
-    },
-    fillOccurence(label, occurenceObject) {
-      if (!Object.keys(occurenceObject).includes(label)) {
-        occurenceObject[label] = 0;
-      }
-      return occurenceObject;
+    filterDates(fixedDates, dates) {
+      return dates
+        .map((date) => new Date(date))
+        .filter(
+          (date) =>
+            date <= fixedDates[0] && date >= fixedDates[fixedDates.length - 1]
+        );
     },
     prepareChartData() {
-      const upvoteDates = this.getParsedDates(this.upvoteDates);
-      const downvoteDates = this.getParsedDates(this.downvoteDates);
-      const viewDates = this.getParsedDates(this.viewDates);
-      const viewAfterCreationDates = this.getParsedDates(
-        this.viewAfterCreationDates
-      );
-      const generatedDates = this.getParsedDates(this.generatedDates);
-
-      let upvoteCount = this.countOccurences(this.upvoteDates);
-      let downvoteCount = this.countOccurences(this.downvoteDates);
-      let viewCount = this.countOccurences(this.viewDates);
-      let viewAfterCreationCount = this.countOccurences(
-        this.viewAfterCreationDates
-      );
-      let generatedCount = this.countOccurences(this.generatedDates);
-
-      //merge all dates to create labels
-      let labels = [
-        ...upvoteDates,
-        ...downvoteDates,
-        ...viewDates,
-        ...viewAfterCreationDates,
-        ...generatedDates,
-      ].sort(function (a, b) {
-        return a - b; //new Date(b.date) - new Date(a.date);
+      const dates = [-1, 0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+        let date = new Date();
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
+        date.setDate(date.getDate() - i);
+        return date;
       });
 
-      labels = this.removeDuplicates(labels);
-
-      //fill missing values with zero for each occurence object
-      labels.forEach((label) => {
-        const stringLabel = "" + label;
-        upvoteCount = this.fillOccurence(stringLabel, upvoteCount);
-        downvoteCount = this.fillOccurence(stringLabel, downvoteCount);
-        viewCount = this.fillOccurence(stringLabel, viewCount);
-        viewAfterCreationCount = this.fillOccurence(
-          stringLabel,
-          viewAfterCreationCount
-        );
-        generatedCount = this.fillOccurence(stringLabel, generatedCount);
+      const datasets = [
+        ["views", this.viewDates, "#427A82", "#69969C"],
+        ["upvotes", this.upvoteDates, "#8ABD5F", "#B9E397"],
+        ["downvotes", this.downvoteDates, "#D4A76A", "#FFDBAA"],
+        [
+          "sum of memes using this template",
+          this.generatedDates,
+          "#D48A6A",
+          "#FFC3AA",
+        ],
+        [
+          "sum of meme views using this template",
+          this.viewAfterCreationDates,
+          "#C36279",
+          "#EA9CAE",
+        ],
+      ].map(([label, data, color, bgColor]) => {
+        return {
+          data: this.createChartDataFromDates(
+            dates,
+            this.filterDates(dates, data)
+          ),
+          label,
+          borderColor: color,
+          pointBackgroundColor: color,
+          lineTension: 0.3,
+          backgroundColor: bgColor,
+        };
       });
 
-      this.fillChartData(
-        labels,
-        upvoteCount,
-        downvoteCount,
-        viewCount,
-        viewAfterCreationCount,
-        generatedCount
-      );
+      this.fillChartData(datasets);
       this.statsLoaded = true;
     },
-    fillChartData(
-      labels,
-      upvoteCount,
-      downvoteCount,
-      viewCount,
-      viewAfterCreationCount,
-      generatedCount
-    ) {
+    fillChartData(datasets) {
       this.chartData = {
-        labels: labels,
-        datasets: [
-          {
-            label: "upvotes",
-            data: Object.values(upvoteCount),
-            backgroundColor: "rgba(253, 196, 190, 0.4)",
-            borderColor: "#FC7F72",
-            lineTension: 0,
-            pointBackgroundColor: "#FC7F72",
-          },
-          {
-            label: "downvotes",
-            data: Object.values(downvoteCount),
-            backgroundColor: "rgba(124, 253, 197, 0.4)",
-            borderColor: "#30FCA4",
-            lineTension: 0,
-            pointBackgroundColor: "#30FCA4",
-          },
-          {
-            label: "views",
-            data: Object.values(viewCount),
-            backgroundColor: "rgba(122,0,61, 0.4)",
-            borderColor: "#470024",
-            lineTension: 0,
-            pointBackgroundColor: "#470024",
-          },
-          {
-            label: "views of memes using this template",
-            data: Object.values(viewAfterCreationCount),
-            backgroundColor: "rgba(253, 235, 134, 0.4)",
-            borderColor: "#CCB52F",
-            lineTension: 0,
-            pointBackgroundColor: "#CCB52F",
-          },
-          {
-            label: "memes generated using this template",
-            data: Object.values(generatedCount),
-            backgroundColor: "rgba(84, 130, 255, 0.4)",
-            borderColor: "#0749FF",
-            lineTension: 0,
-            pointBackgroundColor: "#0749FF",
-          },
-        ],
+        labels: [],
+        datasets,
       };
 
       this.chartOptions = {
         maintainAspectRatio: false,
+        scales: {
+          xAxes: [
+            {
+              type: "time",
+              time: {
+                unit: "day",
+              },
+            },
+          ],
+        },
       };
     },
   },

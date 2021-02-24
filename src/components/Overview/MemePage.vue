@@ -286,7 +286,10 @@ export default {
       this.upvotes = result.body.dbUpvotes;
       this.upvotesCount = this.upvotes.length;
       for (var upvote in this.upvotes) {
-        if (this.$store.getters.user._id === this.upvotes[upvote].authorId) {
+        if (
+          this.$store.getters.user &&
+          this.$store.getters.user._id === this.upvotes[upvote].authorId
+        ) {
           this.imageIsLikedbyCurrentUser = true;
           this.imageIsDislikedbyCurrentUser = false;
           this.changeUpvoteVariant();
