@@ -54,8 +54,8 @@
               :src="image.url"
               @click="selectMemeTemplate(i)"
             ></b-img>
-            <b-popover :target="image.url" triggers="hover" placement="top">
-              <stats
+            <b-popover :target="image.url" triggers="hover" placement="top" v-if="image.stats">
+              <stats 
                 :viewed="image.stats.viewed"
                 :chosen.sync="image.stats.chosen"
                 :generated.sync="image.stats.generated"
