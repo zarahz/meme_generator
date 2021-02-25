@@ -85,8 +85,15 @@
           size="sm"
           variant="primary"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="saveOnServer"
-          >Submit</b-button
+          v-on:click="savePngOnServer"
+          >Submit Image</b-button
+        >
+        <b-button
+          size="sm"
+          variant="primary"
+          class="my-2 my-sm-0 mr-2"
+          v-on:click="saveGifOnServer"
+          >Submit Video</b-button
         >
       </b-row>
       <b-row align-h="center" class="mb-3">
@@ -122,8 +129,8 @@
 import Templates from "../CreateMeme/Templates.vue";
 import CustomTemplate from "../CreateMeme/CustomTemplate.vue";
 import { fabric } from "fabric";
+// import ccapture from "ccapture.js";
 import { fabricGif } from "./fabricGif";
-import { ccapture_js_npmfixed } from "ccapture.js-npmfixed";
 import router from "../../router/index.js";
 import { saveAs } from "file-saver";
 import { backendURL } from "../../config";
@@ -142,8 +149,6 @@ export default {
     this.canvas = canvas;
     this.canvas.preserveObjectStacking = true; // fix text disappearing behind image
 
-    // example gif file
-    //this.addGif("https://media.giphy.com/media/11RwocOdukxqN2/giphy.gif");
     // patch fabric for cross domain image jazz
     fabric.Image.fromURL = function (d, f, e) {
       var c = fabric.document.createElement("img");
@@ -163,6 +168,7 @@ export default {
       canvasWidth: 1000,
       canvasHeight: 500,
       title: "",
+      isLoading: false,
       visibilityOptions: [
         { text: "Public (list the finished meme publicly)", value: "public" },
         {
@@ -188,26 +194,46 @@ export default {
       });
     },
     fix() {
-      this.canvas.discardActiveObject();
+      this.canvas.discardActiveObject(25);
       this.canvas.renderAll();
     },
-    async saveGifToDisk() {
-      var capturer = new ccapture_js_npmfixed.CCapture({
-        format: "gif",
-        workersPath: "js/",
-        framerate: 20,
-        verbose: true,
-        name: "meme.gif",
+    async saveGifOnServer() {
+      var canvasEl = document.getElementById("c");
+
+      const stream = canvasEl.captureStream();
+      this.recorder = new MediaRecorder(stream, {
+        mimeType: "image/gif",
       });
-      capturer.start();
-      this.canvas.on("after:render", () => {
-        capturer.capture(this.canvas);
-      });
-      await new Promise((r) => setTimeout(r, 3000));
-      capturer.stop();
-      capturer.save();
+      let allChunks = [];
+      this.recorder.ondataavailable = function (e) {
+        allChunks.push(e.data);
+      };
+      this.recorder.onstop = () => {
+        const fullBlob = new Blob(allChunks, { type: "video/webm" });
+        this.isLoading = false;
+        this.upload(fullBlob);
+      };
+      this.isLoading = true;
+      // Start to record
+      this.recorder.start();
+      await new Promise((r) => setTimeout(r, 10000));
+      this.recorder.stop();
     },
-    async saveOnServer() {
+    async saveGifToDisk() {
+      console.log("TODO");
+    },
+    async upload(blob) {
+      let data = new FormData();
+      data.append("file", blob, "video.webm");
+      data.append("title", this.title);
+      let result = await upload(data);
+      if (result.status === 200) {
+        router.push({ name: "Home" }).catch((err) => {
+          err;
+        });
+      }
+    },
+    async savePngOnServer() {
       this.fix(); // otherwise selection UI is visible in output
       this.canvas.getElement().toBlob(async (blob) => {
         let data = new FormData();
