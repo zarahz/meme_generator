@@ -44,7 +44,7 @@
           size="sm"
           variant="outline-primary"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="fix"
+          v-on:click="unselect"
           >Unselect</b-button
         >
         <b-button
@@ -92,9 +92,19 @@
           size="sm"
           variant="primary"
           class="my-2 my-sm-0 mr-2"
-          v-on:click="saveGifOnServer"
+          v-on:click="saveVideoOnServer"
           >Submit Video</b-button
         >
+        <b-button
+          size="sm"
+          variant="primary"
+          class="my-2 my-sm-0 mr-2"
+          v-on:click="saveGifOnServer"
+          >Submit Gif</b-button
+        >
+      </b-row>
+      <b-row align-h="center" class="mb-3">
+        <div v-if="isLoading" class="loader"></div>
       </b-row>
       <b-row align-h="center" class="mb-3">
         <b-form-input
@@ -129,8 +139,10 @@
 import Templates from "../CreateMeme/Templates.vue";
 import CustomTemplate from "../CreateMeme/CustomTemplate.vue";
 import { fabric } from "fabric";
+import gifjs from "gif.js";
 // import ccapture from "ccapture.js";
 import { fabricGif } from "./fabricGif";
+import { workerString } from "./gif.worker.js";
 import router from "../../router/index.js";
 import { saveAs } from "file-saver";
 import { backendURL } from "../../config";
@@ -188,21 +200,49 @@ export default {
   },
   methods: {
     async savePngToDisk() {
-      this.fix(); // otherwise selection UI is visible in output
+      this.unselect(); // otherwise selection UI is visible in output
       this.canvas.getElement().toBlob(function (blob) {
         saveAs(blob, "meme.png");
       });
     },
-    fix() {
+    unselect() {
       this.canvas.discardActiveObject(25);
       this.canvas.renderAll();
     },
     async saveGifOnServer() {
-      var canvasEl = document.getElementById("c");
+      this.isLoading = true;
+      this.unselect();
+      var workerStr = workerString;
+      var workerBlob = new Blob([workerStr], {
+        type: "application/javascript",
+      });
 
-      const stream = canvasEl.captureStream();
+      var gif = new gifjs({
+        workers: 2,
+        workerScript: URL.createObjectURL(workerBlob),
+        quality: 10,
+        background: `#FFF`,
+      });
+      var canvasElement = document.getElementById("c");
+      var delay = 50;
+      for (var i = 0; i < (1000 / delay) * 5; i++) {
+        gif.addFrame(canvasElement, { delay: delay });
+      }
+
+      gif.on("finished", (blob) => {
+        // window.open(URL.createObjectURL(blob));
+        this.isLoading = false;
+        this.upload(blob, "gif.gif");
+      });
+      gif.render();
+    },
+    async saveVideoOnServer() {
+      this.isLoading = true;
+      var canvasElement = document.getElementById("c");
+
+      const stream = canvasElement.captureStream();
       this.recorder = new MediaRecorder(stream, {
-        mimeType: "image/gif",
+        mimeType: "video/webm",
       });
       let allChunks = [];
       this.recorder.ondataavailable = function (e) {
@@ -211,7 +251,7 @@ export default {
       this.recorder.onstop = () => {
         const fullBlob = new Blob(allChunks, { type: "video/webm" });
         this.isLoading = false;
-        this.upload(fullBlob);
+        this.upload(fullBlob, "video.webm");
       };
       this.isLoading = true;
       // Start to record
@@ -219,12 +259,9 @@ export default {
       await new Promise((r) => setTimeout(r, 10000));
       this.recorder.stop();
     },
-    async saveGifToDisk() {
-      console.log("TODO");
-    },
-    async upload(blob) {
+    async upload(blob, filename) {
       let data = new FormData();
-      data.append("file", blob, "video.webm");
+      data.append("file", blob, filename);
       data.append("title", this.title);
       let result = await upload(data);
       if (result.status === 200) {
@@ -234,18 +271,9 @@ export default {
       }
     },
     async savePngOnServer() {
-      this.fix(); // otherwise selection UI is visible in output
+      this.unselect(); // otherwise selection UI is visible in output
       this.canvas.getElement().toBlob(async (blob) => {
-        let data = new FormData();
-        data.append("visibility", this.visibility);
-        data.append("file", blob, "file.png");
-        data.append("title", this.title);
-        let result = await upload(data);
-        if (result.status === 200) {
-          router.push({ name: "Home" }).catch((err) => {
-            err;
-          });
-        }
+        this.upload(blob, "file.png");
       });
     },
     addTemplate(newImageUrl) {
@@ -257,7 +285,7 @@ export default {
       console.log("Adding static image: " + newImageUrl);
       let canvas = this.canvas;
       fabric.Image.fromURL(newImageUrl, function (oImg) {
-        var img = oImg.scale(0.5).set({ left: 100, top: 100 });
+        var img = oImg.scale(1.0).set({ left: 100, top: 100 });
         canvas.add(img);
       });
     },
@@ -335,5 +363,22 @@ export default {
 }
 #stage {
   border: solid 1px #cccccc;
+}
+.loader {
+  border: 8px solid #f3f3f3; /* Light grey */
+  border-top: 8px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

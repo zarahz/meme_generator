@@ -21,6 +21,7 @@
     "fabricjs": "^1.0.0",
     "file-saver": "^2.0.5",
     "form-data": "^3.0.0",
+    "gif.js": "^0.2.0",
     "gifuct-js": "^2.0.0",
     "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",
