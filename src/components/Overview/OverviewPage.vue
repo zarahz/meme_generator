@@ -30,17 +30,15 @@
           <b-form-select-option value="downvoteDescending"
             >Downvotes (descending)</b-form-select-option
           >
-           <b-form-select-option value="onlyImages"
+          <b-form-select-option value="onlyImages"
             >Only Images</b-form-select-option
           >
-           <b-form-select-option value="onlyVideos"
+          <b-form-select-option value="onlyVideos"
             >Only Videos</b-form-select-option
           >
-           <b-form-select-option value="onlyGifs"
+          <b-form-select-option value="onlyGifs"
             >Only gifs</b-form-select-option
           >
-        
-          
         </b-form-select>
       </b-col>
       <b-col cols="1" v-if="isFilteredImages">
@@ -53,7 +51,6 @@
           <b-icon icon="x-square" scale="1.5" variant="danger"></b-icon
         ></b-button>
       </b-col>
-      
 
       <b-col>
         <b-button
@@ -65,7 +62,6 @@
         >
       </b-col>
     </b-row>
-    
 
     <b-row
       cols-sm="4"
@@ -86,7 +82,7 @@
               @openMemeView="openMemeView"
             />
           </b-row>
-          <b-row align-h="center" image.memeStats>
+          <b-row align-h="center" v-if="image.memeStats">
             <b-icon icon="eye" class="m-1" />
             {{ image.memeStats.viewed.length }}
           </b-row>
@@ -172,7 +168,10 @@
       <b-col />
       <hr class="w-50" />
     </b-row>
-    <infinite-loading @infinite="loadMoreImages"></infinite-loading>
+    <infinite-loading
+      :identifier="infiniteId"
+      @infinite="loadMoreImages"
+    ></infinite-loading>
   </b-container>
 </template>
 
@@ -219,6 +218,7 @@ export default {
       bottom: false,
       sortBy: "null",
       isFilteredImages: false,
+      infiniteId: +new Date(),
     };
   },
   methods: {
@@ -269,6 +269,7 @@ export default {
         dbImagesAvailable = await this.getImages();
       }
       this.sliceEnd = this.displayedImages.length + 2;
+      // console.log(this.allImages, this.displayedImages.length, this.sliceEnd);
       let imagesToAdd = this.allImages.slice(
         this.displayedImages.length,
         this.sliceEnd
@@ -321,45 +322,51 @@ export default {
     },
 
     sortImages() {
+      this.displayedImages = [];
+      this.infiniteId += 1;
       this.isFilteredImages = true;
       //reset sliceEnd and display images for endless scroll
-     //this.sliceEnd = 2;
-      this.displayedImages = this.allImages
-        .sort((a, b) => {
-          if (this.sortBy == "dateAscending") {
-            return new Date(a.creationDate) - new Date(b.creationDate);
-          } else if (this.sortBy == "dateDescending") {
-            return new Date(b.creationDate) - new Date(a.creationDate);
-          } else if (this.sortBy == "upvoteAscending") {
-            return a.upvoteCount - b.upvoteCount;
-          } else if (this.sortBy == "upvoteDescending") {
-            return b.upvoteCount - a.upvoteCount;
-          } else if (this.sortBy == "downvoteAscending") {
-            return a.downvoteCount - b.downvoteCount;
-          } else if (this.sortBy == "downvoteDescending") {
-            return b.downvoteCount - a.downvoteCount;
-          }
-        })
-       //.slice(0, this.sliceEnd);
-      if (this.sortBy == "onlyImages"){
-        this.displayedImages = this.allImages.filter((img) => img.fileType == ".png"); 
+      // this.sliceEnd = 2;
+      let toBeDisplayed = this.allImages.sort((a, b) => {
+        if (this.sortBy == "dateAscending") {
+          return new Date(a.creationDate) - new Date(b.creationDate);
+        } else if (this.sortBy == "dateDescending") {
+          return new Date(b.creationDate) - new Date(a.creationDate);
+        } else if (this.sortBy == "upvoteAscending") {
+          return a.upvoteCount - b.upvoteCount;
+        } else if (this.sortBy == "upvoteDescending") {
+          return b.upvoteCount - a.upvoteCount;
+        } else if (this.sortBy == "downvoteAscending") {
+          return a.downvoteCount - b.downvoteCount;
+        } else if (this.sortBy == "downvoteDescending") {
+          return b.downvoteCount - a.downvoteCount;
         }
-        if (this.sortBy == "onlyGifs"){
-        this.displayedImages = this.allImages.filter((img) => img.fileType == ".gif"); 
-              }
+      }); //;
+      // .slice(0, this.sliceEnd);
+      if (this.sortBy == "onlyImages") {
+        toBeDisplayed = this.allImages
+          .filter((img) => img.fileType == ".png")
+          .slice(0, this.sliceEnd);
+      }
+      if (this.sortBy == "onlyGifs") {
+        toBeDisplayed = this.allImages
+          .filter((img) => img.fileType == ".gif")
+          .slice(0, this.sliceEnd);
+      }
 
-        if (this.sortBy == "onlyVideos"){
-        this.displayedImages = this.allImages.filter((img) => img.fileType == ".webm"); 
-              }
+      if (this.sortBy == "onlyVideos") {
+        toBeDisplayed = this.allImages
+          .filter((img) => img.fileType == ".webm")
+          .slice(0, this.sliceEnd);
+      }
+      this.updateDisplayedImages(toBeDisplayed);
     },
-
     removeFilter() {
-      this.displayedImages = []
+      this.displayedImages = [];
       this.getImages();
       this.isFilteredImages = false;
       this.sortBy = null;
     },
-
     async show_random_meme() {
       let result = await getRandomMeme();
       this.openMemeView(result.body._id);

@@ -134,9 +134,14 @@
           :upvoteDates="upvotes.map((upvote) => upvote.creationDate)"
           :downvoteDates="downvotes.map((downvote) => downvote.creationDate)"
           :viewDates="image.memeStats.viewed"
-          :viewAfterCreationDates="image.templateStats.viewedAfterCreation"
-          :generatedDates="image.templateStats.generated"
+          :viewAfterCreationDates="
+            image.templateStats ? image.templateStats.viewedAfterCreation : []
+          "
+          :generatedDates="
+            image.templateStats ? image.templateStats.generated : []
+          "
         />
+        <div v-else>{{ image.memeStats }}</div>
       </b-row>
     </div>
     <div v-else>
@@ -146,6 +151,7 @@
 </template>
 <script>
 import moment from "moment";
+import router from "../../router/index.js";
 import { saveAs } from "file-saver";
 import {
   Twitter,
@@ -368,11 +374,12 @@ export default {
         this.currentImageIndex = this.allImages.length - 1;
       }
 
-      this.image = this.allImages[index];
-      this.imageId = this.allImages[index]._id;
-      this.fetchupvotes();
-      this.fetchdownvotes();
-      this.fetchComments();
+      const newImageId = this.allImages[index]._id;
+      router
+        .replace({ name: "MemePage", params: { id: newImageId } })
+        .catch((err) => {
+          err;
+        });
     },
 
     downloadImage() {
@@ -387,6 +394,14 @@ export default {
     this.fetchdownvotes();
     this.changeUpvoteVariant();
     this.changeDownvoteVariant();
+  },
+  watch: {
+    $route(to, from) {
+      // react to route changes...
+      if (to !== from) {
+        location.reload();
+      }
+    },
   },
 };
 </script>
