@@ -6,7 +6,7 @@
           class="border border-primary"
           name="sortBy"
           id="select"
-          @change="filteredImages"
+          @change="sortImages"
           v-model="sortBy"
         >
           <b-form-select-option value="null"
@@ -30,6 +30,17 @@
           <b-form-select-option value="downvoteDescending"
             >Downvotes (descending)</b-form-select-option
           >
+           <b-form-select-option value="onlyImages"
+            >Only Images</b-form-select-option
+          >
+           <b-form-select-option value="onlyVideos"
+            >Only Videos</b-form-select-option
+          >
+           <b-form-select-option value="onlyGifs"
+            >Only gifs</b-form-select-option
+          >
+        
+          
         </b-form-select>
       </b-col>
       <b-col cols="1" v-if="isFilteredImages">
@@ -42,6 +53,7 @@
           <b-icon icon="x-square" scale="1.5" variant="danger"></b-icon
         ></b-button>
       </b-col>
+      
 
       <b-col>
         <b-button
@@ -53,6 +65,7 @@
         >
       </b-col>
     </b-row>
+    
 
     <b-row
       cols-sm="4"
@@ -236,6 +249,7 @@ export default {
       }
     },
     async getImages() {
+      this.displayedImages = [];
       let result = await getMemes();
       this.allImages = result.body;
 
@@ -306,10 +320,10 @@ export default {
       this.displayedImages[index].downvoteCount = downvotesCount;
     },
 
-    filteredImages() {
+    sortImages() {
       this.isFilteredImages = true;
       //reset sliceEnd and display images for endless scroll
-      this.sliceEnd = 2;
+     //this.sliceEnd = 2;
       this.displayedImages = this.allImages
         .sort((a, b) => {
           if (this.sortBy == "dateAscending") {
@@ -326,12 +340,21 @@ export default {
             return b.downvoteCount - a.downvoteCount;
           }
         })
-        .slice(0, this.sliceEnd);
+       //.slice(0, this.sliceEnd);
+      if (this.sortBy == "onlyImages"){
+        this.displayedImages = this.allImages.filter((img) => img.fileType == ".png"); 
+        }
+        if (this.sortBy == "onlyGifs"){
+        this.displayedImages = this.allImages.filter((img) => img.fileType == ".gif"); 
+              }
 
-      return this.displayedImages;
+        if (this.sortBy == "onlyVideos"){
+        this.displayedImages = this.allImages.filter((img) => img.fileType == ".webm"); 
+              }
     },
 
     removeFilter() {
+      this.displayedImages = []
       this.getImages();
       this.isFilteredImages = false;
       this.sortBy = null;
