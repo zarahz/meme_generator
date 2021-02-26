@@ -323,9 +323,10 @@ export default {
     resetImages() {
       this.infiniteId += 1;
       this.displayedImages = [];
+      this.isFilteredImages = true;
+
     },
     sortImages() {
-      this.isFilteredImages = true;
       let allImagesSorted = this.allImages.sort((a, b) => {
         if (this.sortBy == "dateAscending") {
           return new Date(a.creationDate) - new Date(b.creationDate);
