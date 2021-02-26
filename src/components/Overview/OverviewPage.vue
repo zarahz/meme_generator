@@ -51,7 +51,21 @@
           <b-icon icon="x-square" scale="1.5" variant="danger"></b-icon
         ></b-button>
       </b-col>
-
+      <b-col>
+        <b-form-group
+          label="Search:"
+          label-for="search-meme"
+          label-cols-sm="6"
+          label-align-sm="right"
+        >
+          <b-form-input
+            id="search-meme"
+            v-model="searchQuery"
+            placeholder="search meme.."
+            v-on:input="searchResult"
+          ></b-form-input>
+        </b-form-group>
+      </b-col>
       <b-col>
         <b-button
           class="float-sm-right"
@@ -219,6 +233,7 @@ export default {
       sortBy: null,
       isFilteredImages: false,
       infiniteId: +new Date(),
+      searchQuery: null,
     };
   },
   methods: {
@@ -324,7 +339,6 @@ export default {
       this.infiniteId += 1;
       this.displayedImages = [];
       this.isFilteredImages = true;
-
     },
     sortImages() {
       let allImagesSorted = this.allImages.sort((a, b) => {
@@ -366,6 +380,17 @@ export default {
       this.getImages();
       this.isFilteredImages = false;
       this.sortBy = null;
+    },
+    searchResult() {
+      if (this.searchQuery) {
+        this.displayedImages = this.allImages.filter((image) => {
+          return image.title
+            .toLowerCase()
+            .includes(this.searchQuery.toLowerCase());
+        });
+      } else {
+        this.getImages();
+      }
     },
     async show_random_meme() {
       let result = await getRandomMeme();
