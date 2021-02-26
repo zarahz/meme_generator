@@ -78,6 +78,7 @@
           size="sm"
           variant="outline-primary"
           class="my-2 my-sm-0 mr-2"
+          :disabled="isLoading"
           v-on:click="savePngToDisk"
           >Save PNG to Disk</b-button
         >
@@ -85,6 +86,7 @@
           size="sm"
           variant="primary"
           class="my-2 my-sm-0 mr-2"
+          :disabled="isLoading"
           v-on:click="savePngOnServer"
           >Submit Image</b-button
         >
@@ -92,6 +94,7 @@
           size="sm"
           variant="primary"
           class="my-2 my-sm-0 mr-2"
+          :disabled="isLoading"
           v-on:click="saveVideoOnServer"
           >Submit Video</b-button
         >
@@ -99,6 +102,7 @@
           size="sm"
           variant="primary"
           class="my-2 my-sm-0 mr-2"
+          :disabled="isLoading"
           v-on:click="saveGifOnServer"
           >Submit Gif</b-button
         >
@@ -253,7 +257,6 @@ export default {
         this.isLoading = false;
         this.upload(fullBlob, "video.webm");
       };
-      this.isLoading = true;
       // Start to record
       this.recorder.start();
       await new Promise((r) => setTimeout(r, 10000));
@@ -271,15 +274,19 @@ export default {
       }
     },
     async savePngOnServer() {
+      this.isLoading = true;
       this.unselect(); // otherwise selection UI is visible in output
       this.canvas.getElement().toBlob(async (blob) => {
         this.upload(blob, "file.png");
       });
+      this.isLoading = true;
     },
     addTemplate(newImageUrl) {
+      this.isLoading = true;
       if (newImageUrl.endsWith(".gif")) {
         console.log("Adding moving image: " + newImageUrl);
         this.addGif(newImageUrl);
+        this.isLoading = false;
         return;
       }
       console.log("Adding static image: " + newImageUrl);
@@ -288,6 +295,7 @@ export default {
         var img = oImg.scale(1.0).set({ left: 100, top: 100 });
         canvas.add(img);
       });
+      this.isLoading = false;
     },
     addTextNormal() {
       this.canvas.add(
