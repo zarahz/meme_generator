@@ -36,6 +36,7 @@
     "vue-share-buttons": "^1.1.0",
     "vue-social-sharing": "^3.0.4",
     "vue-socialmedia-share": "^1.0.1",
+    "vue-speech": "^0.1.0",
     "vuex": "^3.6.0"
   },
   "devDependencies": {

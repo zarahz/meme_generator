@@ -364,7 +364,6 @@ export default {
         }
       }
     },
-
     changeImage(index) {
       if (index == this.allImages.length) {
         index = 0;
@@ -373,7 +372,6 @@ export default {
         index = this.allImages.length - 1;
         this.currentImageIndex = this.allImages.length - 1;
       }
-
       const newImageId = this.allImages[index]._id;
       router
         .replace({ name: "MemePage", params: { id: newImageId } })
@@ -381,7 +379,6 @@ export default {
           err;
         });
     },
-
     downloadImage() {
       saveAs(this.imageURL, "meme" + this.image.fileType);
     },

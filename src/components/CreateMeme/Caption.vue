@@ -1,83 +1,82 @@
 <template>
-  <b-row align-h="center" class="mb-3">
-    <b-col>
-      <b-form-group label-cols-lg="4" content-cols-lg="7" :label="label">
+  <b-row align-h="center" class="mb-3" fluid>
+    <hr />
+    <b-col sm="12" lg="4" md="6">
+      <!-- <b-form-group label-cols-lg="4" content-cols-lg="7" :label="label"> -->
+      <b-input-group>
         <b-form-input
           :value="text"
           @input="updateText"
-          class="w-100"
+          class="w-75"
           type="text"
           :placeholder="label"
         />
-      </b-form-group>
+        <b-input-group-append>
+          <b-button variant="outline-secondary"
+            ><b-icon icon="mic-fill"
+          /></b-button>
+        </b-input-group-append>
+      </b-input-group>
     </b-col>
-    <b-col md="2" v-if="showOffsetSettings">
-      <b-form-group label-cols-lg="5" content-cols-lg="6" label="Offset X">
-        <b-form-input
-          :value="offsetX"
-          @input="updateOffsetX"
-          number
-          class="input w-50"
-          type="number"
-          placeholder="horizontal offset"
-        />
-      </b-form-group>
+    <b-col sm="12" lg="4" md="6" v-if="showOffsetSettings">
+      <b-row>
+        <b-form-group
+          label-cols="5"
+          content-cols="4"
+          label="Offset X"
+          class="w-50"
+        >
+          <b-form-input
+            :value="offsetX"
+            @input="updateOffsetX"
+            number
+            class="input"
+            type="number"
+            placeholder="horizontal offset"
+          />
+        </b-form-group>
+        <b-form-group label-cols="2" content-cols="4" label="Y" class="w-50">
+          <b-form-input
+            :value="offsetY"
+            @input="updateOffsetY"
+            number
+            class="input"
+            type="number"
+            placeholder="vertical offset"
+          />
+        </b-form-group>
+      </b-row>
     </b-col>
-    <b-col md="2" v-if="showOffsetSettings">
-      <b-form-group label-cols-lg="5" content-cols-lg="6" label="Y">
-        <b-form-input
-          :value="offsetY"
-          @input="updateOffsetY"
-          number
-          class="input w-50"
-          type="number"
-          placeholder="vertical offset"
-        />
-      </b-form-group>
+    <b-col sm="6" lg="3" md="6" v-if="showOffsetSettings">
+      <b-button size="sm" class="icon mr-1" @click="move('left')"> 🡄 </b-button>
+      <b-button size="sm" class="icon mr-1" @click="move('right')">
+        🡆
+      </b-button>
+      <b-button size="sm" class="icon mr-1" @click="move('up')"> 🡅 </b-button>
+      <b-button size="sm" class="icon" @click="move('down')"> 🡇 </b-button>
     </b-col>
-    <b-button
-      size="sm"
-      class="icon my-2 my-sm-0 mr-2"
-      @click="move('left')"
-      v-if="showOffsetSettings"
-      >🡄</b-button
-    >
-    <b-button
-      size="sm"
-      class="icon my-2 my-sm-0 mr-2"
-      @click="move('right')"
-      v-if="showOffsetSettings"
-      >🡆</b-button
-    >
-    <b-button
-      size="sm"
-      class="icon my-2 my-sm-0 mr-2"
-      @click="move('up')"
-      v-if="showOffsetSettings"
-      >🡅</b-button
-    >
-    <b-button
-      size="sm"
-      class="icon my-2 my-sm-0 mr-2"
-      @click="move('down')"
-      v-if="showOffsetSettings"
-      >🡇</b-button
-    >
-    <b-button
-      size="sm"
-      class="icon my-2 my-sm-0 mr-2"
-      variant="danger"
-      :style="{ visibility: deleteable ? 'show' : 'hidden' }"
-      @click="deleteThis"
-    >
-      <b-icon icon="trash" />
-    </b-button>
+    <b-col sm="6" lg="1" md="6">
+      <b-button
+        size="sm"
+        class="icon my-2 my-sm-0 mr-2"
+        variant="danger"
+        :style="{ visibility: deleteable ? 'show' : 'hidden' }"
+        @click="deleteThis"
+      >
+        <b-icon icon="trash" />
+      </b-button>
+    </b-col>
   </b-row>
 </template>
 
 <script>
+// import VueSpeech from "vue-speech";
+
 export default {
   name: "Caption",
+  // components: {
+  //   VueSpeech,
+  // },
   props: {
     label: String,
     text: String,
@@ -149,6 +148,18 @@ export default {
 }
 
 .input {
-  min-width: 80px;
+  min-width: 60px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>
