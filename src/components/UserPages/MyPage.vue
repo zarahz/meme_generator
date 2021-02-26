@@ -6,7 +6,7 @@
           class="border border-primary"
           name="sortBy"
           id="select"
-          @change="sortImages"
+          @change="resetMemes"
           v-model="sortBy"
         >
           <b-form-select-option value="null"
@@ -50,6 +50,21 @@
         >
           <b-icon icon="x-square" scale="1.5" variant="danger"></b-icon
         ></b-button>
+      </b-col>
+      <b-col>
+        <b-form-group
+          label="Search:"
+          label-for="search-meme"
+          label-cols-sm="10"
+          label-align-sm="right"
+        >
+          <b-form-input
+            id="search-meme"
+            v-model="searchQuery"
+            placeholder="search meme.."
+            v-on:input="searchResult"
+          ></b-form-input>
+        </b-form-group>
       </b-col>
     </b-row>
     <b-row
@@ -131,7 +146,10 @@
         </b-row>
       </b-col>
     </b-row>
-    <infinite-loading @infinite="loadMoreImages"></infinite-loading>
+    <infinite-loading
+      :identifier="infiniteId"
+      @infinite="loadMoreImages"
+    ></infinite-loading>
   </b-container>
 </template>
 
@@ -174,6 +192,8 @@ export default {
       bottom: false,
       sortBy: "null",
       isFilteredImages: false,
+      infiniteId: +new Date(),
+      searchQuery: null,
     };
   },
   methods: {
@@ -197,13 +217,12 @@ export default {
           });
         });
         this.userMemes = [...this.userMemes, ...memesWithStats];
-        console.log(this.userMemes);
       }
     },
     async getMemes() {
+      this.userMemes = [];
       let result = await getUserMemes();
       this.allUserMemes = result.body;
-      // console.log(this.allUserMemes)
       //sort images by creation date
       const memes = this.allUserMemes
         .sort(function (a, b) {
@@ -220,7 +239,8 @@ export default {
         dbImagesAvailable = await this.getMemes();
       }
       this.sliceEnd = this.userMemes.length + 2;
-      const imagesToAdd = this.allUserMemes.slice(
+      let allImagesSorted = this.sortMemes();
+      let imagesToAdd = allImagesSorted.slice(
         this.userMemes.length,
         this.sliceEnd
       );
@@ -234,13 +254,13 @@ export default {
         $state.loaded();
       }, 2000);
     },
-    sortImages() {
-      this.userMemes = [];
+    resetMemes() {
       this.infiniteId += 1;
+      this.userMemes = [];
       this.isFilteredImages = true;
-      //reset sliceEnd and display images for endless scroll
-      // this.sliceEnd = 2;
-      let toBeDisplayed = this.allUserMemes.sort((a, b) => {
+    },
+    sortMemes() {
+      let allImagesSorted = this.allUserMemes.sort((a, b) => {
         if (this.sortBy == "dateAscending") {
           return new Date(a.creationDate) - new Date(b.creationDate);
         } else if (this.sortBy == "dateDescending") {
@@ -254,34 +274,45 @@ export default {
         } else if (this.sortBy == "downvoteDescending") {
           return b.downvoteCount - a.downvoteCount;
         }
-      }); //;
-      // .slice(0, this.sliceEnd);
+      });
 
       // filter images by file format
       if (this.sortBy == "onlyImages") {
-        toBeDisplayed = this.allUserMemes
+        allImagesSorted = this.allUserMemes
           .filter((img) => img.fileType == ".png")
           .slice(0, this.sliceEnd);
       }
       if (this.sortBy == "onlyGifs") {
-        toBeDisplayed = this.allUserMemes
+        allImagesSorted = this.allUserMemes
           .filter((img) => img.fileType == ".gif")
           .slice(0, this.sliceEnd);
       }
 
       if (this.sortBy == "onlyVideos") {
-        toBeDisplayed = this.allUserMemes
+        allImagesSorted = this.allUserMemes
           .filter((img) => img.fileType == ".webm")
           .slice(0, this.sliceEnd);
       }
-      this.updateUserMemes(toBeDisplayed);
+
+      return allImagesSorted;
     },
     removeFilter() {
       // display the memes again without any filter or sort
-      this.userMemes = [];
       this.getMemes();
       this.isFilteredImages = false;
       this.sortBy = null;
+    },
+
+    searchResult() {
+      if (this.searchQuery) {
+        this.userMemes = this.allUserMemes.filter((image) => {
+          return image.title
+            .toLowerCase()
+            .includes(this.searchQuery.toLowerCase());
+        });
+      } else {
+        this.getMemes();
+      }
     },
   },
 };
