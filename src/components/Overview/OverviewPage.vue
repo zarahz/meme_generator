@@ -343,6 +343,8 @@ export default {
         }
       }); //;
       // .slice(0, this.sliceEnd);
+
+      // filter images by file format
       if (this.sortBy == "onlyImages") {
         toBeDisplayed = this.allImages
           .filter((img) => img.fileType == ".png")

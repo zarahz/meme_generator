@@ -51,8 +51,6 @@
           <b-icon icon="x-square" scale="1.5" variant="danger"></b-icon
         ></b-button>
       </b-col>
-
-     
     </b-row>
     <b-row
       cols-sm="12"
@@ -199,12 +197,13 @@ export default {
           });
         });
         this.userMemes = [...this.userMemes, ...memesWithStats];
+        console.log(this.userMemes);
       }
     },
     async getMemes() {
       let result = await getUserMemes();
       this.allUserMemes = result.body;
-
+      // console.log(this.allUserMemes)
       //sort images by creation date
       const memes = this.allUserMemes
         .sort(function (a, b) {
@@ -234,6 +233,55 @@ export default {
         // this.userMemes.push(...imagesToAdd);
         $state.loaded();
       }, 2000);
+    },
+    sortImages() {
+      this.userMemes = [];
+      this.infiniteId += 1;
+      this.isFilteredImages = true;
+      //reset sliceEnd and display images for endless scroll
+      // this.sliceEnd = 2;
+      let toBeDisplayed = this.allUserMemes.sort((a, b) => {
+        if (this.sortBy == "dateAscending") {
+          return new Date(a.creationDate) - new Date(b.creationDate);
+        } else if (this.sortBy == "dateDescending") {
+          return new Date(b.creationDate) - new Date(a.creationDate);
+        } else if (this.sortBy == "upvoteAscending") {
+          return a.upvoteCount - b.upvoteCount;
+        } else if (this.sortBy == "upvoteDescending") {
+          return b.upvoteCount - a.upvoteCount;
+        } else if (this.sortBy == "downvoteAscending") {
+          return a.downvoteCount - b.downvoteCount;
+        } else if (this.sortBy == "downvoteDescending") {
+          return b.downvoteCount - a.downvoteCount;
+        }
+      }); //;
+      // .slice(0, this.sliceEnd);
+
+      // filter images by file format
+      if (this.sortBy == "onlyImages") {
+        toBeDisplayed = this.allUserMemes
+          .filter((img) => img.fileType == ".png")
+          .slice(0, this.sliceEnd);
+      }
+      if (this.sortBy == "onlyGifs") {
+        toBeDisplayed = this.allUserMemes
+          .filter((img) => img.fileType == ".gif")
+          .slice(0, this.sliceEnd);
+      }
+
+      if (this.sortBy == "onlyVideos") {
+        toBeDisplayed = this.allUserMemes
+          .filter((img) => img.fileType == ".webm")
+          .slice(0, this.sliceEnd);
+      }
+      this.updateUserMemes(toBeDisplayed);
+    },
+    removeFilter() {
+      // display the memes again without any filter or sort
+      this.userMemes = [];
+      this.getMemes();
+      this.isFilteredImages = false;
+      this.sortBy = null;
     },
   },
 };
