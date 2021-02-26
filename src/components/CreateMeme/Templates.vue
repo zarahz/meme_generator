@@ -37,7 +37,7 @@
         <b-row align-h="center">
           <b-nav-form>
             <b-form-input
-              v-on:input="applySearch"
+              v-on:input="refreshDisplayedTemplates"
               v-model="templatesSearchTerm"
               size="sm"
               class="mr-sm-2"
@@ -54,8 +54,13 @@
               :src="image.url"
               @click="selectMemeTemplate(i)"
             ></b-img>
-            <b-popover :target="image.url" triggers="hover" placement="top" v-if="image.stats">
-              <stats 
+            <b-popover
+              :target="image.url"
+              triggers="hover"
+              placement="top"
+              v-if="image.stats"
+            >
+              <stats
                 :viewed="image.stats.viewed"
                 :chosen.sync="image.stats.chosen"
                 :generated.sync="image.stats.generated"
@@ -106,11 +111,11 @@ export default {
   methods: {
     // TODO decide on one naming convention!
 
-    applySearch() {
+    refreshDisplayedTemplates() {
       if (this.showImgflipTemplates) {
-        this.applySearchToImgflipTemplates();
+        this.applySearchTo(this.allImgflipMemes);
       } else {
-        this.applySearchToServerTemplates();
+        this.applySearchTo(this.allServerMemes);
       }
     },
     async updateDisplayedMemes(templates) {
@@ -124,41 +129,20 @@ export default {
       }
       this.displayedMemes = templates;
     },
-    applySearchToServerTemplates() {
-      var searchTerm = this.templatesSearchTerm;
-      if (searchTerm.length < 1) {
-        // NO search term
-        // inefficient and biased array shuffle
-        let templates = this.allServerMemes
-          .map((a) => ({ sort: Math.random(), value: a }))
-          .sort((a, b) => a.sort - b.sort)
-          .map((a) => a.value)
-          .slice(0, MAX_DISPLAYED_TEMPLATES);
-        this.updateDisplayedMemes(templates);
-      } else {
-        // WITH search term
-        let searchResult = this.allServerMemes
-          .filter((template) => {
-            template.tags.toLowerCase().includes(searchTerm.toLowerCase());
-          })
-          .slice(0, MAX_DISPLAYED_TEMPLATES);
-        this.updateDisplayedMemes(searchResult);
-      }
-    },
-    applySearchToImgflipTemplates() {
+    applySearchTo(allTemplates) {
       var searchTerm = this.templatesSearchTerm;
       let templates = [];
       if (searchTerm.length < 1) {
         // NO search term
         // inefficient and biased array shuffle
-        templates = this.allImgflipMemes
+        templates = allTemplates
           .map((a) => ({ sort: Math.random(), value: a }))
           .sort((a, b) => a.sort - b.sort)
           .map((a) => a.value)
           .slice(0, MAX_DISPLAYED_TEMPLATES);
       } else {
         // WITH search term
-        templates = this.allImgflipMemes
+        templates = allTemplates
           .filter((template) => {
             return template.name
               .toLowerCase()
@@ -193,13 +177,13 @@ export default {
         } else {
           console.log("Failed to get meme templates from imgflip :(");
         }
-        this.applySearch();
+        this.refreshDisplayedTemplates();
       });
     },
     async fetchServerMemeTemplates() {
       const result = await getServerMemes();
       this.allServerMemes = result.body;
-      this.applySearch();
+      this.refreshDisplayedTemplates();
     },
     switchTemplates() {
       if (this.showImgflipTemplates) {
@@ -207,7 +191,7 @@ export default {
       } else {
         this.templateSourceText = "Server";
       }
-      this.applySearch();
+      this.refreshDisplayedTemplates();
     },
   },
   mounted() {
