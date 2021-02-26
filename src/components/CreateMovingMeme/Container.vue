@@ -38,15 +38,16 @@
         label-cols="4"
         content-cols="8"
         label="Caption Size"
-        class="w-25"
+        class="w-50"
       >
         <b-form-input v-model="fontSize" number placeholder="Font size..." />
       </b-form-group>
     </b-row>
 
     <b-row v-for="caption in captions" :key="caption.label" v-show="meme">
-      <b-col>
+      <b-col lg="7" sm="12" md="7">
         <our-caption
+          class="w-100"
           :label="caption.label"
           :text="caption.text"
           :deleteable="caption.deleteable"

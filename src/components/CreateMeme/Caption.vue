@@ -1,7 +1,8 @@
 <template>
   <b-row align-h="center" class="mb-3" fluid>
     <hr />
-    <b-col sm="12" lg="4" md="6">
+    <b-col>
+      <!-- sm="12" lg="4" md="6" -->
       <!-- <b-form-group label-cols-lg="4" content-cols-lg="7" :label="label"> -->
       <b-input-group>
         <b-form-input
@@ -12,9 +13,11 @@
           :placeholder="label"
         />
         <b-input-group-append>
-          <b-button variant="outline-secondary"
-            ><b-icon icon="mic-fill"
-          /></b-button>
+          <b-button
+            :variant="this.recognition ? 'danger' : 'outline-secondary'"
+            @click="toggleRecognition"
+            ><b-icon icon="mic-fill" />
+          </b-button>
         </b-input-group-append>
       </b-input-group>
     </b-col>
@@ -70,13 +73,8 @@
 </template>
 
 <script>
-// import VueSpeech from "vue-speech";
-
 export default {
   name: "Caption",
-  // components: {
-  //   VueSpeech,
-  // },
   props: {
     label: String,
     text: String,
@@ -92,9 +90,36 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      recognition: null,
+    };
   },
   methods: {
+    toggleRecognition() {
+      if (!this.recognition) {
+        this.recognition = new window.webkitSpeechRecognition();
+        this.recognition.lang = "en-US";
+        this.recognition.continuous = false;
+        this.recognition.interimResults = true;
+
+        this.recognition.start();
+        let that = this;
+        this.recognition.onresult = function (event) {
+          let result = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            result += event.results[i][0].transcript;
+          }
+          console.log(event.results);
+          that.updateText(result);
+        };
+        this.recognition.onaudioend = function () {
+          that.recognition = null;
+        };
+      } else {
+        this.recognition.stop();
+        this.recognition = null;
+      }
+    },
     deleteThis() {
       this.$emit("delete");
     },

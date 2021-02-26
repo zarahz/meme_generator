@@ -216,7 +216,7 @@ export default {
       displayedImages: [],
       sliceEnd: 2,
       bottom: false,
-      sortBy: "null",
+      sortBy: null,
       isFilteredImages: false,
       infiniteId: +new Date(),
     };
