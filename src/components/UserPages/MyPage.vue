@@ -1,5 +1,59 @@
 <template>
   <b-container fluid>
+    <b-row class="mb-3">
+      <b-col cols="1.5">
+        <b-form-select
+          class="border border-primary"
+          name="sortBy"
+          id="select"
+          @change="sortImages"
+          v-model="sortBy"
+        >
+          <b-form-select-option value="null"
+            >select an option to sort images</b-form-select-option
+          >
+          <b-form-select-option value="dateAscending"
+            >Creation date (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="dateDescending"
+            >Creation date (descending)</b-form-select-option
+          >
+          <b-form-select-option value="upvoteAscending"
+            >Upvotes (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="upvoteDescending"
+            >Upvotes (descending)</b-form-select-option
+          >
+          <b-form-select-option value="downvoteAscending"
+            >Downvotes (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="downvoteDescending"
+            >Downvotes (descending)</b-form-select-option
+          >
+          <b-form-select-option value="onlyImages"
+            >Only Images</b-form-select-option
+          >
+          <b-form-select-option value="onlyVideos"
+            >Only Videos</b-form-select-option
+          >
+          <b-form-select-option value="onlyGifs"
+            >Only gifs</b-form-select-option
+          >
+        </b-form-select>
+      </b-col>
+      <b-col cols="1" v-if="isFilteredImages">
+        <b-button
+          type="button"
+          variant="link"
+          @click="removeFilter"
+          v-b-tooltip.hover.right="'Click here to remove filter'"
+        >
+          <b-icon icon="x-square" scale="1.5" variant="danger"></b-icon
+        ></b-button>
+      </b-col>
+
+     
+    </b-row>
     <b-row
       cols-sm="12"
       class="mb-4"
@@ -120,6 +174,8 @@ export default {
       userMemes: [],
       sliceEnd: 2,
       bottom: false,
+      sortBy: "null",
+      isFilteredImages: false,
     };
   },
   methods: {
