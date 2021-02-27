@@ -6,7 +6,7 @@
           class="border border-primary"
           name="sortBy"
           id="select"
-          @change="resetImages"
+          @change="resetImages(true)"
           v-model="sortBy"
         >
           <b-form-select-option value="null"
@@ -62,7 +62,8 @@
             id="search-meme"
             v-model="searchQuery"
             placeholder="search meme.."
-            v-on:input="searchResult"
+           @change="resetImages(false)"
+            :disabled="isLoading"
           ></b-form-input>
         </b-form-group>
       </b-col>
@@ -234,6 +235,7 @@ export default {
       isFilteredImages: false,
       infiniteId: +new Date(),
       searchQuery: null,
+      isLoading: false,
     };
   },
   methods: {
@@ -279,22 +281,26 @@ export default {
       return this.allImages.length > 0;
     },
     async loadMoreImages($state) {
+      this.isLoading = true;
       let dbImagesAvailable = true;
       if (!this.allImages.length) {
         dbImagesAvailable = await this.getImages();
       }
       this.sliceEnd = this.displayedImages.length + 2;
       let allImagesSorted = this.sortImages();
+      allImagesSorted = this.searchResult(allImagesSorted);
       let imagesToAdd = allImagesSorted.slice(
         this.displayedImages.length,
         this.sliceEnd
       );
       if (!dbImagesAvailable || !imagesToAdd.length) {
+        this.isLoading = false;
         $state.complete();
         return; //No more images to show
       }
       setTimeout(async () => {
         await this.updateDisplayedImages(imagesToAdd);
+        this.isLoading = false;
         $state.loaded();
       }, 2000);
     },
@@ -335,10 +341,10 @@ export default {
       var downvotesCount = downvotes.length;
       this.displayedImages[index].downvoteCount = downvotesCount;
     },
-    resetImages() {
+    resetImages(isFiltering) {
       this.infiniteId += 1;
       this.displayedImages = [];
-      this.isFilteredImages = true;
+      this.isFilteredImages = isFiltering;
     },
     sortImages() {
       let allImagesSorted = this.allImages.sort((a, b) => {
@@ -381,16 +387,15 @@ export default {
       this.isFilteredImages = false;
       this.sortBy = null;
     },
-    searchResult() {
+    searchResult(allImagesSorted) {
       if (this.searchQuery) {
-        this.displayedImages = this.allImages.filter((image) => {
+        allImagesSorted = allImagesSorted.filter((image) => {
           return image.title
             .toLowerCase()
             .includes(this.searchQuery.toLowerCase());
         });
-      } else {
-        this.getImages();
-      }
+      } 
+      return allImagesSorted;
     },
     async show_random_meme() {
       let result = await getRandomMeme();

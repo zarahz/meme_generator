@@ -1,15 +1,15 @@
 <template>
   <b-container class="justify-content-md-center" fluid>
-    <div v-if="templateImage">
-      <b-row align-h="center" class="mb-3">
-        <b-form-input
-          v-model="title"
-          type="text"
-          placeholder="Title..."
-          class="w-50"
-        />
-      </b-row>
-      <b-row align-h="center" class="mb-3">
+    <b-row align-h="center" class="mb-3">
+      <b-form-input
+        v-model="title"
+        type="text"
+        placeholder="Title..."
+        class="w-50"
+      />
+    </b-row>
+    <b-row align-h="center" class="mb-3">
+      <b-col cols="10">
         <canvas
           class="myCanvas"
           ref="can"
@@ -17,100 +17,26 @@
           :width="canvasWidth"
           :height="canvasHeight"
         ></canvas>
-      </b-row>
-      <b-row align-h="center" class="mb-3">
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="addTextNormal"
+      </b-col>
+      <b-col class="mb-2" cols="2">
+        <b-button variant="outline-primary" v-on:click="addTextNormal"
           >Add normal caption</b-button
         >
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="addTextItalic"
+        <b-button variant="outline-primary" v-on:click="addTextItalic"
           >Add italic caption</b-button
         >
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="addTextBold"
+        <b-button variant="outline-primary" v-on:click="addTextBold"
           >Add bold caption</b-button
         >
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="unselect"
+        <b-button variant="outline-primary" v-on:click="unselect"
           >Unselect</b-button
         >
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="switchDrawingMode"
+        <b-button variant="outline-primary" v-on:click="switchDrawingMode"
           >Drawing Mode toggle</b-button
         >
-        <b-button
-          size="sm"
-          variant="danger"
-          class="my-2 my-sm-0 mr-2"
-          v-on:click="deleteSelected"
+        <b-button variant="danger" v-on:click="deleteSelected"
           >Delete selected</b-button
         >
-      </b-row>
-
-      <b-row align-h="center" class="mb-1">
-        <b-form-group>
-          <b-form-radio-group
-            id="visibility-radio-buttons"
-            v-model="visibility"
-            :options="visibilityOptions"
-          >
-          </b-form-radio-group>
-        </b-form-group>
-      </b-row>
-      <b-row align-h="center" class="mb-3">
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          class="my-2 my-sm-0 mr-2"
-          :disabled="isLoading"
-          v-on:click="savePngToDisk"
-          >Save PNG to Disk</b-button
-        >
-        <b-button
-          size="sm"
-          variant="primary"
-          class="my-2 my-sm-0 mr-2"
-          :disabled="isLoading"
-          v-on:click="savePngOnServer"
-          >Submit Image</b-button
-        >
-        <b-button
-          size="sm"
-          variant="primary"
-          class="my-2 my-sm-0 mr-2"
-          :disabled="isLoading"
-          v-on:click="saveVideoOnServer"
-          >Submit Video</b-button
-        >
-        <b-button
-          size="sm"
-          variant="primary"
-          class="my-2 my-sm-0 mr-2"
-          :disabled="isLoading"
-          v-on:click="saveGifOnServer"
-          >Submit Gif</b-button
-        >
-      </b-row>
-      <b-row align-h="center" class="mb-3">
-        <div v-if="isLoading" class="loader"></div>
-      </b-row>
-      <b-row align-h="center" class="mb-3">
         <b-form-input
           v-model="canvasWidth"
           @input="updateCanvasSize"
@@ -126,8 +52,56 @@
           class="w-25"
           type="number"
         />
-      </b-row>
-    </div>
+      </b-col>
+    </b-row>
+
+    <b-row align-h="center" class="mb-1">
+      <b-form-group>
+        <b-form-radio-group
+          id="visibility-radio-buttons"
+          v-model="visibility"
+          :options="visibilityOptions"
+        >
+        </b-form-radio-group>
+      </b-form-group>
+    </b-row>
+    <b-row align-h="center" class="mb-3">
+      <b-button
+        size="sm"
+        variant="outline-primary"
+        class="my-2 my-sm-0 mr-2"
+        :disabled="isLoading"
+        v-on:click="savePngToDisk"
+        >Save PNG to Disk</b-button
+      >
+      <b-button
+        size="sm"
+        variant="primary"
+        class="my-2 my-sm-0 mr-2"
+        :disabled="isLoading"
+        v-on:click="savePngOnServer"
+        >Submit Image</b-button
+      >
+      <b-button
+        size="sm"
+        variant="primary"
+        class="my-2 my-sm-0 mr-2"
+        :disabled="isLoading"
+        v-on:click="saveVideoOnServer"
+        >Submit Video</b-button
+      >
+      <b-button
+        size="sm"
+        variant="primary"
+        class="my-2 my-sm-0 mr-2"
+        :disabled="isLoading"
+        v-on:click="saveGifOnServer"
+        >Submit Gif</b-button
+      >
+    </b-row>
+    <b-row align-h="center" class="mb-3">
+      <div v-if="isLoading" class="loader"></div>
+    </b-row>
     <b-row class="mb-3" align-h="center">
       <div>
         <customTemplate v-on:newTemplateSelected="addTemplate" />
