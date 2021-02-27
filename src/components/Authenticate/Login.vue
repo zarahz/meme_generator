@@ -16,7 +16,6 @@
             v-on:input="resetError()"
           />
         </b-col>
-        <b-col cols="2"></b-col>
       </b-row>
 
       <b-row align-h="center" class="form-group">
@@ -31,9 +30,6 @@
             type="password"
             v-on:input="resetError()"
           />
-        </b-col>
-        <b-col cols="2">
-          <router-link to="/forgot-password">Forgot password ?</router-link>
         </b-col>
       </b-row>
 

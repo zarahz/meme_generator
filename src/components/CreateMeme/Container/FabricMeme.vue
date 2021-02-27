@@ -115,17 +115,15 @@
           v-model="canvasWidth"
           @input="updateCanvasSize"
           number
-          style="min-width: 30px"
-          class="w-20"
+          class="w-25"
           type="number"
         />
-        x
+        <span class="m-2">x</span>
         <b-form-input
           v-model="canvasHeight"
           @input="updateCanvasSize"
           number
-          style="min-width: 30px"
-          class="w-20"
+          class="w-25"
           type="number"
         />
       </b-row>
@@ -140,17 +138,17 @@
 </template>
 
 <script>
-import Templates from "../CreateMeme/Templates.vue";
-import CustomTemplate from "../CreateMeme/CustomTemplate.vue";
+import Templates from "../Templates.vue";
+import CustomTemplate from "../CustomTemplate.vue";
 import { fabric } from "fabric";
 import gifjs from "gif.js";
 // import ccapture from "ccapture.js";
-import { fabricGif } from "./fabricGif";
-import { workerString } from "./gif.worker.js";
-import router from "../../router/index.js";
+import { fabricGif } from "../fabricUtils/fabricGif";
+import { workerString } from "../fabricUtils/gif.worker";
+import router from "../../../router/index.js";
 import { saveAs } from "file-saver";
-import { backendURL } from "../../config";
-import { upload } from "../../api";
+import { backendURL } from "../../../config";
+import { upload } from "../../../api";
 
 export default {
   name: "FabricMeme",

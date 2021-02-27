@@ -41,37 +41,47 @@
       </b-row>
 
       <b-row align-h="center" class="mb-3">
-        <b-col>
-          <label>Size:</label>
+        <b-col sm="3" lg="3" md="4">
+          <b-row>
+            <b-form-group
+              label-cols="5"
+              content-cols="4"
+              label="Size"
+              class="w-50"
+            >
+              <b-form-input
+                v-model.number="fontSize"
+                number
+                style="min-width: 60px"
+                class="w-50"
+                type="number"
+              />
+            </b-form-group>
+          </b-row>
+          <!-- <label>Size:</label> -->
         </b-col>
-        <b-col>
-          <b-form-input
-            v-model.number="fontSize"
-            number
-            style="min-width: 60px"
-            class="w-50"
-            type="number"
-          />
+        <b-col sm="3" lg="3" md="4">
+          <b-row>
+            <label class="mr-2">Pick a color:</label>
+            <v-input-colorpicker v-model="fontColor" />
+          </b-row>
         </b-col>
-        <b-col>
-          <label>Pick a color:</label>
-          <v-input-colorpicker v-model="fontColor" />
-        </b-col>
-
-        <b-col>
+        <b-col sm="3" lg="3" md="4">
           <b-button-group>
-            <b-button title="isBold" v-on:click="setUnsetBold()">
+            <b-button
+              :variant="this.isBold ? 'secondary' : 'outline-secondary'"
+              title="isBold"
+              v-on:click="setUnsetBold()"
+            >
               <b-icon icon="type-bold" aria-hidden="true"></b-icon>
             </b-button>
-            <b-button title="Italic" v-on:click="setUnsetItalic()">
+            <b-button
+              :variant="this.isItalic ? 'secondary' : 'outline-secondary'"
+              title="Italic"
+              v-on:click="setUnsetItalic()"
+            >
               <b-icon icon="type-italic" aria-hidden="true"></b-icon>
             </b-button>
-            <!--b-button title="Underline">
-              <b-icon icon="type-underline" aria-hidden="true"></b-icon>
-            </b-button>
-            <b-button title="Strikethrough">
-              <b-icon icon="type-strikethrough" aria-hidden="true"></b-icon>
-            </b-button-->
           </b-button-group>
         </b-col>
       </b-row>
@@ -201,17 +211,17 @@
 
 <script>
 import { saveAs } from "file-saver";
-import { upload, saveDraft, renderSimpleMeme } from "../../api";
+import { upload, saveDraft, renderSimpleMeme } from "../../../api";
 import FormData from "form-data";
-import router from "../../router/index.js";
+import router from "../../../router/index.js";
 
-import Templates from "./Templates.vue";
-import CustomTemplate from "./CustomTemplate.vue";
-import CustomCanvas from "./CustomCanvas.vue";
-import DrawingSettings from "./DrawingSettings";
-import DraftModal from "./Modals/DraftModal";
-import TemplatesModal from "./Modals/TemplatesModal";
-import Caption from "./Caption";
+import Templates from "../Templates.vue";
+import CustomTemplate from "../CustomTemplate.vue";
+import CustomCanvas from "../CustomCanvas.vue";
+import DrawingSettings from "../DrawingSettings";
+import DraftModal from "../Modals/DraftModal";
+import TemplatesModal from "../Modals/TemplatesModal";
+import Caption from "../Caption";
 import InputColorPicker from "vue-native-color-picker";
 
 export default {

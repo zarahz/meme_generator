@@ -1,6 +1,5 @@
 <template>
   <b-row align-h="center" class="mb-3" fluid>
-    <hr />
     <b-col>
       <!-- sm="12" lg="4" md="6" -->
       <!-- <b-form-group label-cols-lg="4" content-cols-lg="7" :label="label"> -->

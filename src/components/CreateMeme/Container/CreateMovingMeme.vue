@@ -133,9 +133,9 @@
 </template>
 
 <script>
-import Caption from "../CreateMeme/Caption";
-import router from "../../router/index.js";
-import { upload } from "../../api";
+import Caption from "../Caption";
+import router from "../../../router/index.js";
+import { upload } from "../../../api";
 
 export default {
   name: "CreateMovingMeme",

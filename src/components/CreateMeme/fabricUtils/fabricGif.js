@@ -1,5 +1,5 @@
 import { fabric } from "fabric";
-import { gifToSprite } from "./gifToSprite";
+import { gifToSprite } from "../../CreateMeme/fabricUtils/gifToSprite";
 
 const [PLAY, PAUSE, STOP] = [0, 1, 2];
 

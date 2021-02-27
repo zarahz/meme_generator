@@ -2,16 +2,15 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
-import CreateMeme from "../components/CreateMeme/Container.vue";
-import FabricMeme from "../components/Fabric/FabricMeme.vue";
+import CreateMeme from "../components/CreateMeme/Container/CanvasCreateMeme.vue";
+import FabricMeme from "../components/CreateMeme/Container/FabricMeme.vue";
 import MemePage from "../components/Overview/MemePage.vue";
 import OverviewPage from "../components/Overview/OverviewPage.vue";
 import Login from "../components/Authenticate/Login.vue";
 import Registration from "../components/Authenticate/Registration.vue";
-import ForgotPassword from "../components/Authenticate/ForgotPassword.vue";
-import MyPage from "../components/UserPages/MyPage";
+import MyPage from "../components/Overview/MyPage";
 
-import CreateMovingMeme from "../components/CreateMovingMeme/Container.vue";
+import CreateMovingMeme from "../components/CreateMeme/Container/CreateMovingMeme.vue";
 
 const routes = [
   {
@@ -58,11 +57,6 @@ const routes = [
     path: "/registration",
     name: "Registration",
     component: Registration,
-  },
-  {
-    path: "/forgot-password",
-    name: "ForgotPassword",
-    component: ForgotPassword,
   },
 ];
 export default new VueRouter({ mode: "history", routes: routes });
