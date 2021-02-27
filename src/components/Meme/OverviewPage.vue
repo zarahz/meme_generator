@@ -30,6 +30,12 @@
           <b-form-select-option value="downvoteDescending"
             >Downvotes (descending)</b-form-select-option
           >
+          <b-form-select-option value="viewsAscending"
+            >views (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="viewsDescending"
+            >views (descending)</b-form-select-option
+          >
           <b-form-select-option value="onlyImages"
             >Only Images</b-form-select-option
           >
@@ -75,6 +81,23 @@
           v-on:click="showRandomMeme"
           >I'm feeling lucky!</b-button
         >
+      </b-col>
+      <b-col>
+        <b-form-group
+          label="Get zip with:"
+          label-for="zip-input"
+          label-cols-sm="4"
+          label-align-sm="right"
+        >
+          <b-form-input
+            id="zip-input"
+            v-model="zipQuery"
+            placeholder="search term"
+          ></b-form-input>
+          <b-button size="sm" variant="outline-primary" v-on:click="zipResult"
+            ><b-icon icon="arrow-right" aria-hidden="true"></b-icon
+          ></b-button>
+        </b-form-group>
       </b-col>
     </b-row>
 
@@ -122,9 +145,11 @@ import {
   getRandomMeme,
   updateMultipleTemplatesViewedAfterCreationStats,
   updateMultipleMemesViewedStats,
+  getZip,
 } from "../../api";
 import Meme from "./Meme";
 import MemeButtonBar from "./MemeButtonBar";
+import { saveAs } from "file-saver";
 
 export default {
   name: "OverviewPage",
@@ -144,6 +169,7 @@ export default {
       searchQuery: null,
       isLoading: false,
       showUserMemesOnly: false,
+      zipQuery: null,
     };
   },
   methods: {
@@ -236,6 +262,10 @@ export default {
           return a.downvoteCount - b.downvoteCount;
         } else if (this.sortBy == "downvoteDescending") {
           return b.downvoteCount - a.downvoteCount;
+        } else if (this.sortBy == "viewsAscending") {
+          return a.memeStats.viewed.length - b.memeStats.viewed.length;
+        } else if (this.sortBy == "viewsDescending") {
+          return b.memeStats.viewed.length - a.memeStats.viewed.length;
         }
       });
 
@@ -272,6 +302,14 @@ export default {
         });
       }
       return allImagesSorted;
+    },
+    async zipResult() {
+      if (this.zipQuery) {
+        const params = { searchterm: this.zipQuery };
+        let result = await getZip(params);
+        console.log(result.body.path);
+        saveAs(result.body.path, "memes.zip");
+      }
     },
     async showRandomMeme() {
       let result = await getRandomMeme();

@@ -9,7 +9,7 @@
       />
     </b-row>
     <b-row align-h="center" class="mb-3">
-      <b-col cols="10">
+      <b-col>
         <canvas
           class="myCanvas"
           ref="can"
@@ -18,30 +18,84 @@
           :height="canvasHeight"
         ></canvas>
       </b-col>
-      <b-col class="mb-2" cols="2">
-        <b-button variant="outline-primary" v-on:click="addTextNormal"
+      <b-col>
+        <b-button
+          class="mb-2"
+          variant="outline-primary"
+          v-on:click="addTextNormal"
           >Add normal caption</b-button
         >
-        <b-button variant="outline-primary" v-on:click="addTextItalic"
+        <b-button
+          class="mb-2"
+          variant="outline-primary"
+          v-on:click="addTextItalic"
           >Add italic caption</b-button
         >
-        <b-button variant="outline-primary" v-on:click="addTextBold"
+        <b-button
+          class="mb-2"
+          variant="outline-primary"
+          v-on:click="addTextBold"
           >Add bold caption</b-button
         >
-        <b-button variant="outline-primary" v-on:click="unselect"
+        <b-form-input
+          v-model="textColor"
+          @change="updateTextColor"
+          class="w-25 mr-2 mb-2"
+          type="color"
+        ></b-form-input>
+
+        <b-button class="mb-2" variant="outline-primary" v-on:click="unselect"
           >Unselect</b-button
         >
-        <b-button variant="outline-primary" v-on:click="switchDrawingMode"
-          >Drawing Mode toggle</b-button
+
+        <b-button class="mb-2" variant="outline-primary" v-on:click="toFront"
+          >To Front</b-button
         >
-        <b-button variant="danger" v-on:click="deleteSelected"
+        <b-button class="mb-2" variant="outline-primary" v-on:click="toBack"
+          >To Back</b-button
+        >
+
+        <b-button
+          class="mb-2"
+          variant="outline-primary"
+          v-on:click="useAsBackground"
+          >As background</b-button
+        >
+
+        <b-form-checkbox
+          v-model="drawingMode"
+          name="drawingMode"
+          switch
+          @change="updateDrawingMode"
+        >
+          Draw Mode
+        </b-form-checkbox>
+
+        <b-row :style="{ visibility: drawingMode ? 'visible' : 'hidden' }">
+          <b-input-group @change="updateDrawingMode" class="w-50 mr-2">
+            <b-form-input
+              v-model="brushSize"
+              type="range"
+              min="1"
+              max="32"
+              @change="updateDrawingMode"
+            ></b-form-input>
+          </b-input-group>
+          <b-form-input
+            v-model="color"
+            @change="updateDrawingMode"
+            class="w-25 mr-2"
+            type="color"
+          ></b-form-input>
+        </b-row>
+        <b-button class="mb-2" variant="danger" v-on:click="deleteSelected"
           >Delete selected</b-button
         >
         <b-form-input
           v-model="canvasWidth"
           @input="updateCanvasSize"
           number
-          class="w-25"
+          class="w-15"
           type="number"
         />
         <span class="m-2">x</span>
@@ -49,7 +103,7 @@
           v-model="canvasHeight"
           @input="updateCanvasSize"
           number
-          class="w-25"
+          class="w-15"
           type="number"
         />
       </b-col>
@@ -157,14 +211,18 @@ export default {
       canvasHeight: 500,
       title: "",
       isLoading: false,
+      textColor: "#808080",
+      drawingMode: false,
+      brushSize: 1,
+      color: "#808080",
       visibilityOptions: [
-        { text: "Public (list the finished meme publicly)", value: "public" },
+        { text: "Public", value: "public" },
         {
-          text: "Unlisted (only people with the link can see the meme)",
+          text: "Unlisted",
           value: "unlisted",
         },
         {
-          text: "Private (only you can see the finished meme)",
+          text: "Private",
           value: "private",
         },
       ],
@@ -182,7 +240,7 @@ export default {
       });
     },
     unselect() {
-      this.canvas.discardActiveObject(25);
+      this.canvas.discardActiveObject();
       this.canvas.renderAll();
     },
     async saveGifOnServer() {
@@ -273,7 +331,6 @@ export default {
       this.canvas.add(
         new fabric.IText("new caption", {
           fontFamily: "Impact",
-
           left: 100,
           top: 100,
         })
@@ -296,26 +353,46 @@ export default {
           fontStyle: "bold",
           left: 100,
           top: 100,
+          fill: this.textColor,
         })
       );
     },
-    undo() {
-      var objects = this.canvas.getObjects(); // get all objects on canvas (rect will be first and only)
-
-      if (objects.length > 0) {
-        this.canvas.remove(objects[objects.length - 1]); // remove previously-added fabric.Rect
-      }
+    updateTextColor() {
+      this.canvas.getActiveObject().set("fill", this.textColor);
+      this.canvas.renderAll();
     },
     deleteSelected() {
       this.canvas.remove(this.canvas.getActiveObject());
+      this.canvas
+        .getActiveObjects()
+        .forEach((element) => this.canvas.remove(element));
+      this.unselect();
     },
     updateCanvasSize() {
-      this.canvas.setHeight(this.canvasHeight);
       this.canvas.setWidth(this.canvasWidth);
-      // this.canvas.renderAll();
+      this.canvas.setHeight(this.canvasHeight);
     },
-    switchDrawingMode() {
-      this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
+    toFront() {
+      this.canvas.bringToFront(this.canvas.getActiveObject());
+    },
+    toBack() {
+      this.canvas.sendToBack(this.canvas.getActiveObject());
+    },
+    async useAsBackground() {
+      var activeObject = this.canvas.getActiveObject();
+      this.canvasWidth = activeObject.width;
+      this.canvasHeight = activeObject.height;
+      this.updateCanvasSize();
+      activeObject.set({ left: 0, top: 0, scaleX: 1.0, scaleY: 1.0, angle: 0 });
+      this.toBack();
+      // This is a workaround. The canvas is white until an interaction happens without this.
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      this.unselect();
+    },
+    updateDrawingMode() {
+      this.canvas.isDrawingMode = this.drawingMode;
+      this.canvas.freeDrawingBrush.width = this.brushSize;
+      this.canvas.freeDrawingBrush.color = this.color;
     },
     async addGif(url) {
       const canvas = this.canvas;

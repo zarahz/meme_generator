@@ -7,7 +7,7 @@
           class="m-1"
           :style="!enableCommenting && 'font-size: small'"
           :disabled="!$store.getters.isLoggedIn"
-          @click="upvote(true)"
+          @click="vote(true)"
           :title="!$store.getters.isLoggedIn && 'Log in to like this meme!'"
         >
           <b-icon icon="hand-thumbs-up" aria-hidden="true" />
@@ -18,7 +18,7 @@
           class="m-1"
           :style="!enableCommenting && 'font-size: small'"
           :disabled="!$store.getters.isLoggedIn"
-          @click="upvote(false)"
+          @click="vote(false)"
           :title="!$store.getters.isLoggedIn && 'Log in to dislike this meme!'"
         >
           <b-icon icon="hand-thumbs-down" aria-hidden="true" />
@@ -29,6 +29,7 @@
           class="m-1"
           :style="!enableCommenting && 'font-size: small'"
           :disabled="!$store.getters.isLoggedIn"
+          @click="navigateToMemePage"
           :title="!$store.getters.isLoggedIn && 'Log in to comment!'"
         >
           <b-icon icon="chat-left" aria-hidden="true" />
@@ -203,7 +204,7 @@ export default {
         this.loadComments();
       }
     },
-    async upvote(userUpvoted) {
+    async vote(userUpvoted) {
       let result = null;
       if (userUpvoted) {
         result = await postUpvote({ imageId: this.image._id });
@@ -212,6 +213,15 @@ export default {
       }
       if (result.status === 200) {
         this.loadVotes();
+      }
+    },
+    navigateToMemePage() {
+      if (!this.enableCommenting) {
+        this.$router
+          .push({ name: "MemePage", params: { id: this.image._id } })
+          .catch((err) => {
+            err;
+          });
       }
     },
     downloadImage() {
