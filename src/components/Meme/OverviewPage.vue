@@ -30,6 +30,12 @@
           <b-form-select-option value="downvoteDescending"
             >Downvotes (descending)</b-form-select-option
           >
+          <b-form-select-option value="viewsAscending"
+            >views (ascending)</b-form-select-option
+          >
+          <b-form-select-option value="viewsDescending"
+            >views (descending)</b-form-select-option
+          >
           <b-form-select-option value="onlyImages"
             >Only Images</b-form-select-option
           >
@@ -62,7 +68,7 @@
             id="search-meme"
             v-model="searchQuery"
             placeholder="search meme.."
-           @change="resetImages(false)"
+            @change="resetImages(false)"
             :disabled="isLoading"
           ></b-form-input>
         </b-form-group>
@@ -281,6 +287,7 @@ export default {
       return this.allImages.length > 0;
     },
     async loadMoreImages($state) {
+      console.log(this.displayedImages);
       this.isLoading = true;
       let dbImagesAvailable = true;
       if (!this.allImages.length) {
@@ -360,6 +367,10 @@ export default {
           return a.downvoteCount - b.downvoteCount;
         } else if (this.sortBy == "downvoteDescending") {
           return b.downvoteCount - a.downvoteCount;
+        } else if (this.sortBy == "viewsAscending") {
+          return a.memeStats.viewed.length - b.memeStats.viewed.length;
+        } else if (this.sortBy == "viewsDescending") {
+          return b.memeStats.viewed.length - a.memeStats.viewed.length;
         }
       });
 
@@ -394,7 +405,7 @@ export default {
             .toLowerCase()
             .includes(this.searchQuery.toLowerCase());
         });
-      } 
+      }
       return allImagesSorted;
     },
     async show_random_meme() {
