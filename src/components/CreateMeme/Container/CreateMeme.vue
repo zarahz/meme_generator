@@ -363,6 +363,7 @@ export default {
     },
     async loadDraftIntoCanvas(draft) {
       this.captions = draft.captions;
+      this.title = draft.title;
       this.img = draft.memeSource;
       this.$refs.meme.showTexts();
     },

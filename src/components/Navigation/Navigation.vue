@@ -24,7 +24,14 @@
             router
             to="/create-meme"
             :active="$route.name == 'CreateMeme'"
-            >Meme Canvas</b-nav-item
+            >Create Meme</b-nav-item
+          >
+          <b-nav-item
+            href="#"
+            router
+            to="/create-moving-meme"
+            :active="$route.name == 'CreateMovingMeme'"
+            >Create Video Meme</b-nav-item
           >
           <b-nav-item
             href="#"
@@ -32,13 +39,6 @@
             to="/fabric-meme"
             :active="$route.name == 'FabricMeme'"
             >WYSIWYG Editor</b-nav-item
-          >
-          <b-nav-item
-            href="#"
-            router
-            to="/create-moving-meme"
-            :active="$route.name == 'CreateMovingMeme'"
-            >Moving Meme Canvas</b-nav-item
           >
         </b-navbar-nav>
 

@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
-import CreateMeme from "../components/CreateMeme/Container/CanvasCreateMeme.vue";
+import CreateMeme from "../components/CreateMeme/Container/CreateMeme.vue";
 import FabricMeme from "../components/CreateMeme/Container/FabricMeme.vue";
 import MemePage from "../components/Meme/MemePage.vue";
 import OverviewPage from "../components/Meme/OverviewPage.vue";

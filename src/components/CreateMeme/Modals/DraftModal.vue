@@ -17,14 +17,20 @@
           <b-row>
             <b-col>
               <b-row>
-                <b-col> Creation Date: </b-col>
+                <b-col> Title: </b-col>
                 <b-col>
-                  {{ new Date(draft.creationDate).toDateString() }}
+                  {{ draft.title }}
                 </b-col>
               </b-row>
               <b-row v-for="caption in draft.captions" :key="caption._id">
                 <b-col> {{ caption.label }}: </b-col>
                 <b-col> {{ caption.text }} </b-col>
+              </b-row>
+              <b-row>
+                <b-col> Creation Date: </b-col>
+                <b-col>
+                  {{ new Date(draft.creationDate).toDateString() }}
+                </b-col>
               </b-row>
             </b-col>
             <b-col cols="4">
