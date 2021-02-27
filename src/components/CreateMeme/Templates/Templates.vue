@@ -82,9 +82,9 @@ import {
   getServerMemes,
   updateMultipleTemplatesViewedStats,
   updateTemplateChosenStats,
-} from "../../api";
+} from "../../../api";
 
-import Stats from "../Stats/Stats";
+import Stats from "./Stats";
 
 const MAX_DISPLAYED_TEMPLATES = 10;
 

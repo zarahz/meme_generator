@@ -165,7 +165,7 @@ import {
 } from "vue-socialmedia-share";
 
 import router from "../../router/index.js";
-import Meme from "../Overview/Meme";
+import Meme from "./Meme";
 import { getFrontendMemeURL } from "../../helper";
 import {
   getUserMemes,

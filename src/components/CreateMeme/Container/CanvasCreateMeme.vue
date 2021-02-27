@@ -215,8 +215,8 @@ import { upload, saveDraft, renderSimpleMeme } from "../../../api";
 import FormData from "form-data";
 import router from "../../../router/index.js";
 
-import Templates from "../Templates.vue";
-import CustomTemplate from "../CustomTemplate.vue";
+import Templates from "../Templates/Templates";
+import CustomTemplate from "../Templates/CustomTemplate";
 import CustomCanvas from "../CustomCanvas.vue";
 import DrawingSettings from "../DrawingSettings";
 import DraftModal from "../Modals/DraftModal";

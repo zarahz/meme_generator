@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import Templates from "../Templates.vue";
+import Templates from "../Templates/Templates.vue";
 export default {
   components: { Templates },
   name: "TemplatesModal",

@@ -174,7 +174,7 @@ import {
 } from "../../api";
 import { getBackendMemeURL, getFrontendMemeURL } from "../../helper";
 import Meme from "./Meme";
-import MemeStatistics from "./MemeStatistics.vue";
+import MemeStatistics from "./Stats/Stats";
 
 export default {
   name: "MemePage",

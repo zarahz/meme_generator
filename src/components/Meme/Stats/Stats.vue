@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Chart from "../Stats/Chart";
+import Chart from "./Chart";
 export default {
   name: "MemeStatistics",
   components: {

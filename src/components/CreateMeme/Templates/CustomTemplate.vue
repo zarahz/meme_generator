@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { getWebpageScreenshot } from "../../api";
+import { getWebpageScreenshot } from "../../../api";
 
 export default {
   name: "Templates",

@@ -138,8 +138,8 @@
 </template>
 
 <script>
-import Templates from "../Templates.vue";
-import CustomTemplate from "../CustomTemplate.vue";
+import Templates from "../Templates/Templates";
+import CustomTemplate from "../Templates/CustomTemplate";
 import { fabric } from "fabric";
 import gifjs from "gif.js";
 // import ccapture from "ccapture.js";
