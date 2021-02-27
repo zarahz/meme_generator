@@ -64,6 +64,8 @@ export const renderSimpleMeme = (meme) => post("render-simple-meme", JSON.string
 
 export const getWebpageScreenshot = (params) => get("screenshot_webpage?" + new URLSearchParams(params))
 
+export const getZip = (params) => get("zipfile?" + new URLSearchParams(params));
+
 /** -------------- Comments, Up- & Downvotes ---------- */
 export const postComment = (comment) => post("post-comment", JSON.stringify(comment));
 
@@ -84,10 +86,4 @@ export const updateMultipleTemplatesViewedAfterCreationStats = (templates) => po
 
 export const updateTemplateChosenStats = (template) => post("stats/templates/chosen", JSON.stringify(template));
 
-
 export const updateMultipleMemesViewedStats = (memes) => post("stats/memes/viewed", JSON.stringify(memes));
-
-
-/** -------------- Server processing (zip, render, etc.) ---------- */
-
-export const getZip = (params) => get("zipfile?" + new URLSearchParams(params));
