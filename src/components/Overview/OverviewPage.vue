@@ -395,7 +395,6 @@ export default {
             .includes(this.searchQuery.toLowerCase());
         });
       } 
-      console.log(allImagesSorted)
       return allImagesSorted;
     },
     async show_random_meme() {
