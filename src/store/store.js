@@ -4,6 +4,8 @@ import Vue from 'vue'
 import * as cookie from "js-cookie";
 import { fetchUser, loginUser } from '../api';
 
+import router from '../router'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -30,6 +32,7 @@ export default new Vuex.Store({
     logout(context) {
       cookie.remove('token');
       context.commit('setUser', null);
+      router.push("/")
     },
     async tryLoadUser(context) {
       const token = cookie.get("token");
@@ -48,10 +51,10 @@ export default new Vuex.Store({
       }
     },
     async login(context, user) {
-      const { body, status } = await loginUser(user);
+      const { error, status } = await loginUser(user);
 
       if (status !== 200) {
-        return body;
+        return { error, status };
       } else {
         return context.dispatch('loadUserData');
       }

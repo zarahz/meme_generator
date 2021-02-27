@@ -82,12 +82,12 @@ export default {
     };
   },
   methods: {
-    async checkUniqueness(fieldname, event) {
-      let uniqueResult = await isUnique(fieldname, event);
-      if (uniqueResult.status !== 200) {
-        this.$set(this.errors, fieldname, uniqueResult.error);
+    async checkUniqueness(field, value) {
+      let uniqueResult = await isUnique({ field, value });
+      if (uniqueResult.status === 400 || uniqueResult.status === 500) {
+        this.$set(this.errors, field, uniqueResult.error);
       } else {
-        this.$delete(this.errors, fieldname);
+        this.$delete(this.errors, field);
       }
     },
     async register(evt) {

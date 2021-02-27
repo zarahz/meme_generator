@@ -60,11 +60,11 @@
     <b-col sm="6" lg="1" md="6">
       <b-button
         size="sm"
-        class="icon my-2 my-sm-0 mr-2"
+        :class="'icon mr-2' + { hidden: !deleteable }"
         variant="danger"
-        :style="{ visibility: deleteable ? 'show' : 'hidden' }"
         @click="deleteThis"
       >
+        <!-- :style="{ visibility: deleteable ? 'show' : 'hidden' }" -->
         <b-icon icon="trash" />
       </b-button>
     </b-col>
@@ -108,7 +108,6 @@ export default {
           for (let i = event.resultIndex; i < event.results.length; i++) {
             result += event.results[i][0].transcript;
           }
-          console.log(event.results);
           that.updateText(result);
         };
         this.recognition.onaudioend = function () {
@@ -185,5 +184,9 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.hidden {
+  visibility: hidden;
 }
 </style>

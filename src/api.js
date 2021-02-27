@@ -24,7 +24,7 @@ async function executeFetch(path, fetchObj) {
 
     const status = result.status;
     let response = { status }
-    if (status !== 200 && status !== 204) { // error
+    if (status !== 204 && status !== 200) { // error
         let json = await result.json();
         response.error = json.error;
     }
@@ -42,11 +42,13 @@ export const loginUser = (user) => post('login', JSON.stringify(user));
 
 export const registerUser = (user) => post("register", JSON.stringify(user));
 
-export const isUnique = (field, value) => post('is-unique', JSON.stringify({ field, value }));
+export const isUnique = (attribute) => post('is-unique', JSON.stringify(attribute));
 
 
 /**--------- MEMES ---------- */
 export const getMemes = () => get("memes");
+
+export const getMeme = (params) => get("image?" + new URLSearchParams(params));
 
 export const getUserMemes = () => get("user-memes");
 

@@ -62,7 +62,7 @@
             id="search-meme"
             v-model="searchQuery"
             placeholder="search meme.."
-           @change="resetImages(false)"
+            @change="resetImages(false)"
             :disabled="isLoading"
           ></b-form-input>
         </b-form-group>
@@ -72,7 +72,7 @@
           class="float-sm-right"
           size="sm"
           variant="outline-primary"
-          v-on:click="show_random_meme"
+          v-on:click="showRandomMeme"
           >I'm feeling lucky!</b-button
         >
       </b-col>
@@ -81,107 +81,29 @@
     <b-row
       cols-sm="4"
       class="mb-4"
-      v-for="(image, index) in displayedImages"
+      align-h="center"
+      v-for="image in displayedImages"
       v-bind:key="image._id"
     >
-      <b-col />
-      <b-col sm="6">
-        <div>
-          <b-row class="text-large justify-content-md-center">
-            {{ image.title }}
-          </b-row>
-          <b-row align-h="center">
-            <meme
-              class="imageContainer"
-              :meme="image"
-              @openMemeView="openMemeView"
-            />
-          </b-row>
-          <b-row align-h="center" v-if="image.memeStats">
-            <b-icon icon="eye" class="m-1" />
-            {{ image.memeStats.viewed.length }}
-          </b-row>
-          <b-row align-h="center">
-            <b-col>
-              <b-button
-                :disabled="!$store.getters.isLoggedIn"
-                variant="outline-success"
-                class="ml-3"
-                @click="submitUpvote(image._id, index)"
-                :title="
-                  !$store.getters.isLoggedIn && 'Please login to like image'
-                "
-              >
-                <b-icon icon="hand-thumbs-up" aria-hidden="true"></b-icon>
-                {{ image.upvoteCount }}</b-button
-              >
-              <b-button
-                :disabled="!$store.getters.isLoggedIn"
-                variant="outline-danger"
-                class="ml-3"
-                @click="submitDownvote(image._id, index)"
-                :title="
-                  !$store.getters.isLoggedIn && 'Please login to dislike image'
-                "
-              >
-                <b-icon icon="hand-thumbs-down" aria-hidden="true"></b-icon>
-                {{ image.downvoteCount }}</b-button
-              >
-              <b-button
-                variant="outline-primary"
-                class="ml-3"
-                @click="openMemeView(image._id)"
-              >
-                <b-icon icon="chat-left" aria-hidden="true"></b-icon>
-                {{ image.commentCount }}</b-button
-              >
-              <!-- @click="openMemeView(image._id)" -->
-
-              <twitter
-                :url="frontendURL(image)"
-                title="Hello from PENG MEMES"
-                scale="3"
-                class="ml-3"
-                style="cursor: pointer"
-              ></twitter>
-
-              <linkedin
-                :url="frontendURL(image)"
-                title="Hello from PENG MEMES"
-                scale="3"
-                class="ml-3"
-                style="cursor: pointer"
-              >
-              </linkedin>
-
-              <whats-app
-                :url="frontendURL(image)"
-                title="Hello from PENG MEMES"
-                scale="3"
-                class="ml-3"
-                style="cursor: pointer"
-              ></whats-app>
-
-              <pinterest
-                :url="frontendURL(image)"
-                scale="3"
-                class="ml-3"
-                style="cursor: pointer"
-              ></pinterest>
-
-              <email
-                :url="frontendURL(image)"
-                subject="Hello from PENG MEMES"
-                scale="3"
-                class="ml-3"
-                style="cursor: pointer"
-              ></email>
-            </b-col>
-          </b-row>
-        </div>
+      <b-col sm="12" md="10" lg="8">
+        <b-row class="text-large justify-content-md-center">
+          {{ image.title }}
+          {{ showUserMemesOnly ? "(" + image.visibility + ")" : "" }}
+        </b-row>
+        <b-row align-h="center">
+          <meme
+            class="imageContainer"
+            :meme="image"
+            @openMemeView="openMemeView"
+          />
+        </b-row>
+        <b-row align-h="center" v-if="image.memeStats">
+          <b-icon icon="eye" class="m-1" />
+          {{ image.memeStats.viewed.length }}
+        </b-row>
+        <meme-button-bar :image="image" />
+        <hr class="w-50" />
       </b-col>
-      <b-col />
-      <hr class="w-50" />
     </b-row>
     <infinite-loading
       :identifier="infiniteId"
@@ -192,56 +114,39 @@
 
 <script>
 import InfiniteLoading from "vue-infinite-loading";
-import {
-  Twitter,
-  Linkedin,
-  Pinterest,
-  WhatsApp,
-  Email,
-} from "vue-socialmedia-share";
 
 import router from "../../router/index.js";
-import { getFrontendMemeURL } from "../../helper";
 import {
   getMemes,
-  postUpvote,
-  postDownvote,
-  getUpvotes,
-  getDownvotes,
+  getUserMemes,
   getRandomMeme,
   updateMultipleTemplatesViewedAfterCreationStats,
   updateMultipleMemesViewedStats,
 } from "../../api";
 import Meme from "./Meme";
+import MemeButtonBar from "./MemeButtonBar";
 
 export default {
   name: "OverviewPage",
   components: {
     InfiniteLoading,
-    Twitter,
-    Linkedin,
-    Pinterest,
-    WhatsApp,
-    Email,
     Meme,
+    MemeButtonBar,
   },
   data() {
     return {
       allImages: [],
       displayedImages: [],
       sliceEnd: 2,
-      bottom: false,
       sortBy: null,
       isFilteredImages: false,
       infiniteId: +new Date(),
       searchQuery: null,
       isLoading: false,
+      showUserMemesOnly: false,
     };
   },
   methods: {
-    frontendURL(image) {
-      return getFrontendMemeURL(image);
-    },
     openMemeView(imageId) {
       router
         .push({ name: "MemePage", params: { id: imageId } })
@@ -267,7 +172,12 @@ export default {
     },
     async getImages() {
       this.displayedImages = [];
-      let result = await getMemes();
+      let result = null;
+      if (this.showUserMemesOnly) {
+        result = await getUserMemes();
+      } else {
+        result = await getMemes();
+      }
       this.allImages = result.body;
 
       //sort images by creation date
@@ -281,6 +191,9 @@ export default {
       return this.allImages.length > 0;
     },
     async loadMoreImages($state) {
+      if (this.$route.name === "MyPage") {
+        this.showUserMemesOnly = true;
+      }
       this.isLoading = true;
       let dbImagesAvailable = true;
       if (!this.allImages.length) {
@@ -302,44 +215,7 @@ export default {
         await this.updateDisplayedImages(imagesToAdd);
         this.isLoading = false;
         $state.loaded();
-      }, 2000);
-    },
-
-    async submitUpvote(currentImageId, index) {
-      var upvote = {
-        imageId: currentImageId,
-      };
-      let result = await postUpvote(upvote);
-      if (result.status === 200) {
-        this.fetchupvotes(currentImageId, index);
-        this.fetchdownvotes(currentImageId, index);
-      }
-    },
-    async submitDownvote(currentImageId, index) {
-      var downvote = {
-        imageId: currentImageId,
-      };
-      let result = await postDownvote(downvote);
-      if (result.status === 200) {
-        // success
-        this.fetchdownvotes(currentImageId, index);
-        this.fetchupvotes(currentImageId, index);
-      }
-    },
-    async fetchupvotes(currentImageId, index) {
-      const params = { imageId: currentImageId };
-      let result = await getUpvotes(params);
-      var upvotes = result.body.dbUpvotes;
-      var upvotesCount = upvotes.length;
-      this.displayedImages[index].upvoteCount = upvotesCount;
-    },
-
-    async fetchdownvotes(currentImageId, index) {
-      const params = { imageId: currentImageId };
-      let result = await getDownvotes(params);
-      var downvotes = result.body.dbDownvotes;
-      var downvotesCount = downvotes.length;
-      this.displayedImages[index].downvoteCount = downvotesCount;
+      }, 1000);
     },
     resetImages(isFiltering) {
       this.infiniteId += 1;
@@ -394,10 +270,10 @@ export default {
             .toLowerCase()
             .includes(this.searchQuery.toLowerCase());
         });
-      } 
+      }
       return allImagesSorted;
     },
-    async show_random_meme() {
+    async showRandomMeme() {
       let result = await getRandomMeme();
       this.openMemeView(result.body._id);
     },
@@ -406,9 +282,6 @@ export default {
 </script>
 
 <style scoped>
-.imageContainer {
-  /* max-width: 50%; */
-}
 .text-large {
   font-size: 180%;
 }

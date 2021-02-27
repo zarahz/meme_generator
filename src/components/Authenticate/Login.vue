@@ -71,7 +71,7 @@ export default {
     },
     async login() {
       const loginResult = await this.$store.dispatch("login", this.user);
-      if (loginResult !== true) {
+      if (loginResult.error) {
         this.error = loginResult.error;
       } else {
         this.$router.push("/");

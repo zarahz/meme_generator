@@ -24,14 +24,18 @@ export default {
   },
   data() {
     return {
-      //     {
-      //     responsive: true,
-      //     maintainAspectRatio: false,
-      //   }
       chartData: {},
       chartOptions: {},
       statsLoaded: false,
     };
+  },
+  watch: {
+    upvoteDates() {
+      this.prepareChartData();
+    },
+    downvoteDates() {
+      this.prepareChartData();
+    },
   },
   methods: {
     createChartDataFromDates(fixedDates, dates) {
@@ -64,20 +68,20 @@ export default {
       });
 
       const datasets = [
-        ["views", this.viewDates, "#427A82", "#69969C"],
-        ["upvotes", this.upvoteDates, "#8ABD5F", "#B9E397"],
-        ["downvotes", this.downvoteDates, "#D4A76A", "#FFDBAA"],
+        ["views", this.viewDates, "#427A82", "rgb(105,150,156,0.7)"],
+        ["upvotes", this.upvoteDates, "#8ABD5F", "rgb(185, 227, 151, 0.7)"],
+        ["downvotes", this.downvoteDates, "#D4A76A", "rgb(255, 219, 170, 0.7)"],
         [
           "sum of memes using this template",
           this.generatedDates,
           "#D48A6A",
-          "#FFC3AA",
+          "rgb(255, 195, 170, 0.7)",
         ],
         [
           "sum of meme views using this template",
           this.viewAfterCreationDates,
           "#C36279",
-          "#EA9CAE",
+          "rgb(234, 156, 174, 0.7)",
         ],
       ].map(([label, data, color, bgColor]) => {
         return {

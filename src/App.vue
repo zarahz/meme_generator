@@ -2,17 +2,14 @@
   <div id="app">
     <div>
       <Navigation />
-      <b-row align-h="center">
+      <b-row class="justify-content-md-center w-100" align-h="center">
         <b-col md="8" cols="12">
-          <router-view />
+          <router-view :key="$route.path" />
         </b-col>
       </b-row>
     </div>
   </div>
 </template> 
-
-
-// https://www.positronx.io/create-login-signup-ui-screens-in-vue-js-with-bootstrap/
 
 <script>
 import Navigation from "./components/Navigation/Navigation.vue";
@@ -42,12 +39,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   margin-top: 90px;
-}
-</style>
-<style scoped>
-.top-bar {
-  width: 100%;
-  background-color: #5cb85c;
-  position: center;
 }
 </style>

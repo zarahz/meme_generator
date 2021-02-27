@@ -63,7 +63,7 @@
         <b-col sm="3" lg="3" md="4">
           <b-row>
             <label class="mr-2">Pick a color:</label>
-            <v-input-colorpicker v-model="fontColor" />
+            <v-input-colorpicker class="border" v-model="fontColor" />
           </b-row>
         </b-col>
         <b-col sm="3" lg="3" md="4">
@@ -134,61 +134,67 @@
           />
         </b-col>
       </b-row>
-
-      <b-row class="justify-content-md-center mb-3">
-        <b-col md="auto">
-          <b-button variant="primary" v-on:click="saveOnServer" class="mr-3">
-            Submit Meme
-          </b-button>
-          <b-button
-            variant="outline-primary"
-            v-on:click="download"
-            class="mr-3"
-          >
-            Download
-          </b-button>
-          <b-button
-            variant="outline-primary"
-            v-on:click="saveDraft"
-            class="mr-3"
-            v-b-tooltip.hover
-            :disabled="!$store.getters.isLoggedIn"
-            :title="
-              !$store.getters.isLoggedIn
-                ? 'Log in to use this function'
-                : 'Drawings on the meme will not be saved in the draft.'
-            "
-          >
-            Save as Draft
-          </b-button>
-          <b-button
-            :disabled="!$store.getters.isLoggedIn"
-            variant="outline-primary"
-            v-on:click="openDraftModal"
-            :title="!$store.getters.isLoggedIn && 'Log in to use this function'"
-          >
-            Load from Drafts
-          </b-button>
-        </b-col>
-        <b-row class="justify-content-md-center mb-1">
-          <b-col md="auto">
-            <b-button
-              variant="outline-primary"
-              v-on:click="renderOnServer"
-              class="mr-3"
-              >Render on server</b-button
-            >
-            <b-form-input
-              v-model="max_render_size"
-              type="text"
-              placeholder="Max file size in KB"
-              class="mr-3"
-            />
-          </b-col>
-        </b-row>
-      </b-row>
     </div>
     <div v-else>Choose your meme image source to start editing!</div>
+
+    <b-row class="justify-content-md-center">
+      <b-col sm="12" md="12" lg="8" class="mb-2">
+        <b-button
+          v-if="this.img"
+          variant="primary"
+          v-on:click="saveOnServer"
+          class="mr-3"
+        >
+          Submit Meme
+        </b-button>
+        <b-button
+          v-if="this.img"
+          variant="outline-primary"
+          v-on:click="download"
+          class="mr-3"
+        >
+          Download
+        </b-button>
+        <b-button
+          v-if="this.img"
+          variant="outline-primary"
+          v-on:click="saveDraft"
+          class="mr-3"
+          v-b-tooltip.hover
+          :disabled="!$store.getters.isLoggedIn"
+          :title="
+            !$store.getters.isLoggedIn
+              ? 'Log in to use this function'
+              : 'Drawings on the meme will not be saved in the draft.'
+          "
+        >
+          Save Draft
+        </b-button>
+        <b-button
+          :disabled="!$store.getters.isLoggedIn"
+          variant="outline-primary"
+          v-on:click="openDraftModal"
+          :title="!$store.getters.isLoggedIn && 'Log in to use this function'"
+        >
+          Load Draft
+        </b-button>
+      </b-col>
+      <b-col sm="12" md="10" lg="4" class="mb-2" v-if="this.img">
+        <b-input-group prepend="max size (KB)">
+          <b-form-input
+            v-model="max_render_size"
+            type="text"
+            placeholder="Max file size in KB"
+          />
+          <b-input-group-append>
+            <b-button variant="outline-primary" v-on:click="renderOnServer">
+              Render on server
+            </b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+    </b-row>
+
     <b-row class="mb-3" align-h="center">
       <div>
         <customTemplate v-on:newTemplateSelected="changeTemplate" />
@@ -261,7 +267,7 @@ export default {
       fontSize: 30,
       isItalic: "",
       isBold: "",
-      fontColor: "#000000",
+      fontColor: "#FFFFFF",
       incItalic: 0,
       incBold: 0,
       font: "px Arial",
@@ -365,7 +371,7 @@ export default {
       this.captions = draft.captions;
       this.title = draft.title;
       this.img = draft.memeSource;
-      this.$refs.meme.showTexts();
+      if (this.$refs.meme) this.$refs.meme.showTexts();
     },
     openDraftModal() {
       this.$refs.draftModal.openModal();
@@ -419,6 +425,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.border {
+  border: 2px solid #6c757d !important;
+  border-radius: 0.25rem;
+}
 </style>
 
 
