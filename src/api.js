@@ -87,3 +87,7 @@ export const updateTemplateChosenStats = (template) => post("stats/templates/cho
 
 export const updateMultipleMemesViewedStats = (memes) => post("stats/memes/viewed", JSON.stringify(memes));
 
+
+/** -------------- Server processing (zip, render, etc.) ---------- */
+
+export const getZip = (params) => get("zipfile?" + new URLSearchParams(params));

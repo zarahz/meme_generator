@@ -82,6 +82,23 @@
           >I'm feeling lucky!</b-button
         >
       </b-col>
+      <b-col>
+        <b-form-group
+          label="Get zip with:"
+          label-for="zip-input"
+          label-cols-sm="4"
+          label-align-sm="right"
+        >
+          <b-form-input
+            id="zip-input"
+            v-model="zipQuery"
+            placeholder="search term"
+          ></b-form-input>
+          <b-button size="sm" variant="outline-primary" v-on:click="zipResult"
+            ><b-icon icon="arrow-right" aria-hidden="true"></b-icon
+          ></b-button>
+        </b-form-group>
+      </b-col>
     </b-row>
 
     <b-row
@@ -217,8 +234,10 @@ import {
   getRandomMeme,
   updateMultipleTemplatesViewedAfterCreationStats,
   updateMultipleMemesViewedStats,
+  getZip,
 } from "../../api";
 import Meme from "./Meme";
+import { saveAs } from "file-saver";
 
 export default {
   name: "OverviewPage",
@@ -242,6 +261,7 @@ export default {
       infiniteId: +new Date(),
       searchQuery: null,
       isLoading: false,
+      zipQuery: null,
     };
   },
   methods: {
@@ -407,6 +427,14 @@ export default {
         });
       }
       return allImagesSorted;
+    },
+    async zipResult() {
+      if (this.zipQuery) {
+        const params = { searchterm: this.zipQuery };
+        let result = await getZip(params);
+        console.log(result.body.path);
+        saveAs(result.body.path, "memes.zip");
+      }
     },
     async show_random_meme() {
       let result = await getRandomMeme();
