@@ -272,6 +272,7 @@ export default {
     },
     async saveVideoOnServer() {
       this.isLoading = true;
+      this.unselect();
       var canvasElement = document.getElementById("c");
 
       const stream = canvasElement.captureStream();
@@ -296,6 +297,7 @@ export default {
       let data = new FormData();
       data.append("file", blob, filename);
       data.append("title", this.title);
+      data.append("visibility", this.visibility);
       let result = await upload(data);
       if (result.status === 200) {
         router.push({ name: "Home" }).catch((err) => {
