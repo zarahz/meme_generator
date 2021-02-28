@@ -270,9 +270,13 @@ export default {
         } else if (this.sortBy == "downvoteDescending") {
           return b.downvoteCount - a.downvoteCount;
         } else if (this.sortBy == "viewsAscending") {
-          return a.memeStats.viewed.length - b.memeStats.viewed.length;
+          if (b.memeStats && a.memeStats) {
+            return a.memeStats.viewed.length - b.memeStats.viewed.length;
+          }
         } else if (this.sortBy == "viewsDescending") {
-          return b.memeStats.viewed.length - a.memeStats.viewed.length;
+          if (b.memeStats && a.memeStats) {
+            return b.memeStats.viewed.length - a.memeStats.viewed.length;
+          }
         }
       });
 

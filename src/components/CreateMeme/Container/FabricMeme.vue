@@ -262,9 +262,7 @@ export default {
       for (var i = 0; i < (1000 / delay) * 5; i++) {
         gif.addFrame(canvasElement, { delay: delay });
       }
-
       gif.on("finished", (blob) => {
-        // window.open(URL.createObjectURL(blob));
         this.isLoading = false;
         this.upload(blob, "gif.gif");
       });
