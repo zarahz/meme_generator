@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "serve-build": "serve -s dist",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
     "js-cookie": "^2.2.1",
     "moment": "^2.29.1",
     "popper.js": "^1.16.1",
+    "serve": "^11.3.2",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
     "vue-gallery-slideshow": "^1.5.2",
