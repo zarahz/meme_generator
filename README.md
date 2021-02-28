@@ -4,6 +4,8 @@ This is the frontend of the university project Meme Generator of the OMM course 
 
 ## How to Run
 
+Make sure the [backend](https://github.com/zarahz/meme_generator_backend/) is running.
+
 ```
 yarn install
 yarn serve
