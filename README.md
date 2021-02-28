@@ -14,5 +14,5 @@ yarn serve
 Alternatively npm should also work
 ```
 npm install
-npm run build
+npm run serve
 ```
