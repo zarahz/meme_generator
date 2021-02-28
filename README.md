@@ -4,15 +4,4 @@ This is the frontend of the university project Meme Generator of the OMM course 
 
 ## How to Run
 
-Make sure the [backend](https://github.com/zarahz/meme_generator_backend/) is running.
-
-```
-yarn install
-yarn serve
-```
-
-Alternatively npm should also work
-```
-npm install
-npm run serve
-```
+Pull this repository into the same folder as the [backend](https://github.com/zarahz/meme_generator_backend/). All further instructions are in the [backend](https://github.com/zarahz/meme_generator_backend/) repository.
