@@ -83,7 +83,7 @@
         >
       </b-col>
       <b-col>
-        <b-form-group
+        <b-input-group
           label="Get zip with:"
           label-for="zip-input"
           label-cols-sm="4"
@@ -93,11 +93,17 @@
             id="zip-input"
             v-model="zipQuery"
             placeholder="search term"
+            class="w-25"
+          ></b-form-input>
+          <b-form-input
+            id="zip-input-number"
+            v-model="zipMaxImages"
+            type="number"
           ></b-form-input>
           <b-button size="sm" variant="outline-primary" v-on:click="zipResult"
             ><b-icon icon="arrow-right" aria-hidden="true"></b-icon
           ></b-button>
-        </b-form-group>
+        </b-input-group>
       </b-col>
     </b-row>
 
@@ -170,6 +176,7 @@ export default {
       isLoading: false,
       showUserMemesOnly: false,
       zipQuery: null,
+      zipMaxImages: 5,
     };
   },
   methods: {
@@ -305,7 +312,10 @@ export default {
     },
     async zipResult() {
       if (this.zipQuery) {
-        const params = { searchterm: this.zipQuery };
+        const params = {
+          searchterm: this.zipQuery,
+          maxImages: this.zipMaxImages,
+        };
         let result = await getZip(params);
         console.log(result.body.path);
         saveAs(result.body.path, "memes.zip");
