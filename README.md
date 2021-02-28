@@ -1,24 +1,16 @@
 # meme_generator
 
-## Project setup
+This is the frontend of the university project Meme Generator of the OMM course at the Ludwig-Maximilians-Universität München.
+
+## How to Run
+
 ```
 yarn install
-```
-
-### Compiles and hot-reloads for development
-```
 yarn serve
 ```
 
-### Compiles and minifies for production
+Alternatively npm should also work
 ```
-yarn build
+npm install
+npm run build
 ```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
